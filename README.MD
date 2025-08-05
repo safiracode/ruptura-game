@@ -10,6 +10,6 @@ A temática principal do jogo é inspirada na série Ruptura (Severance), cuja a
 Ana Laura Barboza Oliveira
 Izadora Taline Gonçalves
 Laís Saraiva Peixoto Costa
-Laura Virginia do Nascimento
+Laura Virginia do Nascimento Fonseca
 Letícia Staudinger Ribeiro
 Safira Moraes Gomes
