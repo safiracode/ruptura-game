@@ -1,63 +1,80 @@
 import pygame
 import sprites
 import constants
+import os
+
 
 class Game:
     def __init__(self):
         # Criando a tela do jogo
         pygame.init()
         pygame.mixer.init()
-        self.screen = pygame.display.set_mode((constants.WIDTH, constants.HEIGHT))
-        pygame.display.set_caption(constants.TITLE_GAME)
-        self.clock = pygame.time.Clock() # relógio fps
-        self.is_running = True # jogo começa assim que ele for executador
+        self.tela = pygame.display.set_mode((constants.LARGURA, constants.ALTURA))
+        pygame.display.set_caption(constants.TITULO_JOGO)
+        ICONE = pygame.image.load('imagens/icone.png')
+        pygame.display.set_icon(ICONE)
+        self.relogio = pygame.time.Clock() # relógio fps
+        self.esta_rodando = True # jogo começa assim que ele for executador
+        self.fonte = pygame.font.match_font(constants.FONTE)
+        self.carregar_arquivos()
 
     #--------- Métodos ----------
 
     # Instancia as classes das sprites do jogo e chama o loop do jogo
-    def new_game(self):
-        self.all_sprites = pygame.sprite.Group()
-        self.run()
+    def novo_jogo(self):
+        self.todas_sprites = pygame.sprite.Group()
+        self.rodar()
     
     # Método para rodar o jogo
-    def run(self):
-        self.playing = True
-        while self.playing:
-            self.clock.tick(constants.FPS) # permite adicionar a taxa de frames do jogo
-            self.events()
-            self.update_sprites()
-            self.draw_sprites()
+    def rodar(self):
+        self.jogando = True
+        while self.jogando:
+            self.relogio.tick(constants.FPS) # permite adicionar a taxa de frames do jogo
+            self.eventos()
+            self.atualizar_sprites()
+            self.desenhar_sprites()
 
     # define os eventos do jogo
-    def events(self):
+    def eventos(self):
         for event in pygame.event.get():
             # se o evento for fechar o jogo
             if event.type == pygame.QUIT:
-                if self.playing:
-                    self.playing = False
-                self.is_running = False
+                if self.jogando:
+                    self.jogando = False
+                self.esta_rodando = False
 
     # atualiza a sprites, por exemplo quando dois objetos se chocam
-    def update_sprites(self):
-        self.all_sprites.update()
+    def atualizar_sprites(self):
+        self.todas_sprites.update()
 
     # Desenha as sprites
-    def draw_sprites(self):
-        self.screen.fill(constants.BLACK) # limpando a tela
-        self.all_sprites.draw(self.screen) # desenhando as sprites
+    def desenhar_sprites(self):
+        self.tela.fill(constants.PRETO) # limpando a tela
+        self.todas_sprites.draw(self.tela) # desenhando as sprites
         pygame.display.flip() # atualiza a tela a cada frame
+
+    # Carregar arquivos
+    def carregar_arquivos(self):
+        diretorio_imagens = os.path.join(os.getcwd(), 'imagens')
+        self.diretorio_audios = os.path.join(os.getcwd(), 'audios')
+        self.spritesheet = os.path.join(diretorio_imagens, constants.SPRITESHEET)
+        self.ruptura_start_logo = os.path.join(diretorio_imagens, constants.RUPTURA_START_LOGO)
+        self.ruptura_start_logo = pygame.image.load(self.ruptura_start_logo).convert()
+
+
+
     
     # mostra a tela de start
-    def start_screen(self):
+    def tela_start(self):
         pass # palavra reservada no python que significa não faça nada. Usada para partes que ainda serão implementadas
 
     # mostra tela game over
-    def game_over_screen(self):
+    def tela_game_over(self):
         pass
 
 g = Game()
-g.start_screen()
+g.tela_start()
 
-while g.is_running:
-    g.new_game()
-    g.game_over_screen()
+while g.esta_rodando:
+    g.novo_jogo()
+    g.tela_game_over()

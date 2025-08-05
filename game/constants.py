@@ -1,12 +1,17 @@
 # Dimensões da tela
-WIDTH = 1024
-HEIGHT = 600
+LARGURA = 480
+ALTURA = 600
 
 # Título do jogo
-TITLE_GAME = 'Ruptura'
+TITULO_JOGO = 'Ruptura'
 
 # FPS
 FPS = 30
 
 # CORES EM RGB
-BLACK = (0, 0, 0)
+PRETO = (0, 0, 0)
+
+SPRITESHEET = 'spritesheet.png'
+RUPTURA_START_LOGO = 'ruptura_logo.png'
+
+FONTE = 'arial'
