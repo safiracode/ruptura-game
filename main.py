@@ -3,7 +3,7 @@ import pygame
 import constants
 import mapa
 import os
-from classes import balao, mark, parede # Importa as classes necessárias
+from classes import balao, mark, parede
 import random
 
 class Game:
@@ -13,7 +13,6 @@ class Game:
         pygame.mixer.init()
         self.tela = pygame.display.set_mode((constants.LARGURA, constants.ALTURA))
         pygame.display.set_caption(constants.TITULO_JOGO)
-        # Garante que o caminho para o ícone está correto
         caminho_icone = os.path.join('imagens', 'icone.png')
         ICONE = pygame.image.load(caminho_icone)
         pygame.display.set_icon(ICONE)
@@ -29,9 +28,8 @@ class Game:
         
         self.todas_sprites = pygame.sprite.Group()
         self.grupo_vidas_extras = pygame.sprite.Group()
-        self.grupo_paredes = pygame.sprite.Group() # Grupo para as paredes colidíveis
+        self.grupo_paredes = pygame.sprite.Group()
 
-        # Cria as sprites de parede e encontra uma posição inicial para o jogador
         posicao_inicial_jogador = None
         for y, linha in enumerate(self.mapa_do_jogo):
             for x, celula in enumerate(linha):
@@ -41,7 +39,6 @@ class Game:
                 if celula == mapa.PISO and posicao_inicial_jogador is None:
                     posicao_inicial_jogador = (x, y)
         
-        # Cria a instância do jogador (Mark)
         self.jogador = mark.Mark(self, posicao_inicial_jogador[0], posicao_inicial_jogador[1])
         self.todas_sprites.add(self.jogador)
 
@@ -64,21 +61,20 @@ class Game:
                 if self.jogando: self.jogando = False
                 self.esta_rodando = False
             
-            # As teclas agora chamam o método 'mudar_direcao' do Mark
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT or event.key == pygame.K_a:
-                    self.jogador.mudar_direcao(dx=-1)
+                    self.jogador.adicionar_movimento(dx=-1, dy=0)
                 if event.key == pygame.K_RIGHT or event.key == pygame.K_d:
-                    self.jogador.mudar_direcao(dx=1)
+                    self.jogador.adicionar_movimento(dx=1, dy=0)
                 if event.key == pygame.K_UP or event.key == pygame.K_w:
-                    self.jogador.mudar_direcao(dy=-1)
+                    self.jogador.adicionar_movimento(dx=0, dy=-1)
                 if event.key == pygame.K_DOWN or event.key == pygame.K_s:
-                    self.jogador.mudar_direcao(dy=1)
+                    self.jogador.adicionar_movimento(dx=0, dy=1)
 
     def atualizar_sprites(self):
         """Atualiza o estado de todas as sprites e gerencia a lógica do jogo."""
         self.checar_spawn_balao()
-        self.todas_sprites.update() # Isso chama o Mark.update() automaticamente
+        self.todas_sprites.update()
 
         if self.jogador:
             colisoes = pygame.sprite.spritecollide(self.jogador, self.grupo_vidas_extras, True)
@@ -91,7 +87,6 @@ class Game:
         """Desenha todos os elementos na tela."""
         self.tela.fill(constants.PRETO)
 
-        # Desenha o mapa visualmente
         for y, linha in enumerate(self.mapa_do_jogo):
             for x, celula in enumerate(linha):
                 pos_x = x * constants.TAMANHO_BLOCO
@@ -101,10 +96,8 @@ class Game:
                 elif celula == mapa.PISO:
                     pygame.draw.rect(self.tela, constants.VERDE, (pos_x, pos_y, constants.TAMANHO_BLOCO, constants.TAMANHO_BLOCO))
         
-        # Desenha todas as sprites (jogador, balões, etc.) por cima do mapa
         self.todas_sprites.draw(self.tela)
 
-        # Desenha a interface (HUD) por cima de tudo
         pos_y_interface = constants.ALTURA - (mapa.ALTURA_INTERFACE_INFERIOR // 2)
         for i in range(self.vidas):
              self.tela.blit(self.imagem_balao_vida, (20 + i * 35, pos_y_interface - 15))
@@ -119,7 +112,6 @@ class Game:
         self.imagem_balao_vida = pygame.image.load(os.path.join(diretorio_imagens, constants.BALAO)).convert_alpha()
         self.imagem_xicara_cafe = pygame.image.load(os.path.join(diretorio_imagens, constants.CAFE)).convert_alpha()
     
-    # --- (O resto dos métodos: agendar_proximo_spawn_balao, etc. continuam iguais) ---
     def agendar_proximo_spawn_balao(self):
         intervalo = random.randint(5000, 20000); self.timer_spawn_balao = pygame.time.get_ticks() + intervalo
     def spawnar_balao(self):
