@@ -2,85 +2,74 @@ import pygame
 import constants
 import mapa
 import os
-from classes.mark import Mark
+from classes import balao
+import random
+
 
 class Game:
     def __init__(self):
-        # Criando a tela do jogo
+        """Inicializa o jogo e suas variáveis principais."""
         pygame.init()
         pygame.mixer.init()
         self.tela = pygame.display.set_mode((constants.LARGURA, constants.ALTURA))
         pygame.display.set_caption(constants.TITULO_JOGO)
         ICONE = pygame.image.load('imagens/icone.png')
         pygame.display.set_icon(ICONE)
-        self.relogio = pygame.time.Clock() # relógio fps
-        self.esta_rodando = True # jogo começa assim que ele for executador
+        self.relogio = pygame.time.Clock()
+        self.esta_rodando = True
         self.fonte = pygame.font.match_font(constants.FONTE)
         self.carregar_arquivos()
 
-    #--------- Métodos ----------
+    # --- Métodos de Controle do Jogo ---
 
-    # MÉTODO CORRIGIDO E SIMPLIFICADO
     def novo_jogo(self):
-        # 1. Gera o mapa aleatório e o armazena
+        """Configura e inicia uma nova partida."""
+        self.vidas = constants.VIDAS_INICIAIS
         self.mapa_do_jogo = mapa.gerar_mapa_aleatorio(mapa.LARGURA_GRADE, mapa.ALTURA_GRADE)
         
-        # 2. Prepara o grupo de sprites
         self.todas_sprites = pygame.sprite.Group()
-
-        # 2. Encontra uma posição livre para o Mark (exemplo: primeira célula livre)
-        for y, linha in enumerate(self.mapa_do_jogo):
-            for x, celula in enumerate(linha):
-                if celula == mapa.PISO:
-                    pos_x = x * constants.TAMANHO_BLOCO
-                    pos_y = y * constants.TAMANHO_BLOCO
-                    self.jogador = Mark(pos_x, pos_y, constants.TAMANHO_BLOCO)
-                    self.todas_sprites.add(self.jogador)
-                    break
-            else:
-                continue
-            break
-
-        # 4. Agora que tudo está pronto, inicia o loop do jogo
+        self.grupo_vidas_extras = pygame.sprite.Group()
+        
+        self.agendar_proximo_spawn_balao()
+        
         self.rodar()
     
-    # Método para rodar o jogo
     def rodar(self):
+        """Controla o loop principal do jogo (game loop)."""
         self.jogando = True
         while self.jogando:
-            self.relogio.tick(constants.FPS) # permite adicionar a taxa de frames do jogo
+            self.relogio.tick(constants.FPS)
             self.eventos()
             self.atualizar_sprites()
             self.desenhar_sprites()
 
-    # define os eventos do jogo
     def eventos(self):
+        """Processa todos os eventos de input (teclado, fechar janela, etc.)."""
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 if self.jogando:
                     self.jogando = False
                 self.esta_rodando = False
-            elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_LEFT:
-                    self.jogador.mover('esquerda', self.mapa_do_jogo, constants.TAMANHO_BLOCO)
-                elif event.key == pygame.K_RIGHT:
-                    self.jogador.mover('direita', self.mapa_do_jogo, constants.TAMANHO_BLOCO)
-                elif event.key == pygame.K_UP:
-                    self.jogador.mover('cima', self.mapa_do_jogo, constants.TAMANHO_BLOCO)
-                elif event.key == pygame.K_DOWN:
-                    self.jogador.mover('baixo', self.mapa_do_jogo, constants.TAMANHO_BLOCO)
 
-    # atualiza a sprites, por exemplo quando dois objetos se chocam
     def atualizar_sprites(self):
-        # atualize o jogador com o mapa e teclas pressionadas
-        teclas = pygame.key.get_pressed()
+        """Atualiza o estado de todas as sprites e gerencia a lógica do jogo."""
+        self.checar_spawn_balao()
         self.todas_sprites.update()
 
-    # Desenha as sprites
-    def desenhar_sprites(self):
-        self.tela.fill(constants.PRETO) # Limpando a tela
+        # Lógica de colisão para quando o jogador pegar o balão (a ser implementada)
+        # if self.jogador:
+        #     colisoes = pygame.sprite.spritecollide(self.jogador, self.grupo_vidas_extras, True)
+        #     if colisoes:
+        #         self.vidas += 1
+        #         # Garante que a vida não passe do máximo
+        #         if self.vidas > constants.VIDAS_INICIAIS:
+        #             self.vidas = constants.VIDAS_INICIAIS
 
-        # --- LÓGICA PARA DESENHAR O MAPA ---
+    def desenhar_sprites(self):
+        """Desenha todos os elementos na tela."""
+        self.tela.fill(constants.PRETO)
+
+        # Desenha o mapa
         for y, linha in enumerate(self.mapa_do_jogo):
             for x, celula in enumerate(linha):
                 pos_x = x * constants.TAMANHO_BLOCO
@@ -89,34 +78,59 @@ class Game:
                 if celula == mapa.PAREDE:
                     self.tela.blit(self.imagem_parede, (pos_x, pos_y))
                 elif celula == mapa.PISO:
-                    # Desenha um retângulo preenchido com a nova cor
-                    pygame.draw.rect(self.tela, constants.VERDE, (pos_x, pos_y, constants.TAMANHO_BLOCO, constants.TAMANHO_BLOCO))           
+                    pygame.draw.rect(self.tela, constants.VERDE, (pos_x, pos_y, constants.TAMANHO_BLOCO, constants.TAMANHO_BLOCO))
         
-        # --- DESENHA A INTERFACE (VIDAS E CAFÉ) ---
-        # Posição y centralizada na área inferior
+        # Desenha a interface (HUD)
         pos_y_interface = constants.ALTURA - (mapa.ALTURA_INTERFACE_INFERIOR // 2)
-
-        # Desenha os balões de vida (exemplo com 5 vidas)
-        for i in range(5):
+        for i in range(self.vidas):
              self.tela.blit(self.imagem_balao_vida, (20 + i * 35, pos_y_interface - 15))
-
-        # Desenha o café (exemplo)
-        # Futuramente, você pode usar uma variável como `if cafe_ativo:`
         self.tela.blit(self.imagem_xicara_cafe, (constants.LARGURA - 50, pos_y_interface - 15))
+        
+        self.todas_sprites.draw(self.tela)
+        pygame.display.flip()
 
+    # --- Métodos de Lógica Específica ---
 
-        self.todas_sprites.draw(self.tela) # Desenhando as sprites (jogador, inimigos) por cima do mapa
-        pygame.display.flip() # Atualiza a tela a cada frame
+    def agendar_proximo_spawn_balao(self):
+        """Calcula um tempo aleatório entre 5 e 20s e agenda o próximo spawn de balão."""
+        intervalo = random.randint(5000, 20000)
+        self.timer_spawn_balao = pygame.time.get_ticks() + intervalo
 
-    # Carregar arquivos
+    def spawnar_balao(self):
+        """Encontra um lugar aleatório no mapa e cria um balão."""
+        posicoes_livres = []
+        for y, linha in enumerate(self.mapa_do_jogo):
+            for x, celula in enumerate(linha):
+                if celula == mapa.PISO:
+                    posicoes_livres.append((x, y))
+        
+        if posicoes_livres:
+            pos_x, pos_y = random.choice(posicoes_livres)
+            novo_balao = balao.Balao(pos_x, pos_y)
+            self.todas_sprites.add(novo_balao)
+            self.grupo_vidas_extras.add(novo_balao)
+
+    def checar_spawn_balao(self):
+        """Verifica se as condições para criar um novo balão foram atendidas."""
+        if self.vidas >= constants.VIDAS_INICIAIS or len(self.grupo_vidas_extras) > 0:
+            return
+            
+        if pygame.time.get_ticks() >= self.timer_spawn_balao:
+            self.spawnar_balao()
+            self.agendar_proximo_spawn_balao()
+            
+    def perder_vida(self):
+        """Função a ser chamada quando o jogador for pego."""
+        if self.vidas > 0:
+            self.vidas -= 1
+        print(f"Vida perdida! Vidas restantes: {self.vidas}")
+        self.agendar_proximo_spawn_balao()
+
     def carregar_arquivos(self):
+        """Carrega todas as imagens e arquivos de áudio necessários para o jogo."""
         diretorio_imagens = os.path.join(os.getcwd(), 'imagens')
         self.diretorio_audios = os.path.join(os.getcwd(), 'audios')
-        self.spritesheet = os.path.join(diretorio_imagens, constants.SPRITESHEET)
-        self.ruptura_start_logo = os.path.join(diretorio_imagens, constants.RUPTURA_START_LOGO)
-        self.ruptura_start_logo = pygame.image.load(self.ruptura_start_logo).convert()
 
-        # imagens mapa
         self.imagem_parede = os.path.join(diretorio_imagens, constants.PAREDE)
         self.imagem_balao_vida = os.path.join(diretorio_imagens, constants.BALAO)
         self.imagem_xicara_cafe = os.path.join(diretorio_imagens, constants.CAFE)
@@ -125,14 +139,15 @@ class Game:
         self.imagem_balao_vida = pygame.image.load(self.imagem_balao_vida).convert_alpha()
         self.imagem_xicara_cafe = pygame.image.load(self.imagem_xicara_cafe).convert_alpha()
 
-    # mostra a tela de start
     def tela_start(self):
-        pass # palavra reservada no python que significa não faça nada. Usada para partes que ainda serão implementadas
-
-    # mostra tela game over
-    def tela_game_over(self):
+        """Mostra a tela inicial do jogo."""
         pass
 
+    def tela_game_over(self):
+        """Mostra a tela de fim de jogo."""
+        pass
+
+# --- Inicialização e Loop Principal ---
 g = Game()
 g.tela_start()
 
@@ -140,4 +155,4 @@ while g.esta_rodando:
     g.novo_jogo()
     g.tela_game_over()
 
-pygame.quit() # Adicionado para fechar o Pygame corretamente ao final
+pygame.quit()
