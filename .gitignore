@@ -1,3 +1,0 @@
-# ignora a pasta __pycache__ e arquivos .pyc
-__pycache__/
-*.pyc
