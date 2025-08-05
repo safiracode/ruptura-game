@@ -9,6 +9,8 @@ TITULO_JOGO = 'Ruptura'
 # FPS
 FPS = 30
 
+VIDAS_INICIAIS = 5
+
 # CORES EM RGB
 PRETO = (0, 0, 0)
 VERDE = (35, 115, 80)
