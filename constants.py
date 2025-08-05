@@ -1,3 +1,5 @@
+import os
+
 # Dimensões da tela
 LARGURA = 480
 ALTURA = 600
@@ -21,5 +23,6 @@ CAFE = 'café.png'
 PAREDE = 'parede3.png'
 PORTA_FECHADA = 'porta.png'
 PORTA_ABERTA = 'porta.png'
+MARK = os.path.join('ideias de imagens', 'mark-head.png')
 
 FONTE = 'arial'

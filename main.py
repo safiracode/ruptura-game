@@ -2,7 +2,7 @@ import pygame
 import constants
 import mapa
 import os
-
+from classes.mark import Mark
 
 class Game:
     def __init__(self):
@@ -28,10 +28,19 @@ class Game:
         # 2. Prepara o grupo de sprites
         self.todas_sprites = pygame.sprite.Group()
 
-        # 3. Futuramente, você adicionará o jogador e outros elementos aqui
-        # self.jogador = sprites.Jogador()
-        # self.todas_sprites.add(self.jogador)
-        
+        # 2. Encontra uma posição livre para o Mark (exemplo: primeira célula livre)
+        for y, linha in enumerate(self.mapa_do_jogo):
+            for x, celula in enumerate(linha):
+                if celula == mapa.PISO:
+                    pos_x = x * constants.TAMANHO_BLOCO
+                    pos_y = y * constants.TAMANHO_BLOCO
+                    self.jogador = Mark(pos_x, pos_y, constants.TAMANHO_BLOCO)
+                    self.todas_sprites.add(self.jogador)
+                    break
+            else:
+                continue
+            break
+
         # 4. Agora que tudo está pronto, inicia o loop do jogo
         self.rodar()
     
@@ -47,14 +56,24 @@ class Game:
     # define os eventos do jogo
     def eventos(self):
         for event in pygame.event.get():
-            # se o evento for fechar o jogo
             if event.type == pygame.QUIT:
                 if self.jogando:
                     self.jogando = False
                 self.esta_rodando = False
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_LEFT:
+                    self.jogador.mover('esquerda', self.mapa_do_jogo, constants.TAMANHO_BLOCO)
+                elif event.key == pygame.K_RIGHT:
+                    self.jogador.mover('direita', self.mapa_do_jogo, constants.TAMANHO_BLOCO)
+                elif event.key == pygame.K_UP:
+                    self.jogador.mover('cima', self.mapa_do_jogo, constants.TAMANHO_BLOCO)
+                elif event.key == pygame.K_DOWN:
+                    self.jogador.mover('baixo', self.mapa_do_jogo, constants.TAMANHO_BLOCO)
 
     # atualiza a sprites, por exemplo quando dois objetos se chocam
     def atualizar_sprites(self):
+        # atualize o jogador com o mapa e teclas pressionadas
+        teclas = pygame.key.get_pressed()
         self.todas_sprites.update()
 
     # Desenha as sprites
