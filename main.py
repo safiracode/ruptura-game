@@ -4,7 +4,7 @@ import mapa
 import os
 from classes import balao
 import random
-
+from classes.mark import Mark
 
 class Game:
     def __init__(self):
@@ -31,7 +31,19 @@ class Game:
         self.grupo_vidas_extras = pygame.sprite.Group()
         
         self.agendar_proximo_spawn_balao()
-        
+        # encontra uma posição livre para o Mark (exemplo: primeira célula livre)
+        for y, linha in enumerate(self.mapa_do_jogo):
+            for x, celula in enumerate(linha):
+                if celula == mapa.PISO:
+                    pos_x = x * constants.TAMANHO_BLOCO
+                    pos_y = y * constants.TAMANHO_BLOCO
+                    self.jogador = Mark(pos_x, pos_y, constants.TAMANHO_BLOCO)
+                    self.todas_sprites.add(self.jogador)
+                    break
+            else:
+                continue
+            break
+
         self.rodar()
     
     def rodar(self):
@@ -50,10 +62,21 @@ class Game:
                 if self.jogando:
                     self.jogando = False
                 self.esta_rodando = False
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_LEFT:
+                    self.jogador.mover('esquerda', self.mapa_do_jogo, constants.TAMANHO_BLOCO)
+                elif event.key == pygame.K_RIGHT:
+                    self.jogador.mover('direita', self.mapa_do_jogo, constants.TAMANHO_BLOCO)
+                elif event.key == pygame.K_UP:
+                    self.jogador.mover('cima', self.mapa_do_jogo, constants.TAMANHO_BLOCO)
+                elif event.key == pygame.K_DOWN:
+                    self.jogador.mover('baixo', self.mapa_do_jogo, constants.TAMANHO_BLOCO)
+
 
     def atualizar_sprites(self):
         """Atualiza o estado de todas as sprites e gerencia a lógica do jogo."""
         self.checar_spawn_balao()
+        teclas = pygame.key.get_pressed()
         self.todas_sprites.update()
 
         # Lógica de colisão para quando o jogador pegar o balão (a ser implementada)
