@@ -71,24 +71,36 @@ class Cobel(pygame.sprite.Sprite):
             return (0, 0)  # Fica parado se não pode se mover
 
     def update(self):
-        # ATUALIZA O MOVIMENTO DA COBEL
-        agora = pygame.time.get_ticks()
-        
-        # Move apenas a cada intervalo definido
-        if agora - self.ultimo_movimento > self.intervalo_movimento:
-            dx, dy = self.encontrar_direcao_para_jogador()
-            
-            if dx != 0 or dy != 0:
-                self.rect.x += dx * constants.TAMANHO_BLOCO
-                self.rect.y += dy * constants.TAMANHO_BLOCO
-                
-            self.ultimo_movimento = agora
+        if hasattr(self, 'destino'): # Checa se objeti
+            dx = self.destino[0] - self.rect.x
+            dy = self.destino[1] - self.rect.y
 
-            # Atualiza a imagem da Cobel de acordo com a direção
-            if dx == 1: self.image = self.sprites['direita']
-            elif dx == -1: self.image = self.sprites['esquerda']
-            elif dy == -1: self.image = self.sprites['cima']
-            elif dy == 1: self.image = self.sprites['baixo']
+            if dx != 0:
+                self.rect.x += self.velocidade if dx > 0 else -self.velocidade
+                if abs(dx) < self.velocidade:
+                    self.rect.x = self.destino[0]
+            elif dy != 0:
+                self.rect.y += self.velocidade if dy > 0 else -self.velocidade
+                if abs(dy) < self.velocidade:
+                    self.rect.y = self.destino[1]
+
+            # Chegou ao destino
+            if self.rect.topleft == self.destino:
+                del self.destino
+
+        else:
+            # SEM intervalo! Calcula nova direção imediatamente
+            dx, dy = self.encontrar_direcao_para_jogador()
+            if dx != 0 or dy != 0:
+                self.destino = (
+                    self.rect.x + dx * constants.TAMANHO_BLOCO,
+                    self.rect.y + dy * constants.TAMANHO_BLOCO)
+
+                # Atualiza sprite
+                if dx == 1: self.image = self.sprites['direita']
+                elif dx == -1: self.image = self.sprites['esquerda']
+                elif dy == -1: self.image = self.sprites['cima']
+                elif dy == 1: self.image = self.sprites['baixo']
 
     def causar_dano(self):
         # CAUSA DANO AO JOGADOR QUANDO HÁ COLISÃO
