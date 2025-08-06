@@ -105,7 +105,6 @@ class Game:
             partes_colididas = pygame.sprite.spritecollide(self.jogador, self.grupo_chave_partes, True)
             for parte in partes_colididas:
                 self.partes_coletadas[parte.parte_index] = True
-                print(f"Parte {parte.parte_index + 1} da chave coletada!")
                 
             # Colisão com Cobels
             if pygame.sprite.spritecollide(self.jogador, self.grupo_cobels, False):
@@ -179,7 +178,7 @@ class Game:
             self.spawnar_balao(); self.agendar_proximo_spawn_balao()
     def perder_vida(self):
         if self.vidas > 0: self.vidas -= 1
-        print(f"Vida perdida! Vidas restantes: {self.vidas}"); self.agendar_proximo_spawn_balao()
+        self.agendar_proximo_spawn_balao()
     def mostrar_texto(self, texto, tamanho, cor, x, y):
         fonte = pygame.font.Font(self.fonte, tamanho)
         texto_render = fonte.render(texto, True, cor)

@@ -14,7 +14,7 @@ FPS = 60
 VIDAS_INICIAIS = 5
 
 # --- JOGADOR ---
-VELOCIDADE_JOGADOR = 1.5
+VELOCIDADE_JOGADOR = 1.2 # fazer comparativo com o pacman pra ver se ta bom
 COR_JOGADOR = (255, 255, 0)
 COMANDO_TIMEOUT = 3000 # 3 segundos em milissegundos
 
