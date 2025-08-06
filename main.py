@@ -3,7 +3,7 @@ import pygame
 import constants
 import mapa
 import os
-from classes import balao, mark, parede
+from classes import balao, mark, parede, cobel
 import random
 
 class Game:
@@ -29,6 +29,7 @@ class Game:
         self.todas_sprites = pygame.sprite.Group()
         self.grupo_vidas_extras = pygame.sprite.Group()
         self.grupo_paredes = pygame.sprite.Group()
+        self.grupo_cobels = pygame.sprite.Group()
 
         posicao_inicial_jogador = None
         for y, linha in enumerate(self.mapa_do_jogo):
@@ -41,6 +42,20 @@ class Game:
         
         self.jogador = mark.Mark(self, posicao_inicial_jogador[0], posicao_inicial_jogador[1])
         self.todas_sprites.add(self.jogador)
+
+        # # spawnar apenas uma cobel
+        # posicoes_livres = []
+        # for y, linha in enumerate(self.mapa_do_jogo):
+        #     for x, celula in enumerate(linha):
+        #         if celula == mapa.PISO:
+        #             posicoes_livres.append((x, y))
+        
+        # # Spawna 1 cobel em posição aleatória
+        # if posicoes_livres:
+        #     pos_x, pos_y = random.choice(posicoes_livres)
+        #     novo_cobel = cobel.Cobel(self, pos_x, pos_y)
+        #     self.todas_sprites.add(novo_cobel)
+        #     self.grupo_cobels.add(novo_cobel)
 
         self.agendar_proximo_spawn_balao()
         self.rodar()
@@ -82,6 +97,15 @@ class Game:
                 self.vidas += 1
                 if self.vidas > constants.VIDAS_INICIAIS:
                     self.vidas = constants.VIDAS_INICIAIS
+        
+        # Verifica colisão entre jogador e Cobels
+        if self.jogador:
+            colisoes_cobel = pygame.sprite.spritecollide(self.jogador, self.grupo_cobels, False)
+            if colisoes_cobel:
+                for cobel_sprite in colisoes_cobel:
+                    cobel_sprite.causar_dano()
+                    # Remove o Cobel após o ataque (opcional)
+                    # cobel_sprite.kill()
 
     def desenhar_sprites(self):
         """Desenha todos os elementos na tela."""
@@ -109,10 +133,9 @@ class Game:
         """Carrega todas as imagens e arquivos de áudio necessários para o jogo."""
         diretorio_imagens = os.path.join(os.getcwd(), 'imagens')
         self.diretorio_audios = os.path.join(os.getcwd(), 'audios')
-        self.spritesheet = os.path.join(diretorio_imagens, constantes.SPRITESHEET)
+        self.spritesheet = os.path.join(diretorio_imagens, constants.SPRITESHEET)
         
-        self.ruptura_start_logo = os.path.join(diretorio_imagens, constantes.RUPTURA_START_LOGO)
-        self.ruptura_start_logo = pygame.image.load(self.ruptura_start_logo).convert
+        self.ruptura_start_logo = pygame.image.load(constants.RUPTURA_START_LOGO).convert_alpha()
 
         self.imagem_parede = pygame.image.load(os.path.join(diretorio_imagens, constants.PAREDE)).convert()
         self.imagem_balao_vida = pygame.image.load(os.path.join(diretorio_imagens, constants.BALAO)).convert_alpha()
@@ -147,15 +170,16 @@ class Game:
 
     
     def tela_start(self):
-        """Mostra a tela inicial do jogo."""
-        self.mostrar_texto('Pressione uma tecla para jogar', 32, constantes.BRANCO, constantes.LARGURA / 2, 320)
-        pygame.display.flip()
-        self.esperar_por_jogador()
+        # """Mostra a tela inicial do jogo."""
+        # self.mostrar_texto('Pressione uma tecla para jogar', 32, constants.BRANCO, constants.LARGURA / 2, 320)
+        # pygame.display.flip()
+        # self.esperar_por_jogador()
+        pass
         
     def esperar_por_jogador(self):
         esperando = True
         while esperando:
-            self.relogio.tick(constantes.FPS)
+            self.relogio.tick(constants.FPS)
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     esperando = False

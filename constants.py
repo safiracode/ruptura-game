@@ -29,5 +29,8 @@ BALAO = 'balão.png'
 CAFE = 'café.png'
 PAREDE = 'parede3.png'
 MARK_IMG = os.path.join('ideias de imagens', 'mark-head.png')
+COBEL = os.path.join('ideias de imagens', 'cobel 3.png')
+SPRITESHEET = os.path.join('ideias de imagens', 'spritesheet.png')
+RUPTURA_START_LOGO = os.path.join('imagens', 'ruptura_logo.png')
 
 FONTE = 'arial'
