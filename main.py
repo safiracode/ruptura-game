@@ -5,6 +5,7 @@ import mapa
 import os
 from classes import balao, mark, parede, cobel
 import random
+import game_over
 
 class Game:
     def __init__(self):
@@ -43,19 +44,19 @@ class Game:
         self.jogador = mark.Mark(self, posicao_inicial_jogador[0], posicao_inicial_jogador[1])
         self.todas_sprites.add(self.jogador)
 
-        # # spawnar apenas uma cobel
-        # posicoes_livres = []
-        # for y, linha in enumerate(self.mapa_do_jogo):
-        #     for x, celula in enumerate(linha):
-        #         if celula == mapa.PISO:
-        #             posicoes_livres.append((x, y))
+        # spawnar apenas uma cobel
+        posicoes_livres = []
+        for y, linha in enumerate(self.mapa_do_jogo):
+            for x, celula in enumerate(linha):
+                if celula == mapa.PISO:
+                    posicoes_livres.append((x, y))
         
-        # # Spawna 1 cobel em posição aleatória
-        # if posicoes_livres:
-        #     pos_x, pos_y = random.choice(posicoes_livres)
-        #     novo_cobel = cobel.Cobel(self, pos_x, pos_y)
-        #     self.todas_sprites.add(novo_cobel)
-        #     self.grupo_cobels.add(novo_cobel)
+        # Spawna 1 cobel em posição aleatória
+        if posicoes_livres:
+            pos_x, pos_y = random.choice(posicoes_livres)
+            novo_cobel = cobel.Cobel(self, pos_x, pos_y)
+            self.todas_sprites.add(novo_cobel)
+            self.grupo_cobels.add(novo_cobel)
 
         self.agendar_proximo_spawn_balao()
         self.rodar()
@@ -68,6 +69,9 @@ class Game:
             self.eventos()
             self.atualizar_sprites()
             self.desenhar_sprites()
+            # Verifica se o jogador ficou sem vidas
+            if self.vidas <= 0:
+                self.jogando = False  # Sai do loop do jogo
 
     def eventos(self):
         """Processa todos os eventos de input."""
@@ -160,6 +164,7 @@ class Game:
         self.imagem_chave_parte1 = pygame.image.load(os.path.join(diretorio_imagens, constants.CHAVE_PARTE1)).convert_alpha()
         self.imagem_chave_parte2 = pygame.image.load(os.path.join(diretorio_imagens, constants.CHAVE_PARTE2)).convert_alpha()
         self.imagem_chave_parte3 = pygame.image.load(os.path.join(diretorio_imagens, constants.CHAVE_PARTE3)).convert_alpha()
+        self.imagem_game_over = pygame.image.load(os.path.join(diretorio_imagens, constants.GAME_OVER_IMG)).convert()
 
     def agendar_proximo_spawn_balao(self):
         intervalo = random.randint(5000, 20000); self.timer_spawn_balao = pygame.time.get_ticks() + intervalo
@@ -208,12 +213,15 @@ class Game:
                     
 
     def tela_game_over(self):
-        pass
+        # Chama a tela de game over do arquivo externo
+        return game_over.tela_game_over(self.tela, self.fonte, self.imagem_game_over)
 
 # --- Inicialização e Loop Principal ---
 g = Game()
 g.tela_start()
 while g.esta_rodando:
     g.novo_jogo()
-    g.tela_game_over()
+    # Exibe tela de game over se o jogador perdeu todas as vidas
+    if not g.tela_game_over():
+        break  # Sai do loop se o jogador fechar o jogo
 pygame.quit()

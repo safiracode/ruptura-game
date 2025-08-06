@@ -50,5 +50,6 @@ CHAVE_PARTE2 = 'chave_parte_2.png'
 CHAVE_PARTE3 = 'chave_parte_3.png'
 SPRITESHEET = os.path.join('ideias de imagens', 'spritesheet.png') # checar uso
 RUPTURA_START_LOGO = 'ruptura_logo.png'
+GAME_OVER_IMG = 'game_over_vertical.png'
 
 FONTE = 'arial'
