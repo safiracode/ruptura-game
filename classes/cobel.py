@@ -10,7 +10,7 @@ class Cobel(pygame.sprite.Sprite):
         self.game = game
 
         # Carrega a imagem do Cobel
-        self.image = pygame.image.load(constants.COBEL).convert_alpha()
+        self.image = pygame.image.load(os.path.join('imagens', constants.COBEL)).convert_alpha()
         self.image = pygame.transform.scale(self.image, (constants.TAMANHO_BLOCO, constants.TAMANHO_BLOCO))
         self.rect = self.image.get_rect()
 

@@ -135,11 +135,13 @@ class Game:
         self.diretorio_audios = os.path.join(os.getcwd(), 'audios')
         self.spritesheet = os.path.join(diretorio_imagens, constants.SPRITESHEET)
         
-        self.ruptura_start_logo = pygame.image.load(constants.RUPTURA_START_LOGO).convert_alpha()
+        self.ruptura_start_logo = pygame.image.load(os.path.join(diretorio_imagens, constants.RUPTURA_START_LOGO)).convert()
 
         self.imagem_parede = pygame.image.load(os.path.join(diretorio_imagens, constants.PAREDE)).convert()
         self.imagem_balao_vida = pygame.image.load(os.path.join(diretorio_imagens, constants.BALAO)).convert_alpha()
         self.imagem_xicara_cafe = pygame.image.load(os.path.join(diretorio_imagens, constants.CAFE)).convert_alpha()
+        self.imagem_mark = pygame.image.load(os.path.join(diretorio_imagens, constants.MARK_IMG)).convert_alpha()
+        self.imagem_cobel = pygame.image.load(os.path.join(diretorio_imagens, constants.COBEL)).convert_alpha()
     
     def agendar_proximo_spawn_balao(self):
         intervalo = random.randint(5000, 20000); self.timer_spawn_balao = pygame.time.get_ticks() + intervalo
