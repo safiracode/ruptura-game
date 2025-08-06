@@ -108,6 +108,12 @@ class Game:
     def carregar_arquivos(self):
         """Carrega todas as imagens e arquivos de áudio necessários para o jogo."""
         diretorio_imagens = os.path.join(os.getcwd(), 'imagens')
+        self.diretorio_audios = os.path.join(os.getcwd(), 'audios')
+        self.spritesheet = os.path.join(diretorio_imagens, constantes.SPRITESHEET)
+        
+        self.ruptura_start_logo = os.path.join(diretorio_imagens, constantes.RUPTURA_START_LOGO)
+        self.ruptura_start_logo = pygame.image.load(self.ruptura_start_logo).convert
+
         self.imagem_parede = pygame.image.load(os.path.join(diretorio_imagens, constants.PAREDE)).convert()
         self.imagem_balao_vida = pygame.image.load(os.path.join(diretorio_imagens, constants.BALAO)).convert_alpha()
         self.imagem_xicara_cafe = pygame.image.load(os.path.join(diretorio_imagens, constants.CAFE)).convert_alpha()
@@ -130,8 +136,23 @@ class Game:
     def perder_vida(self):
         if self.vidas > 0: self.vidas -= 1
         print(f"Vida perdida! Vidas restantes: {self.vidas}"); self.agendar_proximo_spawn_balao()
-    def tela_start(self): pass
-    def tela_game_over(self): pass
+
+    def mostrar_texto(self, texto, tamanho, cor, x, y):
+        """Exibe um texto na tela do jogo"""
+        fonte = pygame.font.Font(self.fonte, tamanho)
+        texto = fonte.render(texto, True, cor)
+        texto_rect = texto.get_rect()
+        texto_rect.midtop = (x, y)
+        self.tela.blit(texto, texto_rect)
+
+    
+    def tela_start(self):
+        """Mostra a tela inicial do jogo."""
+        self.mostrar_texto('Pressione uma tecla para jogar', 32, constantes.BRANCO, constantes.LARGURA / 2, 320)
+        pygame.display.flip()
+
+    def tela_game_over(self):
+        pass
 
 # --- Inicialização e Loop Principal ---
 g = Game()
