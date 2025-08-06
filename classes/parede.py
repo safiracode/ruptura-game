@@ -1,4 +1,3 @@
-# classes/parede.py
 import pygame
 import constants
 

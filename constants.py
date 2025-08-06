@@ -1,4 +1,3 @@
-# constants.py
 import os
 
 # Dimensões da tela

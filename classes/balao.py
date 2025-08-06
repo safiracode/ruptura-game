@@ -1,12 +1,9 @@
-# Arquivo: balao.py
 import pygame
 import constants
 import os
 
 class Balao(pygame.sprite.Sprite):
-    """
-    Representa o coletável de vida extra (o balão) que aparece no mapa.
-    """
+
     def __init__(self, x, y):
         # Passo 1: Inicia a classe "Sprite" original do Pygame
         super().__init__()

@@ -1,4 +1,3 @@
-# Arquivo: mapa.py (Versão Final Polida com Bordas Limpas)
 import random
 import constants
 
@@ -11,9 +10,7 @@ PAREDE = 1
 PISO = 0
 
 def gerar_mapa_aleatorio(largura, altura):
-    """
-    Gera um labirinto complexo com bordas limpas e espaçadas.
-    """
+    # GERA UM LABIRINTO
     # 1. Começa com uma grade cheia de PAREDES
     grade = [[PAREDE for _ in range(largura)] for _ in range(altura)]
 
@@ -73,7 +70,6 @@ def gerar_mapa_aleatorio(largura, altura):
             elif (grade[y][x-1] == PISO and grade[y][x+1] == PISO):
                 grade[y][x] = PISO
 
-    # --- NOVO PASSO: O "PAISAGISTA DE BORDAS" ---
     # Limpa as paredes que correm paralelas à muralha externa.
     chance_de_limpar_borda = 0.80 # 80% de chance de remover uma parede paralela
 
@@ -93,8 +89,6 @@ def gerar_mapa_aleatorio(largura, altura):
     for y in range(1, altura - 1):
         if grade[y][largura-2] == PAREDE and (grade[y-1][largura-2] == PAREDE or grade[y+1][largura-2] == PAREDE):
             if random.random() < chance_de_limpar_borda: grade[y][largura-2] = PISO
-
-    # 6. PASSO FINAL: A MURALHA FINAL
     # Este passo garante que a moldura do mapa esteja sempre intacta.
     for x in range(largura):
         grade[0][x] = PAREDE
