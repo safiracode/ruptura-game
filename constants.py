@@ -18,7 +18,7 @@ VELOCIDADE_JOGADOR = 1.2 # fazer comparativo com o pacman pra ver se ta bom
 COMANDO_TIMEOUT = 3000 # 3 segundos em milissegundos
 
 # --- SEGURANÇAS ---
-VELOCIDADE_COBEL = 1
+VELOCIDADE_SEGURANCA = 1 # Cobel, Milchick, Drummond, Mauer e Huang
 
 # --- CORES EM RGB ---
 PRETO = (0, 0, 0)
