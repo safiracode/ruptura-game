@@ -25,13 +25,12 @@ VERDE = (35, 115, 80)
 BRANCO = (255, 255, 255)
 
 # --- ARQUIVOS ---
+CHAVE = 'chave.png'
+NUMERO_PARTES_CHAVE = 3
 BALAO = 'baloes_att.png'
 CAFE = 'cafe_att.png'
 PAREDE = 'parede3.png'
-CHAVE_INTEIRA = 'chave_inteira.png'
-CHAVE_PARTE1 = 'chave_parte_1.png'
-CHAVE_PARTE2 = 'chave_parte_2.png'
-CHAVE_PARTE3 = 'chave_parte_3.png'
+
 
 MARK_BAIXO = 'mark_baixo.png'
 MARK_CIMA = 'mark_cima.png'
