@@ -13,7 +13,7 @@ class Game:
         pygame.mixer.init()
         self.tela = pygame.display.set_mode((constants.LARGURA, constants.ALTURA))
         pygame.display.set_caption(constants.TITULO_JOGO)
-        caminho_icone = os.path.join('imagens', 'icone.png')
+        caminho_icone = os.path.join('imagens', 'ruptura_logo.png')
         ICONE = pygame.image.load(caminho_icone)
         pygame.display.set_icon(ICONE)
         self.relogio = pygame.time.Clock()
