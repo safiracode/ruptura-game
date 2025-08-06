@@ -160,7 +160,7 @@ class Game:
                 if event.type == pygame.QUIT:
                     esperando = False
                     self.esta_rodando = False
-                if event.t
+             
                     
 
     def tela_game_over(self):
