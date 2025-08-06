@@ -150,6 +150,18 @@ class Game:
         """Mostra a tela inicial do jogo."""
         self.mostrar_texto('Pressione uma tecla para jogar', 32, constantes.BRANCO, constantes.LARGURA / 2, 320)
         pygame.display.flip()
+        self.esperar_por_jogador()
+        
+    def esperar_por_jogador(self):
+        esperando = True
+        while esperando:
+            self.relogio.tick(constantes.FPS)
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    esperando = False
+                    self.esta_rodando = False
+                if event.t
+                    
 
     def tela_game_over(self):
         pass
