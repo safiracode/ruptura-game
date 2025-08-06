@@ -25,9 +25,15 @@ PRETO = (0, 0, 0)
 VERDE = (35, 115, 80)
 BRANCO = (255, 255, 255)
 
+# --- CHAVE ---
+NUMERO_PARTES_CHAVE = 3
+TIMER_INICIAL_CHAVE = 5000 # 5 segundos
+TIMER_MIN_CHAVE = 5000     # 5 segundos
+TIMER_MAX_CHAVE = 15000    # 15 segundos
+
+
 # --- ARQUIVOS ---
 CHAVE = 'chave.png'
-NUMERO_PARTES_CHAVE = 3
 BALAO = 'baloes_att.png'
 CAFE = 'cafe_att.png'
 PAREDE = 'parede3.png'
