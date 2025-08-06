@@ -26,7 +26,7 @@ class Cobel(pygame.sprite.Sprite):
         self.intervalo_movimento = 300  # Move a cada 300ms
 
     def pode_mover(self, dx, dy):
-        """Verifica se pode mover para a posição especificada."""
+        # VERIFICA SE PODE MOVER PARA POSIÇÃO ESPECIFICADA
         novo_x_grid = (self.rect.centerx // constants.TAMANHO_BLOCO) + dx
         novo_y_grid = (self.rect.centery // constants.TAMANHO_BLOCO) + dy
         
@@ -35,7 +35,7 @@ class Cobel(pygame.sprite.Sprite):
         return False
 
     def encontrar_direcao_para_jogador(self):
-        """Encontra a direção para se mover em direção ao jogador de forma mais fluida."""
+        # ENCONTRA A DIREÇÃO PARA SE MOVER EATÉ O JOGADOR
         jogador_x = self.game.jogador.rect.centerx // constants.TAMANHO_BLOCO
         jogador_y = self.game.jogador.rect.centery // constants.TAMANHO_BLOCO
         cobel_x = self.rect.centerx // constants.TAMANHO_BLOCO
@@ -67,7 +67,7 @@ class Cobel(pygame.sprite.Sprite):
             return (0, 0)  # Fica parado se não pode se mover
 
     def update(self):
-        """Atualiza o movimento do Cobel."""
+        # ATUALIZA O MOVIMENTO DA COBEL
         agora = pygame.time.get_ticks()
         
         # Move apenas a cada intervalo definido
@@ -81,7 +81,7 @@ class Cobel(pygame.sprite.Sprite):
             self.ultimo_movimento = agora
 
     def causar_dano(self):
-        """Causa dano ao jogador quando há colisão."""
+        # CAUSA DANO AO JOGADOR QUANDO HÁ COLISÃO
         self.game.vidas -= 2
         if self.game.vidas < 0:
             self.game.vidas = 0

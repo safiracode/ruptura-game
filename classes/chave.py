@@ -1,4 +1,3 @@
-# classes/chave.py
 import pygame
 import constants
 

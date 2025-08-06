@@ -1,4 +1,3 @@
-# main.py
 import pygame
 import constants
 import mapa
@@ -9,7 +8,7 @@ import game_over
 
 class Game:
     def __init__(self):
-        """Inicializa o jogo e suas variáveis principais."""
+        # INICIALIZA O JOGO E SUAS VARIAVEIS PRINCIPAIS
         pygame.init()
         pygame.mixer.init()
         self.tela = pygame.display.set_mode((constants.LARGURA, constants.ALTURA))
@@ -23,7 +22,7 @@ class Game:
         self.carregar_arquivos()
 
     def novo_jogo(self):
-        """Configura e inicia uma nova partida."""
+        # CONFIGURA E INICIA UMA NOVA PARTIDA
         self.vidas = constants.VIDAS_INICIAIS
         self.partes_coletadas = [False] * constants.NUMERO_PARTES_CHAVE
         self.mapa_do_jogo = mapa.gerar_mapa_aleatorio(mapa.LARGURA_GRADE, mapa.ALTURA_GRADE)
@@ -71,7 +70,7 @@ class Game:
         self.rodar()
     
     def rodar(self):
-        """Controla o loop principal do jogo."""
+        # CONTROLA O LOOP PRINCIPAL DO JOGO
         self.jogando = True
         while self.jogando:
             self.relogio.tick(constants.FPS)
@@ -79,7 +78,7 @@ class Game:
             if self.vidas <= 0: self.jogando = False
 
     def eventos(self):
-        """Processa todos os eventos de input."""
+        # PROCESSA TODOS OS EVENTOS
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 if self.jogando: self.jogando = False
@@ -92,7 +91,7 @@ class Game:
                 if event.key in [pygame.K_DOWN, pygame.K_s]: self.jogador.adicionar_movimento(dx=0, dy=1)
 
     def atualizar_sprites(self):
-        """Atualiza o estado de todas as sprites e gerencia a lógica do jogo."""
+        # ATUALIZA O ESTADO DE TODAS AS SPRITES
         self.checar_spawn_balao()
         self.todas_sprites.update()
 
@@ -106,14 +105,13 @@ class Game:
             partes_colididas = pygame.sprite.spritecollide(self.jogador, self.grupo_chave_partes, True)
             for parte in partes_colididas:
                 self.partes_coletadas[parte.parte_index] = True
-                print(f"Parte {parte.parte_index + 1} da chave coletada!")
                 
             # Colisão com Cobels
             if pygame.sprite.spritecollide(self.jogador, self.grupo_cobels, False):
                 self.perder_vida()
 
     def desenhar_sprites(self):
-        """Desenha todos os elementos na tela."""
+        # DESENHA TODOS OS ELEMENTOS NA TELA
         self.tela.fill(constants.PRETO)
 
         for y, linha in enumerate(self.mapa_do_jogo):
@@ -142,7 +140,7 @@ class Game:
         pygame.display.flip()
 
     def carregar_arquivos(self):
-        """Carrega e 'corta' as imagens necessárias para o jogo."""
+        # CARREGA OS ARQUIVOS NECESSARIOS
         diretorio_imagens = os.path.join(os.getcwd(), 'imagens')
         
         self.imagem_parede = pygame.image.load(os.path.join(diretorio_imagens, constants.PAREDE)).convert()
@@ -180,7 +178,7 @@ class Game:
             self.spawnar_balao(); self.agendar_proximo_spawn_balao()
     def perder_vida(self):
         if self.vidas > 0: self.vidas -= 1
-        print(f"Vida perdida! Vidas restantes: {self.vidas}"); self.agendar_proximo_spawn_balao()
+        self.agendar_proximo_spawn_balao()
     def mostrar_texto(self, texto, tamanho, cor, x, y):
         fonte = pygame.font.Font(self.fonte, tamanho)
         texto_render = fonte.render(texto, True, cor)
