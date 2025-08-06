@@ -1,0 +1,1 @@
+# mesmo que Cobel, mas tira só 1 de vida
