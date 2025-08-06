@@ -3,6 +3,7 @@ import constants
 import mapa
 import os
 import random
+#import mark
 
 class Cobel(pygame.sprite.Sprite):
     def __init__(self, game, x, y):
@@ -22,7 +23,7 @@ class Cobel(pygame.sprite.Sprite):
         
         # Timer para movimento
         self.ultimo_movimento = pygame.time.get_ticks()
-        self.intervalo_movimento = 500  # Move a cada 500ms
+        self.intervalo_movimento = 300  # Move a cada 300ms
 
     def pode_mover(self, dx, dy):
         """Verifica se pode mover para a posição especificada."""
@@ -34,36 +35,36 @@ class Cobel(pygame.sprite.Sprite):
         return False
 
     def encontrar_direcao_para_jogador(self):
-        """Encontra a direção para se mover em direção ao jogador."""
+        """Encontra a direção para se mover em direção ao jogador de forma mais fluida."""
         jogador_x = self.game.jogador.rect.centerx // constants.TAMANHO_BLOCO
         jogador_y = self.game.jogador.rect.centery // constants.TAMANHO_BLOCO
         cobel_x = self.rect.centerx // constants.TAMANHO_BLOCO
         cobel_y = self.rect.centery // constants.TAMANHO_BLOCO
 
-        # Lista de possíveis direções
         direcoes = []
-        
-        # Prioriza movimento horizontal se há diferença significativa
-        if abs(jogador_x - cobel_x) > abs(jogador_y - cobel_y):
-            if jogador_x > cobel_x and self.pode_mover(1, 0):
-                direcoes.append((1, 0))
-            elif jogador_x < cobel_x and self.pode_mover(-1, 0):
-                direcoes.append((-1, 0))
+
+        # Movimentos possíveis
+        movimentos = [
+            (1, 0),   # direita
+            (-1, 0),  # esquerda
+            (0, 1),   # baixo
+            (0, -1),  # cima
+        ]
+
+        # Calcula distância para o Mark em cada direção
+        opcoes = []
+        for dx, dy in movimentos:
+            nx, ny = cobel_x + dx, cobel_y + dy
+            if self.pode_mover(dx, dy):
+                distancia = abs(jogador_x - nx) + abs(jogador_y - ny)
+                opcoes.append(((dx, dy), distancia))
+
+        # Prioriza a direção que mais aproxima do Mark
+        if opcoes:
+            opcoes.sort(key=lambda x: x[1])
+            return opcoes[0][0]  # Retorna o movimento que mais aproxima
         else:
-            # Prioriza movimento vertical
-            if jogador_y > cobel_y and self.pode_mover(0, 1):
-                direcoes.append((0, 1))
-            elif jogador_y < cobel_y and self.pode_mover(0, -1):
-                direcoes.append((0, -1))
-
-        # Se não conseguiu se mover na direção preferida, tenta outras
-        if not direcoes:
-            movimentos_possiveis = [(0, -1), (0, 1), (-1, 0), (1, 0)]
-            for dx, dy in movimentos_possiveis:
-                if self.pode_mover(dx, dy):
-                    direcoes.append((dx, dy))
-
-        return random.choice(direcoes) if direcoes else (0, 0)
+            return (0, 0)  # Fica parado se não pode se mover
 
     def update(self):
         """Atualiza o movimento do Cobel."""
