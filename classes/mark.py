@@ -10,7 +10,7 @@ class Mark(pygame.sprite.Sprite):
         super().__init__()
         self.game = game
 
-        # Carrega a imagem do Mark
+        # Carrega as imagens do Mark
         self.sprites = { 
         'cima': pygame.transform.scale(pygame.image.load(os.path.join('imagens', constants.MARK_CIMA)).convert_alpha(), (constants.TAMANHO_BLOCO, constants.TAMANHO_BLOCO)),
         'baixo': pygame.transform.scale(pygame.image.load(os.path.join('imagens', constants.MARK_BAIXO)).convert_alpha(), (constants.TAMANHO_BLOCO, constants.TAMANHO_BLOCO)),
@@ -23,8 +23,12 @@ class Mark(pygame.sprite.Sprite):
         self.rect.topleft = (x * constants.TAMANHO_BLOCO, y * constants.TAMANHO_BLOCO)
         self.velocidade = constants.VELOCIDADE_JOGADOR
         
+        # --- NOVO: Variáveis para guardar a posição exata (com decimais) ---
+        self.x = float(self.rect.x)
+        self.y = float(self.rect.y)
+        
         # Sistema de Fila de Comandos
-        self.dx, self.dy = 0, 0  # ALTERADO: Direção ATUAL (começa PARADO)
+        self.dx, self.dy = 0, 0
         self.proximos_movimentos = []
 
     def adicionar_movimento(self, dx=0, dy=0):
@@ -63,22 +67,23 @@ class Mark(pygame.sprite.Sprite):
                     comando_executado = True
                     break
             
-            # Atualiza sprite conforme direção
-            if self.dx == 1:
-                self.image = self.sprites['direita']
-            elif self.dx == -1:
-                self.image = self.sprites['esquerda']
-            elif self.dy == -1:
-                self.image = self.sprites['cima']
-            elif self.dy == 1:
-                self.image = self.sprites['baixo']
-
             if not comando_executado:
                 if not self.pode_mover(self.dx, self.dy):
                     self.dx, self.dy = 0, 0
 
+        # Atualiza a imagem do Mark de acordo com a direção
+        if self.dx == 1: self.image = self.sprites['direita']
+        elif self.dx == -1: self.image = self.sprites['esquerda']
+        elif self.dy == -1: self.image = self.sprites['cima']
+        elif self.dy == 1: self.image = self.sprites['baixo']
+
         vx = self.dx * self.velocidade
         vy = self.dy * self.velocidade
 
-        self.rect.x += vx
-        self.rect.y += vy
+        # --- ALTERADO: O movimento agora é calculado com as variáveis decimais ---
+        self.x += vx
+        self.y += vy
+        
+        # A posição do rect (inteira) é atualizada com o valor arredondado da posição exata
+        self.rect.x = round(self.x)
+        self.rect.y = round(self.y)
