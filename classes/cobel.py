@@ -23,7 +23,7 @@ class Cobel(pygame.sprite.Sprite):
         self.rect.topleft = (x * constants.TAMANHO_BLOCO, y * constants.TAMANHO_BLOCO)
         
         # Velocidade de movimento (mais lenta que o jogador)
-        self.velocidade = 1
+        self.velocidade = constants.VELOCIDADE_COBEL
         
         # Timer para movimento
         self.ultimo_movimento = pygame.time.get_ticks()
