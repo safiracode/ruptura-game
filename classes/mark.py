@@ -11,8 +11,12 @@ class Mark(pygame.sprite.Sprite):
         self.game = game
 
         # Carrega a imagem do Mark
-        self.image = pygame.image.load(os.path.join('imagens', constants.MARK_BAIXO)).convert_alpha()
-        self.image = pygame.transform.scale(self.image, (constants.TAMANHO_BLOCO, constants.TAMANHO_BLOCO))
+        self.sprites = { 
+        'cima': pygame.transform.scale(pygame.image.load(os.path.join('imagens', constants.MARK_CIMA)).convert_alpha(), (constants.TAMANHO_BLOCO, constants.TAMANHO_BLOCO)),
+        'baixo': pygame.transform.scale(pygame.image.load(os.path.join('imagens', constants.MARK_BAIXO)).convert_alpha(), (constants.TAMANHO_BLOCO, constants.TAMANHO_BLOCO)),
+        'esquerda': pygame.transform.scale(pygame.image.load(os.path.join('imagens', constants.MARK_ESQUERDA)).convert_alpha(), (constants.TAMANHO_BLOCO, constants.TAMANHO_BLOCO)),
+        'direita': pygame.transform.scale(pygame.image.load(os.path.join('imagens', constants.MARK_DIREITA)).convert_alpha(), (constants.TAMANHO_BLOCO, constants.TAMANHO_BLOCO))}
+        self.image = self.sprites['baixo']
         self.rect = self.image.get_rect()
 
         # Posição e Velocidade
@@ -59,6 +63,16 @@ class Mark(pygame.sprite.Sprite):
                     comando_executado = True
                     break
             
+            # Atualiza sprite conforme direção
+            if self.dx == 1:
+                self.image = self.sprites['direita']
+            elif self.dx == -1:
+                self.image = self.sprites['esquerda']
+            elif self.dy == -1:
+                self.image = self.sprites['cima']
+            elif self.dy == 1:
+                self.image = self.sprites['baixo']
+
             if not comando_executado:
                 if not self.pode_mover(self.dx, self.dy):
                     self.dx, self.dy = 0, 0
