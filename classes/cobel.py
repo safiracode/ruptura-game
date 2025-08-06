@@ -11,8 +11,12 @@ class Cobel(pygame.sprite.Sprite):
         self.game = game
 
         # Carrega a imagem do Cobel
-        self.image = pygame.image.load(os.path.join('imagens', constants.COBEL_BAIXO)).convert_alpha()
-        self.image = pygame.transform.scale(self.image, (constants.TAMANHO_BLOCO, constants.TAMANHO_BLOCO))
+        self.sprites = { 
+        'cima': pygame.transform.scale(pygame.image.load(os.path.join('imagens', constants.COBEL_CIMA)).convert_alpha(), (constants.TAMANHO_BLOCO, constants.TAMANHO_BLOCO)),
+        'baixo': pygame.transform.scale(pygame.image.load(os.path.join('imagens', constants.COBEL_BAIXO)).convert_alpha(), (constants.TAMANHO_BLOCO, constants.TAMANHO_BLOCO)),
+        'esquerda': pygame.transform.scale(pygame.image.load(os.path.join('imagens', constants.COBEL_ESQUERDA)).convert_alpha(), (constants.TAMANHO_BLOCO, constants.TAMANHO_BLOCO)),
+        'direita': pygame.transform.scale(pygame.image.load(os.path.join('imagens', constants.COBEL_DIREITA)).convert_alpha(), (constants.TAMANHO_BLOCO, constants.TAMANHO_BLOCO))}
+        self.image = self.sprites['baixo']
         self.rect = self.image.get_rect()
 
         # Posição inicial
@@ -79,6 +83,12 @@ class Cobel(pygame.sprite.Sprite):
                 self.rect.y += dy * constants.TAMANHO_BLOCO
                 
             self.ultimo_movimento = agora
+
+            # Atualiza a imagem do Mark de acordo com a direção
+            if dx == 1: self.image = self.sprites['direita']
+            elif dx == -1: self.image = self.sprites['esquerda']
+            elif dy == -1: self.image = self.sprites['cima']
+            elif dy == 1: self.image = self.sprites['baixo']
 
     def causar_dano(self):
         # CAUSA DANO AO JOGADOR QUANDO HÁ COLISÃO
