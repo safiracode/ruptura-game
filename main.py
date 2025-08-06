@@ -1,3 +1,4 @@
+# main.py
 import pygame
 import constants
 import mapa
@@ -25,6 +26,7 @@ class Game:
         # CONFIGURA E INICIA UMA NOVA PARTIDA
         self.vidas = constants.VIDAS_INICIAIS
         self.partes_coletadas = [False] * constants.NUMERO_PARTES_CHAVE
+        self.proxima_parte_a_spawnar = 0 # Começa com a parte 0
         self.mapa_do_jogo = mapa.gerar_mapa_aleatorio(mapa.LARGURA_GRADE, mapa.ALTURA_GRADE)
         
         # Grupos de Sprites
@@ -36,37 +38,29 @@ class Game:
 
         # Posiciona jogador, paredes e encontra locais livres
         posicao_inicial_jogador = None
-        posicoes_livres = []
+        self.posicoes_livres = []
         for y, linha in enumerate(self.mapa_do_jogo):
             for x, celula in enumerate(linha):
                 if celula == mapa.PAREDE:
                     self.grupo_paredes.add(parede.Parede(x, y))
                 if celula == mapa.PISO:
-                    posicoes_livres.append((x, y))
+                    self.posicoes_livres.append((x, y))
                     if posicao_inicial_jogador is None:
                         posicao_inicial_jogador = (x, y)
         
         self.jogador = mark.Mark(self, posicao_inicial_jogador[0], posicao_inicial_jogador[1])
         self.todas_sprites.add(self.jogador)
 
-        # Espalha as PARTES da chave pelo mapa
-        for i in range(constants.NUMERO_PARTES_CHAVE):
-            if posicoes_livres:
-                pos_x, pos_y = random.choice(posicoes_livres)
-                posicoes_livres.remove((pos_x, pos_y)) # Garante que não nasçam no mesmo lugar
-                imagem_da_parte = self.imagens_partes_chave[i]
-                
-                nova_parte = chave.ChaveParte(pos_x, pos_y, i, imagem_da_parte)
-                self.todas_sprites.add(nova_parte)
-                self.grupo_chave_partes.add(nova_parte)
-
         # Spawna 1 cobel em posição aleatória
-        if posicoes_livres:
-            pos_x, pos_y = random.choice(posicoes_livres)
+        if self.posicoes_livres:
+            pos_x, pos_y = random.choice(self.posicoes_livres)
             novo_cobel = cobel.Cobel(self, pos_x, pos_y)
             self.todas_sprites.add(novo_cobel); self.grupo_cobels.add(novo_cobel)
 
         self.agendar_proximo_spawn_balao()
+        # Agenda o spawn da PRIMEIRA parte da chave para daqui a 5 segundos
+        self.timer_spawn_chave = pygame.time.get_ticks() + constants.TIMER_INICIAL_CHAVE
+        
         self.rodar()
     
     def rodar(self):
@@ -93,6 +87,7 @@ class Game:
     def atualizar_sprites(self):
         # ATUALIZA O ESTADO DE TODAS AS SPRITES
         self.checar_spawn_balao()
+        self.checar_spawn_chave() # Nova verificação para a chave
         self.todas_sprites.update()
 
         if self.jogador:
@@ -105,6 +100,10 @@ class Game:
             partes_colididas = pygame.sprite.spritecollide(self.jogador, self.grupo_chave_partes, True)
             for parte in partes_colididas:
                 self.partes_coletadas[parte.parte_index] = True
+                self.proxima_parte_a_spawnar += 1 # Avança para a próxima parte
+                # Se ainda houver partes para coletar, agenda a próxima
+                if self.proxima_parte_a_spawnar < constants.NUMERO_PARTES_CHAVE:
+                    self.agendar_proxima_chave()
                 
             # Colisão com Cobels
             if pygame.sprite.spritecollide(self.jogador, self.grupo_cobels, False):
@@ -128,7 +127,6 @@ class Game:
              self.tela.blit(self.imagem_balao_vida, (20 + i * 35, pos_y_interface - 15))
         self.tela.blit(self.imagem_xicara_cafe, (constants.LARGURA - 50, pos_y_interface - 15))
         
-        # Desenha as partes da chave coletadas na HUD
         largura_total_chave = self.imagem_chave_original.get_width()
         pos_x_chave_hud = (constants.LARGURA - largura_total_chave) // 2
         for i in range(constants.NUMERO_PARTES_CHAVE):
@@ -140,7 +138,7 @@ class Game:
         pygame.display.flip()
 
     def carregar_arquivos(self):
-        # CARREGA OS ARQUIVOS NECESSARIOS
+        # CARREGA E CORTA OS ARQUIVOS NECESSARIOS
         diretorio_imagens = os.path.join(os.getcwd(), 'imagens')
         
         self.imagem_parede = pygame.image.load(os.path.join(diretorio_imagens, constants.PAREDE)).convert()
@@ -148,7 +146,6 @@ class Game:
         self.imagem_xicara_cafe = pygame.image.load(os.path.join(diretorio_imagens, constants.CAFE)).convert_alpha()
         self.imagem_game_over = pygame.image.load(os.path.join(diretorio_imagens, constants.GAME_OVER_IMG)).convert()
         
-        # --- LÓGICA DE CORTE DA CHAVE ---
         self.imagem_chave_original = pygame.image.load(os.path.join(diretorio_imagens, constants.CHAVE)).convert_alpha()
         largura_chave, altura_chave = self.imagem_chave_original.get_size()
         largura_parte = largura_chave // constants.NUMERO_PARTES_CHAVE
@@ -160,16 +157,41 @@ class Game:
             imagem_cortada = self.imagem_chave_original.subsurface(area_corte)
             self.imagens_partes_chave.append(imagem_cortada)
     
-    # --- (O resto da sua classe Game continua igual) ---
+    # --- Métodos de Lógica Específica ---
+    def agendar_proxima_chave(self):
+        """Agenda o spawn da próxima parte da chave para 5-15s no futuro."""
+        intervalo = random.randint(constants.TIMER_MIN_CHAVE, constants.TIMER_MAX_CHAVE)
+        self.timer_spawn_chave = pygame.time.get_ticks() + intervalo
+
+    def spawnar_proxima_chave(self):
+        """Cria a próxima parte da chave em um local aleatório."""
+        if self.posicoes_livres:
+            pos_x, pos_y = random.choice(self.posicoes_livres)
+            
+            parte_index = self.proxima_parte_a_spawnar
+            imagem_da_parte = self.imagens_partes_chave[parte_index]
+            
+            nova_parte = chave.ChaveParte(pos_x, pos_y, parte_index, imagem_da_parte)
+            self.todas_sprites.add(nova_parte)
+            self.grupo_chave_partes.add(nova_parte)
+
+    def checar_spawn_chave(self):
+        """Verifica se é hora de criar uma nova parte da chave."""
+        # Se todas as partes já foram spawnadas/coletadas, não faz nada
+        if self.proxima_parte_a_spawnar >= constants.NUMERO_PARTES_CHAVE:
+            return
+        # Se já existe uma parte na tela, não faz nada
+        if len(self.grupo_chave_partes) > 0:
+            return
+        
+        if pygame.time.get_ticks() >= self.timer_spawn_chave:
+            self.spawnar_proxima_chave()
+
     def agendar_proximo_spawn_balao(self):
         intervalo = random.randint(5000, 20000); self.timer_spawn_balao = pygame.time.get_ticks() + intervalo
     def spawnar_balao(self):
-        posicoes_livres = [];
-        for y, linha in enumerate(self.mapa_do_jogo):
-            for x, celula in enumerate(linha):
-                if celula == mapa.PISO: posicoes_livres.append((x, y))
-        if posicoes_livres:
-            pos_x, pos_y = random.choice(posicoes_livres)
+        if self.posicoes_livres:
+            pos_x, pos_y = random.choice(self.posicoes_livres)
             novo_balao = balao.Balao(pos_x, pos_y)
             self.todas_sprites.add(novo_balao); self.grupo_vidas_extras.add(novo_balao)
     def checar_spawn_balao(self):
