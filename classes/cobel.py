@@ -84,7 +84,7 @@ class Cobel(pygame.sprite.Sprite):
                 
             self.ultimo_movimento = agora
 
-            # Atualiza a imagem do Mark de acordo com a direção
+            # Atualiza a imagem da Cobel de acordo com a direção
             if dx == 1: self.image = self.sprites['direita']
             elif dx == -1: self.image = self.sprites['esquerda']
             elif dy == -1: self.image = self.sprites['cima']
