@@ -171,9 +171,9 @@ class Game:
         self.imagem_mauer_esquerda = pygame.image.load(os.path.join(diretorio_imagens, constants.MAUER_ESQUERDA)).convert_alpha()
         self.imagem_mauer_direita = pygame.image.load(os.path.join(diretorio_imagens, constants.MAUER_DIREITA)).convert_alpha()
         self.imagem_huang_baixo = pygame.image.load(os.path.join(diretorio_imagens, constants.HUANG_BAIXO)).convert_alpha()
-        #self.imagem_huang_cima = pygame.image.load(os.path.join(diretorio_imagens, constants.HUANG_CIMA)).convert_alpha()
-        #self.imagem_huang_esquerda = pygame.image.load(os.path.join(diretorio_imagens, constants.HUANG_ESQUERDA)).convert_alpha()
-        #self.imagem_huang_direita = pygame.image.load(os.path.join(diretorio_imagens, constants.HUANG_DIREITA)).convert_alpha()
+        self.imagem_huang_cima = pygame.image.load(os.path.join(diretorio_imagens, constants.HUANG_CIMA)).convert_alpha()
+        self.imagem_huang_esquerda = pygame.image.load(os.path.join(diretorio_imagens, constants.HUANG_ESQUERDA)).convert_alpha()
+        self.imagem_huang_direita = pygame.image.load(os.path.join(diretorio_imagens, constants.HUANG_DIREITA)).convert_alpha()
 
     def agendar_proximo_spawn_balao(self):
         intervalo = random.randint(5000, 20000); self.timer_spawn_balao = pygame.time.get_ticks() + intervalo
