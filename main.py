@@ -140,10 +140,16 @@ class Game:
         self.spritesheet = os.path.join(diretorio_imagens, constants.SPRITESHEET)
         
         self.ruptura_start_logo = pygame.image.load(os.path.join(diretorio_imagens, constants.RUPTURA_START_LOGO)).convert()
+        self.imagem_game_over = pygame.image.load(os.path.join(diretorio_imagens, constants.GAME_OVER_IMG)).convert()
 
         self.imagem_parede = pygame.image.load(os.path.join(diretorio_imagens, constants.PAREDE)).convert()
         self.imagem_balao_vida = pygame.image.load(os.path.join(diretorio_imagens, constants.BALAO)).convert_alpha()
         self.imagem_xicara_cafe = pygame.image.load(os.path.join(diretorio_imagens, constants.CAFE)).convert_alpha()
+        self.imagem_chave_inteira = pygame.image.load(os.path.join(diretorio_imagens, constants.CHAVE_INTEIRA)).convert_alpha()
+        self.imagem_chave_parte1 = pygame.image.load(os.path.join(diretorio_imagens, constants.CHAVE_PARTE1)).convert_alpha()
+        self.imagem_chave_parte2 = pygame.image.load(os.path.join(diretorio_imagens, constants.CHAVE_PARTE2)).convert_alpha()
+        self.imagem_chave_parte3 = pygame.image.load(os.path.join(diretorio_imagens, constants.CHAVE_PARTE3)).convert_alpha()
+
         self.imagem_mark_baixo = pygame.image.load(os.path.join(diretorio_imagens, constants.MARK_BAIXO)).convert_alpha()
         self.imagem_mark_cima = pygame.image.load(os.path.join(diretorio_imagens, constants.MARK_CIMA)).convert_alpha()
         self.imagem_mark_esquerda = pygame.image.load(os.path.join(diretorio_imagens, constants.MARK_ESQUERDA)).convert_alpha()
@@ -160,11 +166,14 @@ class Game:
         self.imagem_drummond_cima = pygame.image.load(os.path.join(diretorio_imagens, constants.DRUMMOND_CIMA)).convert_alpha()
         self.imagem_drummond_esquerda = pygame.image.load(os.path.join(diretorio_imagens, constants.DRUMMOND_ESQUERDA)).convert_alpha()
         self.imagem_drummond_direita = pygame.image.load(os.path.join(diretorio_imagens, constants.DRUMMOND_DIREITA)).convert_alpha()
-        self.imagem_chave_inteira = pygame.image.load(os.path.join(diretorio_imagens, constants.CHAVE_INTEIRA)).convert_alpha()
-        self.imagem_chave_parte1 = pygame.image.load(os.path.join(diretorio_imagens, constants.CHAVE_PARTE1)).convert_alpha()
-        self.imagem_chave_parte2 = pygame.image.load(os.path.join(diretorio_imagens, constants.CHAVE_PARTE2)).convert_alpha()
-        self.imagem_chave_parte3 = pygame.image.load(os.path.join(diretorio_imagens, constants.CHAVE_PARTE3)).convert_alpha()
-        self.imagem_game_over = pygame.image.load(os.path.join(diretorio_imagens, constants.GAME_OVER_IMG)).convert()
+        self.imagem_mauer_baixo = pygame.image.load(os.path.join(diretorio_imagens, constants.MAUER_BAIXO)).convert_alpha()
+        self.imagem_mauer_cima = pygame.image.load(os.path.join(diretorio_imagens, constants.MAUER_CIMA)).convert_alpha()
+        self.imagem_mauer_esquerda = pygame.image.load(os.path.join(diretorio_imagens, constants.MAUER_ESQUERDA)).convert_alpha()
+        self.imagem_mauer_direita = pygame.image.load(os.path.join(diretorio_imagens, constants.MAUER_DIREITA)).convert_alpha()
+        self.imagem_huang_baixo = pygame.image.load(os.path.join(diretorio_imagens, constants.HUANG_BAIXO)).convert_alpha()
+        #self.imagem_huang_cima = pygame.image.load(os.path.join(diretorio_imagens, constants.HUANG_CIMA)).convert_alpha()
+        #self.imagem_huang_esquerda = pygame.image.load(os.path.join(diretorio_imagens, constants.HUANG_ESQUERDA)).convert_alpha()
+        #self.imagem_huang_direita = pygame.image.load(os.path.join(diretorio_imagens, constants.HUANG_DIREITA)).convert_alpha()
 
     def agendar_proximo_spawn_balao(self):
         intervalo = random.randint(5000, 20000); self.timer_spawn_balao = pygame.time.get_ticks() + intervalo
