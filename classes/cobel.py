@@ -23,7 +23,7 @@ class Cobel(pygame.sprite.Sprite):
         self.rect.topleft = (x * constants.TAMANHO_BLOCO, y * constants.TAMANHO_BLOCO)
         
         # Velocidade de movimento (mais lenta que o jogador)
-        self.velocidade = constants.VELOCIDADE_COBEL
+        self.velocidade = constants.VELOCIDADE_SEGURANCA
         
         # Timer para movimento
         self.ultimo_movimento = pygame.time.get_ticks()
@@ -71,17 +71,20 @@ class Cobel(pygame.sprite.Sprite):
             return (0, 0)  # Fica parado se não pode se mover
 
     def update(self):
-        if hasattr(self, 'destino'): # Checa se objeti
+        # Verifica se está em movimento
+        if hasattr(self, 'destino'):
             dx = self.destino[0] - self.rect.x
             dy = self.destino[1] - self.rect.y
 
             if dx != 0:
-                self.rect.x += self.velocidade if dx > 0 else -self.velocidade
-                if abs(dx) < self.velocidade:
+                passo = self.velocidade if dx > 0 else -self.velocidade
+                self.rect.x += passo
+                if abs(self.rect.x - self.destino[0]) < self.velocidade:
                     self.rect.x = self.destino[0]
             elif dy != 0:
-                self.rect.y += self.velocidade if dy > 0 else -self.velocidade
-                if abs(dy) < self.velocidade:
+                passo = self.velocidade if dy > 0 else -self.velocidade
+                self.rect.y += passo
+                if abs(self.rect.y - self.destino[1]) < self.velocidade:
                     self.rect.y = self.destino[1]
 
             # Chegou ao destino
@@ -89,18 +92,21 @@ class Cobel(pygame.sprite.Sprite):
                 del self.destino
 
         else:
-            # SEM intervalo! Calcula nova direção imediatamente
-            dx, dy = self.encontrar_direcao_para_jogador()
-            if dx != 0 or dy != 0:
-                self.destino = (
-                    self.rect.x + dx * constants.TAMANHO_BLOCO,
-                    self.rect.y + dy * constants.TAMANHO_BLOCO)
+            # Só escolhe nova direção se estiver exatamente no centro de um bloco
+            if self.rect.x % constants.TAMANHO_BLOCO == 0 and self.rect.y % constants.TAMANHO_BLOCO == 0:
+                dx, dy = self.encontrar_direcao_para_jogador()
 
-                # Atualiza sprite
-                if dx == 1: self.image = self.sprites['direita']
-                elif dx == -1: self.image = self.sprites['esquerda']
-                elif dy == -1: self.image = self.sprites['cima']
-                elif dy == 1: self.image = self.sprites['baixo']
+                if dx != 0 or dy != 0:
+                    self.destino = (
+                        self.rect.x + dx * constants.TAMANHO_BLOCO,
+                        self.rect.y + dy * constants.TAMANHO_BLOCO
+                    )
+
+                    # Atualiza sprite
+                    if dx == 1: self.image = self.sprites['direita']
+                    elif dx == -1: self.image = self.sprites['esquerda']
+                    elif dy == -1: self.image = self.sprites['cima']
+                    elif dy == 1: self.image = self.sprites['baixo']
 
     def causar_dano(self):
         # CAUSA DANO AO JOGADOR QUANDO HÁ COLISÃO
