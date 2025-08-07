@@ -211,12 +211,10 @@ class Game:
             self.jogador.invencivel = False
 
     def agendar_proxima_chave(self):
-        """Agenda o spawn da próxima parte da chave para 5-15s no futuro."""
         intervalo = random.randint(constants.TIMER_MIN_CHAVE, constants.TIMER_MAX_CHAVE)
         self.timer_spawn_chave = pygame.time.get_ticks() + intervalo
 
     def spawnar_proxima_chave(self):
-        """Cria a próxima parte da chave em um local aleatório."""
         if self.posicoes_livres:
             pos_x, pos_y = random.choice(self.posicoes_livres)
             
@@ -228,7 +226,6 @@ class Game:
             self.grupo_chave_partes.add(nova_parte)
 
     def checar_spawn_chave(self):
-        """Verifica se é hora de criar uma nova parte da chave."""
         if self.proxima_parte_a_spawnar >= constants.NUMERO_PARTES_CHAVE: return
         if len(self.grupo_chave_partes) > 0: return
         
