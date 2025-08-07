@@ -31,6 +31,7 @@ X_PORTA, Y_PORTA = 1,0
 
 # --- SEGURANÇAS ---
 VELOCIDADE_SEGURANCA = 1 # Cobel, Milchick, Drummond, Mauer e Huang
+INTERSECAO = 0.2 # Interseção de imagens pra considerar game over ou perda de vida
 
 # --- CORES EM RGB ---
 PRETO = (0, 0, 0)

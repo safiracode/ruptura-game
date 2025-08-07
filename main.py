@@ -30,6 +30,7 @@ class Game:
         self.grupo_paredes = pygame.sprite.Group()
         self.grupo_chave_partes = pygame.sprite.Group()
         self.grupo_cafe = pygame.sprite.Group()
+        self.grupo_porta = pygame.sprite.Group()
         self.grupo_chefes = pygame.sprite.Group() # Grupo para a Cobel
         # self.grupo_segurancas = pygame.sprite.Group() # <-- Você vai usar este no futuro
 
@@ -140,7 +141,7 @@ class Game:
                 area_jogador = self.jogador.rect.width * self.jogador.rect.height
                 rect_intersecao = self.jogador.rect.clip(colisoes_chefe[0].rect)
                 area_intersecao = rect_intersecao.width * rect_intersecao.height
-                if area_intersecao >= (area_jogador * 0.3):
+                if area_intersecao >= (area_jogador * constants.INTERSECAO):
                     if not self.jogador.invencivel:
                         self.vidas = 0
             
