@@ -177,7 +177,11 @@ class Game:
             if self.partes_coletadas[i]:
                 imagem_da_parte = self.imagens_partes_chave[i]
                 largura_parte = imagem_da_parte.get_width()
-                self.tela.blit(imagem_da_parte, (pos_x_chave_hud + i * largura_parte, pos_y_interface - 20))
+                altura_balao = self.imagem_balao_vida.get_height()
+                altura_chave = imagem_da_parte.get_height()
+                offset_y = (altura_balao - altura_chave) // 2
+                self.tela.blit(imagem_da_parte, (pos_x_chave_hud + i * largura_parte, pos_y_interface - 15 + offset_y))
+
         pygame.display.flip()
 
     def carregar_arquivos(self):
