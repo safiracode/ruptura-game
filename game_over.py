@@ -6,6 +6,11 @@ def tela_game_over(tela, fonte, imagem_game_over):
     x_botao = (constants.LARGURA - constants.LARGURA_BOTAO) // 2 + 80
     y_botao = constants.ALTURA // 2 + 220
 
+    #som de game over
+    pygame.mixer.music.stop() #para qualquer som anterior
+    pygame.mixer.music.load('audios/musica game over.mp3')
+    pygame.mixer.music.play() #inicia a musica game over
+
     img_botao = pygame.image.load(constants.IMG_BOTAO).convert_alpha()
     img_botao = pygame.transform.scale(img_botao, (constants.LARGURA_BOTAO, constants.ALTURA_BOTAO))
 
