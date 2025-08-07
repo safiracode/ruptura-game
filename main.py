@@ -111,10 +111,12 @@ class Game:
             if pygame.sprite.spritecollide(self.jogador, self.grupo_cafe, True):
                 self.ativar_efeito_cafe()
 
-            # Colisão com Cobels
-            if pygame.sprite.spritecollide(self.jogador, self.grupo_cobels, False):
+            # Colisão com Cobel (Chefona)
+            colisoes_cobel = pygame.sprite.spritecollide(self.jogador, self.grupo_cobels, False)
+            if colisoes_cobel:
+                # Se o jogador não estiver invencível (com o café)...
                 if not self.jogador.invencivel:
-                    self.perder_vida()
+                    self.vidas = 0 # Fim de jogo instantâneo
 
     def desenhar_sprites(self):
         # DESENHA TODOS OS ELEMENTOS NA TELA
