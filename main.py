@@ -206,7 +206,14 @@ class Game:
         texto_render = fonte.render(texto, True, cor)
         texto_rect = texto_render.get_rect(); texto_rect.midtop = (x, y)
         self.tela.blit(texto_render, texto_rect)
-    def tela_start(self): pass
+        
+    def tela_start(self):
+        tela_start.mostrar_tela_start(
+        tela=self.tela,
+        fonte_path=self.fonte,
+        largura=constants.LARGURA,
+        altura=constants.ALTURA
+    )
     def esperar_por_jogador(self):
         esperando = True
         while esperando:
