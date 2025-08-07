@@ -3,7 +3,7 @@ import constants
 import mapa
 import os
 import random
-#import mark
+import math
 
 class Cobel(pygame.sprite.Sprite):
     def __init__(self, game, x, y):
@@ -39,36 +39,54 @@ class Cobel(pygame.sprite.Sprite):
         return False
 
     def encontrar_direcao_para_jogador(self):
-        # ENCONTRA A DIREÇÃO PARA SE MOVER EATÉ O JOGADOR
+        # ENCONTRA A DIREÇÃO PARA SE MOVER ATÉ O JOGADOR USANDO DISTÂNCIA EUCLIDIANA
         jogador_x = self.game.jogador.rect.centerx // constants.TAMANHO_BLOCO
         jogador_y = self.game.jogador.rect.centery // constants.TAMANHO_BLOCO
         cobel_x = self.rect.centerx // constants.TAMANHO_BLOCO
         cobel_y = self.rect.centery // constants.TAMANHO_BLOCO
 
-        direcoes = []
-
-        # Movimentos possíveis
-        movimentos = [
-            (1, 0),   # direita
-            (-1, 0),  # esquerda
-            (0, 1),   # baixo
-            (0, -1),  # cima
-        ]
-
-        # Calcula distância para o Mark em cada direção
-        opcoes = []
-        for dx, dy in movimentos:
-            nx, ny = cobel_x + dx, cobel_y + dy
-            if self.pode_mover(dx, dy):
-                distancia = abs(jogador_x - nx) + abs(jogador_y - ny)
-                opcoes.append(((dx, dy), distancia))
-
-        # Prioriza a direção que mais aproxima do Mark
-        if opcoes:
-            opcoes.sort(key=lambda x: x[1])
-            return opcoes[0][0]  # Retorna o movimento que mais aproxima
+        # Descobre a direção anterior (para não voltar)
+        if hasattr(self, 'ultimo_dx') and hasattr(self, 'ultimo_dy'):
+            ultimo_dx, ultimo_dy = self.ultimo_dx, self.ultimo_dy
         else:
-            return (0, 0)  # Fica parado se não pode se mover
+            ultimo_dx, ultimo_dy = 0, 0
+
+        # Direções possíveis: cima, esquerda, baixo, direita (ordem de prioridade)
+        direcoes = [ (0, -1), (-1, 0), (0, 1), (1, 0) ]
+
+        # Descobre a direção "em frente" (igual à última direção)
+        if ultimo_dx != 0 or ultimo_dy != 0:
+            frente = (ultimo_dx, ultimo_dy)
+            idx_frente = direcoes.index(frente) if frente in direcoes else None
+        else:
+            idx_frente = None
+
+        opcoes = []
+        for i, (dx, dy) in enumerate(direcoes):
+            # Não pode voltar para trás (180 graus)
+            if (dx, dy) == (-ultimo_dx, -ultimo_dy) and (ultimo_dx != 0 or ultimo_dy != 0):
+                continue
+            # Só pode ir para tiles livres
+            if self.pode_mover(dx, dy):
+                nx, ny = cobel_x + dx, cobel_y + dy
+                distancia = math.hypot(jogador_x - nx, jogador_y - ny)
+                # Prioridade: cima (0), esquerda (1), baixo (2), direita (3)
+                prioridade = i
+                opcoes.append( ((dx, dy), distancia, prioridade) )
+            
+
+        if not opcoes:
+            print(opcoes)
+            return (0, 0)
+
+        # Escolhe a opção com menor distância, depois maior prioridade
+        opcoes.sort(key=lambda x: (x[1], x[2]))
+        melhor_dx, melhor_dy = opcoes[0][0]
+
+        # Salva a última direção para a próxima decisão
+        self.ultimo_dx, self.ultimo_dy = melhor_dx, melhor_dy
+
+        return melhor_dx, melhor_dy
 
     def update(self):
         # Verifica se está em movimento
