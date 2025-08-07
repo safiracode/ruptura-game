@@ -3,7 +3,7 @@ import pygame
 import constants
 import mapa
 import os
-from classes import balao, mark, parede, cobel, chave
+from classes import balao, mark, parede, cobel, chave, cafe
 import random
 import game_over, tela_start
 
@@ -26,7 +26,7 @@ class Game:
         # CONFIGURA E INICIA UMA NOVA PARTIDA
         self.vidas = constants.VIDAS_INICIAIS
         self.partes_coletadas = [False] * constants.NUMERO_PARTES_CHAVE
-        self.proxima_parte_a_spawnar = 0 # Começa com a parte 0
+        self.proxima_parte_a_spawnar = 0
         self.mapa_do_jogo = mapa.gerar_mapa_aleatorio(mapa.LARGURA_GRADE, mapa.ALTURA_GRADE)
         
         # Grupos de Sprites
@@ -35,6 +35,7 @@ class Game:
         self.grupo_paredes = pygame.sprite.Group()
         self.grupo_cobels = pygame.sprite.Group()
         self.grupo_chave_partes = pygame.sprite.Group()
+        self.grupo_cafe = pygame.sprite.Group()
 
         # Posiciona jogador, paredes e encontra locais livres
         posicao_inicial_jogador = None
@@ -58,8 +59,8 @@ class Game:
             self.todas_sprites.add(novo_cobel); self.grupo_cobels.add(novo_cobel)
 
         self.agendar_proximo_spawn_balao()
-        # Agenda o spawn da PRIMEIRA parte da chave para daqui a 5 segundos
         self.timer_spawn_chave = pygame.time.get_ticks() + constants.TIMER_INICIAL_CHAVE
+        self.agendar_proximo_spawn_cafe() # Agenda o primeiro café
         
         self.rodar()
     
@@ -87,7 +88,9 @@ class Game:
     def atualizar_sprites(self):
         # ATUALIZA O ESTADO DE TODAS AS SPRITES
         self.checar_spawn_balao()
-        self.checar_spawn_chave() # Nova verificação para a chave
+        self.checar_spawn_chave()
+        self.checar_spawn_cafe()
+        self.checar_efeito_cafe()
         self.todas_sprites.update()
 
         if self.jogador:
@@ -100,14 +103,18 @@ class Game:
             partes_colididas = pygame.sprite.spritecollide(self.jogador, self.grupo_chave_partes, True)
             for parte in partes_colididas:
                 self.partes_coletadas[parte.parte_index] = True
-                self.proxima_parte_a_spawnar += 1 # Avança para a próxima parte
-                # Se ainda houver partes para coletar, agenda a próxima
+                self.proxima_parte_a_spawnar += 1
                 if self.proxima_parte_a_spawnar < constants.NUMERO_PARTES_CHAVE:
                     self.agendar_proxima_chave()
-                
+            
+            # Colisão com o Café
+            if pygame.sprite.spritecollide(self.jogador, self.grupo_cafe, True):
+                self.ativar_efeito_cafe()
+
             # Colisão com Cobels
             if pygame.sprite.spritecollide(self.jogador, self.grupo_cobels, False):
-                self.perder_vida()
+                if not self.jogador.invencivel:
+                    self.perder_vida()
 
     def desenhar_sprites(self):
         # DESENHA TODOS OS ELEMENTOS NA TELA
@@ -125,7 +132,12 @@ class Game:
         pos_y_interface = constants.ALTURA - (mapa.ALTURA_INTERFACE_INFERIOR // 2)
         for i in range(self.vidas):
              self.tela.blit(self.imagem_balao_vida, (20 + i * 35, pos_y_interface - 15))
-        self.tela.blit(self.imagem_xicara_cafe, (constants.LARGURA - 50, pos_y_interface - 15))
+        
+        # Lógica para desenhar o café na HUD com a opacidade correta
+        if self.jogador.invencivel:
+            self.tela.blit(self.imagem_xicara_cafe, (constants.LARGURA - 50, pos_y_interface - 15))
+        else:
+            self.tela.blit(self.imagem_xicara_cafe_opaca, (constants.LARGURA - 50, pos_y_interface - 15))
         
         largura_total_chave = self.imagem_chave_original.get_width()
         pos_x_chave_hud = (constants.LARGURA - largura_total_chave) // 2
@@ -146,6 +158,10 @@ class Game:
         self.imagem_xicara_cafe = pygame.image.load(os.path.join(diretorio_imagens, constants.CAFE)).convert_alpha()
         self.imagem_game_over = pygame.image.load(os.path.join(diretorio_imagens, constants.GAME_OVER_IMG)).convert()
         
+        # Prepara as duas versões do ícone do café para a HUD
+        self.imagem_xicara_cafe_opaca = self.imagem_xicara_cafe.copy()
+        self.imagem_xicara_cafe_opaca.set_alpha(100) # Opacidade baixa (0-255)
+
         self.imagem_chave_original = pygame.image.load(os.path.join(diretorio_imagens, constants.CHAVE)).convert_alpha()
         largura_chave, altura_chave = self.imagem_chave_original.get_size()
         largura_parte = largura_chave // constants.NUMERO_PARTES_CHAVE
@@ -158,6 +174,28 @@ class Game:
             self.imagens_partes_chave.append(imagem_cortada)
     
     # --- Métodos de Lógica Específica ---
+
+    # Métodos para controlar o café
+    def agendar_proximo_spawn_cafe(self):
+        intervalo = random.randint(constants.TIMER_MIN_CAFE, constants.TIMER_MAX_CAFE)
+        self.timer_spawn_cafe = pygame.time.get_ticks() + intervalo
+    def spawnar_cafe(self):
+        if self.posicoes_livres:
+            pos_x, pos_y = random.choice(self.posicoes_livres)
+            novo_cafe = cafe.Cafe(pos_x, pos_y)
+            self.todas_sprites.add(novo_cafe); self.grupo_cafe.add(novo_cafe)
+    def checar_spawn_cafe(self):
+        if len(self.grupo_cafe) > 0 or self.jogador.invencivel: return
+        if pygame.time.get_ticks() >= self.timer_spawn_cafe:
+            self.spawnar_cafe()
+    def ativar_efeito_cafe(self):
+        self.jogador.invencivel = True
+        self.jogador.timer_efeito_cafe = pygame.time.get_ticks() + constants.DURACAO_EFEITO_CAFE
+        self.agendar_proximo_spawn_cafe() # Agenda o próximo para depois que o efeito acabar
+    def checar_efeito_cafe(self):
+        if self.jogador.invencivel and pygame.time.get_ticks() > self.jogador.timer_efeito_cafe:
+            self.jogador.invencivel = False
+
     def agendar_proxima_chave(self):
         """Agenda o spawn da próxima parte da chave para 5-15s no futuro."""
         intervalo = random.randint(constants.TIMER_MIN_CHAVE, constants.TIMER_MAX_CHAVE)
@@ -177,12 +215,8 @@ class Game:
 
     def checar_spawn_chave(self):
         """Verifica se é hora de criar uma nova parte da chave."""
-        # Se todas as partes já foram spawnadas/coletadas, não faz nada
-        if self.proxima_parte_a_spawnar >= constants.NUMERO_PARTES_CHAVE:
-            return
-        # Se já existe uma parte na tela, não faz nada
-        if len(self.grupo_chave_partes) > 0:
-            return
+        if self.proxima_parte_a_spawnar >= constants.NUMERO_PARTES_CHAVE: return
+        if len(self.grupo_chave_partes) > 0: return
         
         if pygame.time.get_ticks() >= self.timer_spawn_chave:
             self.spawnar_proxima_chave()

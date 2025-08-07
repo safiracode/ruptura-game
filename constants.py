@@ -17,6 +17,11 @@ FPS = 60
 
 VIDAS_INICIAIS = 5
 
+# --- CAFÉ (POWER-UP) ---
+DURACAO_EFEITO_CAFE = 10000 # 10 segundos em milissegundos
+TIMER_MIN_CAFE = 20000     # 20 segundos
+TIMER_MAX_CAFE = 30000     # 30 segundos
+
 # --- JOGADOR ---
 VELOCIDADE_JOGADOR = 1.2 # fazer comparativo com o pacman pra ver se ta bom
 COMANDO_TIMEOUT = 3000 # 3 segundos em milissegundos

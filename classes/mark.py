@@ -1,4 +1,3 @@
-# classes/mark.py
 import pygame
 import constants
 import mapa
@@ -16,43 +15,39 @@ class Mark(pygame.sprite.Sprite):
         'baixo': pygame.transform.scale(pygame.image.load(os.path.join('imagens', constants.MARK_BAIXO)).convert_alpha(), (constants.TAMANHO_BLOCO, constants.TAMANHO_BLOCO)),
         'esquerda': pygame.transform.scale(pygame.image.load(os.path.join('imagens', constants.MARK_ESQUERDA)).convert_alpha(), (constants.TAMANHO_BLOCO, constants.TAMANHO_BLOCO)),
         'direita': pygame.transform.scale(pygame.image.load(os.path.join('imagens', constants.MARK_DIREITA)).convert_alpha(), (constants.TAMANHO_BLOCO, constants.TAMANHO_BLOCO))}
-        self.image = self.sprites['baixo']
+        
+        self.image_base = self.sprites['baixo'] # Guarda a imagem original da direção
+        self.image = self.image_base.copy() # A imagem que será desenhada
         self.rect = self.image.get_rect()
 
         # Posição e Velocidade
         self.rect.topleft = (x * constants.TAMANHO_BLOCO, y * constants.TAMANHO_BLOCO)
         self.velocidade = constants.VELOCIDADE_JOGADOR
-        
-        # --- NOVO: Variáveis para guardar a posição exata (com decimais) ---
-        self.x = float(self.rect.x)
-        self.y = float(self.rect.y)
+        self.x = float(self.rect.x); self.y = float(self.rect.y)
         
         # Sistema de Fila de Comandos
         self.dx, self.dy = 0, 0
         self.proximos_movimentos = []
 
+        # Estado do jogador
+        self.invencivel = False
+        self.timer_efeito_cafe = 0
+
     def adicionar_movimento(self, dx=0, dy=0):
-        #Adiciona um novo movimento à fila com um carimbo de tempo.
         timestamp = pygame.time.get_ticks()
         self.proximos_movimentos.append({'dx': dx, 'dy': dy, 'tempo': timestamp})
 
     def pode_mover(self, dx, dy):
-        #Verifica se o próximo bloco na direção desejada é um piso.
         proximo_x_grid = (self.rect.centerx // constants.TAMANHO_BLOCO) + dx
         proximo_y_grid = (self.rect.centery // constants.TAMANHO_BLOCO) + dy
-        
         if 0 <= proximo_y_grid < mapa.ALTURA_GRADE and 0 <= proximo_x_grid < mapa.LARGURA_GRADE:
             if self.game.mapa_do_jogo[proximo_y_grid][proximo_x_grid] == mapa.PISO:
                 return True
         return False
 
     def update(self):
-        #Atualiza a posição e a lógica de movimento a cada frame.
         agora = pygame.time.get_ticks()
-
-        self.proximos_movimentos = [
-            mov for mov in self.proximos_movimentos if agora - mov['tempo'] < constants.COMANDO_TIMEOUT
-        ]
+        self.proximos_movimentos = [mov for mov in self.proximos_movimentos if agora - mov['tempo'] < constants.COMANDO_TIMEOUT]
 
         esta_alinhado_x = self.rect.x % constants.TAMANHO_BLOCO == 0
         esta_alinhado_y = self.rect.y % constants.TAMANHO_BLOCO == 0
@@ -61,29 +56,30 @@ class Mark(pygame.sprite.Sprite):
             comando_executado = False
             for i, comando in enumerate(self.proximos_movimentos):
                 if self.pode_mover(comando['dx'], comando['dy']):
-                    self.dx = comando['dx']
-                    self.dy = comando['dy']
+                    self.dx = comando['dx']; self.dy = comando['dy']
                     self.proximos_movimentos = self.proximos_movimentos[i+1:]
                     comando_executado = True
                     break
-            
-            if not comando_executado:
-                if not self.pode_mover(self.dx, self.dy):
-                    self.dx, self.dy = 0, 0
+            if not comando_executado and not self.pode_mover(self.dx, self.dy):
+                self.dx, self.dy = 0, 0
 
-        # Atualiza a imagem do Mark de acordo com a direção
-        if self.dx == 1: self.image = self.sprites['direita']
-        elif self.dx == -1: self.image = self.sprites['esquerda']
-        elif self.dy == -1: self.image = self.sprites['cima']
-        elif self.dy == 1: self.image = self.sprites['baixo']
+        # Atualiza a imagem base do Mark de acordo com a direção
+        if self.dx == 1: self.image_base = self.sprites['direita']
+        elif self.dx == -1: self.image_base = self.sprites['esquerda']
+        elif self.dy == -1: self.image_base = self.sprites['cima']
+        elif self.dy == 1: self.image_base = self.sprites['baixo']
 
-        vx = self.dx * self.velocidade
-        vy = self.dy * self.velocidade
+        # Efeito de brilho se estiver invencível
+        if self.invencivel:
+            self.image = self.image_base.copy()
+            # Pisca a cada 200ms
+            if (agora // 200) % 2 == 0:
+                self.image.set_alpha(150) # Deixa semi-transparente
+            else:
+                self.image.set_alpha(255) # Opacidade normal
+        else:
+            self.image = self.image_base
 
-        # --- ALTERADO: O movimento agora é calculado com as variáveis decimais ---
-        self.x += vx
-        self.y += vy
-        
-        # A posição do rect (inteira) é atualizada com o valor arredondado da posição exata
-        self.rect.x = round(self.x)
-        self.rect.y = round(self.y)
+        vx = self.dx * self.velocidade; vy = self.dy * self.velocidade
+        self.x += vx; self.y += vy
+        self.rect.x = round(self.x); self.rect.y = round(self.y)
