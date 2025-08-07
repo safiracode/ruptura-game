@@ -9,7 +9,14 @@ import game_over, tela_start
 class Game:
     def __init__(self):
         # INICIALIZA O JOGO E SUAS VARIAVEIS PRINCIPAIS
-        pygame.init(); pygame.mixer.init()
+        pygame.init()
+        pygame.mixer.init()
+        
+        #musica de fundo
+        pygame.mixer.music.load('audios/música principal.mp3')
+        pygame.mixer.music.set_volume(0.5)
+        pygame.mixer.music.play(-1) #loop infinito
+
         self.tela = pygame.display.set_mode((constants.LARGURA, constants.ALTURA))
         pygame.display.set_caption(constants.TITULO_JOGO)
         caminho_icone = os.path.join('imagens', 'ruptura_logo.png')
