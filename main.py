@@ -86,37 +86,49 @@ class Game:
                 if event.key in [pygame.K_DOWN, pygame.K_s]: self.jogador.adicionar_movimento(dx=0, dy=1)
 
     def atualizar_sprites(self):
-        # ATUALIZA O ESTADO DE TODAS AS SPRITES
-        self.checar_spawn_balao()
-        self.checar_spawn_chave()
-        self.checar_spawn_cafe()
-        self.checar_efeito_cafe()
-        self.todas_sprites.update()
+            # ATUALIZA O ESTADO DE TODAS AS SPRITES
+            self.checar_spawn_balao()
+            self.checar_spawn_chave()
+            self.checar_spawn_cafe()
+            self.checar_efeito_cafe()
+            self.todas_sprites.update()
 
-        if self.jogador:
-            # Colisão com o balão de vida
-            if pygame.sprite.spritecollide(self.jogador, self.grupo_vidas_extras, True):
-                self.vidas += 1
-                if self.vidas > constants.VIDAS_INICIAIS: self.vidas = constants.VIDAS_INICIAIS
-            
-            # Colisão com as PARTES da chave
-            partes_colididas = pygame.sprite.spritecollide(self.jogador, self.grupo_chave_partes, True)
-            for parte in partes_colididas:
-                self.partes_coletadas[parte.parte_index] = True
-                self.proxima_parte_a_spawnar += 1
-                if self.proxima_parte_a_spawnar < constants.NUMERO_PARTES_CHAVE:
-                    self.agendar_proxima_chave()
-            
-            # Colisão com o Café
-            if pygame.sprite.spritecollide(self.jogador, self.grupo_cafe, True):
-                self.ativar_efeito_cafe()
+            if self.jogador:
+                # Colisão com o balão de vida
+                if pygame.sprite.spritecollide(self.jogador, self.grupo_vidas_extras, True):
+                    self.vidas += 1
+                    if self.vidas > constants.VIDAS_INICIAIS: self.vidas = constants.VIDAS_INICIAIS
+                
+                # Colisão com as PARTES da chave
+                partes_colididas = pygame.sprite.spritecollide(self.jogador, self.grupo_chave_partes, True)
+                for parte in partes_colididas:
+                    self.partes_coletadas[parte.parte_index] = True
+                    self.proxima_parte_a_spawnar += 1
+                    if self.proxima_parte_a_spawnar < constants.NUMERO_PARTES_CHAVE: self.agendar_proxima_chave()
+                
+                # Colisão com o Café
+                if pygame.sprite.spritecollide(self.jogador, self.grupo_cafe, True):
+                    self.ativar_efeito_cafe()
 
-            # Colisão com Cobel (Chefona)
-            colisoes_cobel = pygame.sprite.spritecollide(self.jogador, self.grupo_cobels, False)
-            if colisoes_cobel:
-                # Se o jogador não estiver invencível (com o café)...
-                if not self.jogador.invencivel:
-                    self.vidas = 0 # Fim de jogo instantâneo
+                # --- LÓGICA DE COLISÃO COM 50% DE SOBREPOSIÇÃO ---
+                # Primeiro, pega a lista de todos os seguranças que estão tocando no jogador
+                colisoes_potenciais = pygame.sprite.spritecollide(self.jogador, self.grupo_cobels, False)
+                for inimigo in colisoes_potenciais:
+                    # Calcula a área do retângulo do jogador
+                    area_jogador = self.jogador.rect.width * self.jogador.rect.height
+                    
+                    # Encontra o retângulo exato da sobreposição
+                    rect_intersecao = self.jogador.rect.clip(inimigo.rect)
+                    
+                    # Calcula a área da sobreposição
+                    area_intersecao = rect_intersecao.width * rect_intersecao.height
+                    
+                    # Verifica se a área de sobreposição é de pelo menos 50%
+                    if area_intersecao >= (area_jogador * 0.3):
+                        # Se for, aplica a lógica de dano
+                        if not self.jogador.invencivel:
+                            self.vidas = 0 # Game Over, como a Cobel é a chefona
+                            break # Sai do loop, pois o jogo já acabou
 
     def desenhar_sprites(self):
         # DESENHA TODOS OS ELEMENTOS NA TELA
