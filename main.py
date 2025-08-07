@@ -5,7 +5,7 @@ import mapa
 import os
 from classes import balao, mark, parede, cobel, chave
 import random
-import game_over
+import game_over, tela_start
 
 class Game:
     def __init__(self):

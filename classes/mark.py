@@ -32,12 +32,12 @@ class Mark(pygame.sprite.Sprite):
         self.proximos_movimentos = []
 
     def adicionar_movimento(self, dx=0, dy=0):
-        """Adiciona um novo movimento à fila com um carimbo de tempo."""
+        #Adiciona um novo movimento à fila com um carimbo de tempo.
         timestamp = pygame.time.get_ticks()
         self.proximos_movimentos.append({'dx': dx, 'dy': dy, 'tempo': timestamp})
 
     def pode_mover(self, dx, dy):
-        """Verifica se o próximo bloco na direção desejada é um piso."""
+        #Verifica se o próximo bloco na direção desejada é um piso.
         proximo_x_grid = (self.rect.centerx // constants.TAMANHO_BLOCO) + dx
         proximo_y_grid = (self.rect.centery // constants.TAMANHO_BLOCO) + dy
         
@@ -47,7 +47,7 @@ class Mark(pygame.sprite.Sprite):
         return False
 
     def update(self):
-        """Atualiza a posição e a lógica de movimento a cada frame."""
+        #Atualiza a posição e a lógica de movimento a cada frame.
         agora = pygame.time.get_ticks()
 
         self.proximos_movimentos = [

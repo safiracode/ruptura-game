@@ -5,6 +5,10 @@ LARGURA = 480
 ALTURA = 600
 TAMANHO_BLOCO = 24
 
+# Dimensões de botões
+LARGURA_BOTAO = 170
+ALTURA_BOTAO = 55
+
 # Título do jogo
 TITULO_JOGO = 'Ruptura'
 
@@ -63,6 +67,7 @@ HUANG_BAIXO = 'huang_baixo.png'
 HUANG_CIMA = 'huang_cima.png'
 HUANG_ESQUERDA = 'huang_esquerda.png'
 HUANG_DIREITA = 'huang_direita.png'
+IMG_BOTAO = os.path.join('imagens', 'botao.png')
 
 SPRITESHEET = os.path.join('ideias de imagens', 'spritesheet.png') # checar uso
 RUPTURA_START_LOGO = 'ruptura_logo.png'
