@@ -26,6 +26,9 @@ TIMER_MAX_CAFE = 30000     # 30 segundos
 VELOCIDADE_JOGADOR = 1.2 # fazer comparativo com o pacman pra ver se ta bom
 COMANDO_TIMEOUT = 3000 # 3 segundos em milissegundos
 
+# --- PORTA --- 
+X_PORTA, Y_PORTA = 1,0
+
 # --- SEGURANÇAS ---
 VELOCIDADE_SEGURANCA = 1 # Cobel, Milchick, Drummond, Mauer e Huang
 
@@ -40,13 +43,12 @@ TIMER_INICIAL_CHAVE = 5000 # 5 segundos
 TIMER_MIN_CHAVE = 5000     # 5 segundos
 TIMER_MAX_CHAVE = 15000    # 15 segundos
 
-
 # --- ARQUIVOS ---
 CHAVE = 'chave.png'
 BALAO = 'baloes_att.png'
 CAFE = 'cafe_att.png'
 PAREDE = 'parede3.png'
-
+PORTA_SAIDA = 'porta.png'
 
 MARK_BAIXO = 'mark_baixo.png'
 MARK_CIMA = 'mark_cima.png'

@@ -3,7 +3,7 @@ import pygame
 import constants
 import mapa
 import os
-from classes import balao, mark, parede, cobel, chave, cafe
+from classes import balao, mark, parede, cobel, chave, cafe, porta
 import random
 import game_over, tela_start
 
@@ -36,6 +36,7 @@ class Game:
         self.grupo_cobels = pygame.sprite.Group()
         self.grupo_chave_partes = pygame.sprite.Group()
         self.grupo_cafe = pygame.sprite.Group()
+        self.grupo_porta = pygame.sprite.Group()
 
         # Posiciona jogador, paredes e encontra locais livres
         posicao_inicial_jogador = None
@@ -46,9 +47,26 @@ class Game:
                     self.grupo_paredes.add(parede.Parede(x, y))
                 if celula == mapa.PISO:
                     self.posicoes_livres.append((x, y))
-                    if posicao_inicial_jogador is None:
-                        posicao_inicial_jogador = (x, y)
-        
+                    # if posicao_inicial_jogador is None:
+                    #     posicao_inicial_jogador = (x, y)
+
+        # Tenta posicionar no canto inferior direito
+        largura = len(self.mapa_do_jogo[0])
+        altura = len(self.mapa_do_jogo)
+        canto_inf_dir = (largura - 1, altura - 1)
+        if self.mapa_do_jogo[canto_inf_dir[1]][canto_inf_dir[0]] == mapa.PISO:
+            posicao_inicial_jogador = canto_inf_dir
+        else:
+            # Busca reversa do fim da lista por um piso o mais próximo possível do canto inferior direito
+            for pos in reversed(self.posicoes_livres):
+                if pos[0] <= canto_inf_dir[0] and pos[1] <= canto_inf_dir[1]:
+                    posicao_inicial_jogador = pos
+                    break
+
+        # Se por algum motivo não encontrou, usa a primeira posição livre
+        if not posicao_inicial_jogador and self.posicoes_livres:
+            posicao_inicial_jogador = self.posicoes_livres[0]
+
         self.jogador = mark.Mark(self, posicao_inicial_jogador[0], posicao_inicial_jogador[1])
         self.todas_sprites.add(self.jogador)
 
@@ -106,6 +124,17 @@ class Game:
                 self.proxima_parte_a_spawnar += 1
                 if self.proxima_parte_a_spawnar < constants.NUMERO_PARTES_CHAVE:
                     self.agendar_proxima_chave()
+                elif self.proxima_parte_a_spawnar == constants.NUMERO_PARTES_CHAVE:
+                    # Coloca porta
+                    x_porta, y_porta = constants.X_PORTA, constants.Y_PORTA
+                    for y, linha in enumerate(self.mapa_do_jogo):
+                        for x, celula in enumerate(linha):
+                            if x == x_porta and y == y_porta:
+                                self.mapa_do_jogo[y_porta][x_porta] = mapa.PISO 
+                                nova_porta = porta.Porta(x_porta, y_porta, self.imagem_porta)
+                                self.posicoes_livres.append((x, y))
+                                self.todas_sprites.add(nova_porta)   # Para ela ser desenhada e atualizada
+                                self.grupo_porta.add(nova_porta)     # Para detectar colisão depois
             
             # Colisão com o Café
             if pygame.sprite.spritecollide(self.jogador, self.grupo_cafe, True):
@@ -125,7 +154,7 @@ class Game:
                 pos_x = x * constants.TAMANHO_BLOCO; pos_y = y * constants.TAMANHO_BLOCO
                 if celula == mapa.PAREDE: self.tela.blit(self.imagem_parede, (pos_x, pos_y))
                 elif celula == mapa.PISO: pygame.draw.rect(self.tela, constants.VERDE, (pos_x, pos_y, constants.TAMANHO_BLOCO, constants.TAMANHO_BLOCO))
-        
+
         self.todas_sprites.draw(self.tela)
 
         # Desenha a HUD
@@ -157,6 +186,7 @@ class Game:
         self.imagem_balao_vida = pygame.image.load(os.path.join(diretorio_imagens, constants.BALAO)).convert_alpha()
         self.imagem_xicara_cafe = pygame.image.load(os.path.join(diretorio_imagens, constants.CAFE)).convert_alpha()
         self.imagem_game_over = pygame.image.load(os.path.join(diretorio_imagens, constants.GAME_OVER_IMG)).convert()
+        self.imagem_porta = pygame.image.load(os.path.join(diretorio_imagens, constants.PORTA_SAIDA)).convert_alpha()
         
         # Prepara as duas versões do ícone do café para a HUD
         self.imagem_xicara_cafe_opaca = self.imagem_xicara_cafe.copy()

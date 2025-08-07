@@ -8,6 +8,7 @@ ALTURA_INTERFACE_INFERIOR = constants.ALTURA - (ALTURA_GRADE * constants.TAMANHO
 
 PAREDE = 1
 PISO = 0
+PORTA = 2
 
 def gerar_mapa_aleatorio(largura, altura):
     # GERA UM LABIRINTO
@@ -96,5 +97,5 @@ def gerar_mapa_aleatorio(largura, altura):
     for y in range(altura):
         grade[y][0] = PAREDE
         grade[y][largura - 1] = PAREDE
-                
+
     return grade
