@@ -1,4 +1,3 @@
-# main.py
 import pygame
 import constants
 import mapa
@@ -10,17 +9,13 @@ import game_over, tela_start
 class Game:
     def __init__(self):
         # INICIALIZA O JOGO E SUAS VARIAVEIS PRINCIPAIS
-        pygame.init()
-        pygame.mixer.init()
+        pygame.init(); pygame.mixer.init()
         self.tela = pygame.display.set_mode((constants.LARGURA, constants.ALTURA))
         pygame.display.set_caption(constants.TITULO_JOGO)
         caminho_icone = os.path.join('imagens', 'ruptura_logo.png')
-        ICONE = pygame.image.load(caminho_icone)
-        pygame.display.set_icon(ICONE)
-        self.relogio = pygame.time.Clock()
-        self.esta_rodando = True
-        self.fonte = pygame.font.match_font(constants.FONTE)
-        self.carregar_arquivos()
+        ICONE = pygame.image.load(caminho_icone); pygame.display.set_icon(ICONE)
+        self.relogio = pygame.time.Clock(); self.esta_rodando = True
+        self.fonte = pygame.font.match_font(constants.FONTE); self.carregar_arquivos()
 
     def novo_jogo(self):
         # CONFIGURA E INICIA UMA NOVA PARTIDA
@@ -33,34 +28,36 @@ class Game:
         self.todas_sprites = pygame.sprite.Group()
         self.grupo_vidas_extras = pygame.sprite.Group()
         self.grupo_paredes = pygame.sprite.Group()
-        self.grupo_cobels = pygame.sprite.Group()
         self.grupo_chave_partes = pygame.sprite.Group()
         self.grupo_cafe = pygame.sprite.Group()
+        self.grupo_chefes = pygame.sprite.Group() # Grupo para a Cobel
+        # self.grupo_segurancas = pygame.sprite.Group() # <-- Você vai usar este no futuro
+
+        # Timer para o cooldown de dano (para os seguranças comuns)
+        self.ultimo_dano_tempo = 0
 
         # Posiciona jogador, paredes e encontra locais livres
-        posicao_inicial_jogador = None
-        self.posicoes_livres = []
+        posicao_inicial_jogador = None; self.posicoes_livres = []
         for y, linha in enumerate(self.mapa_do_jogo):
             for x, celula in enumerate(linha):
-                if celula == mapa.PAREDE:
-                    self.grupo_paredes.add(parede.Parede(x, y))
+                if celula == mapa.PAREDE: self.grupo_paredes.add(parede.Parede(x, y))
                 if celula == mapa.PISO:
                     self.posicoes_livres.append((x, y))
-                    if posicao_inicial_jogador is None:
-                        posicao_inicial_jogador = (x, y)
+                    if posicao_inicial_jogador is None: posicao_inicial_jogador = (x, y)
         
         self.jogador = mark.Mark(self, posicao_inicial_jogador[0], posicao_inicial_jogador[1])
         self.todas_sprites.add(self.jogador)
 
-        # Spawna 1 cobel em posição aleatória
+        # Spawna a Cobel e a coloca no grupo de chefes
         if self.posicoes_livres:
             pos_x, pos_y = random.choice(self.posicoes_livres)
             novo_cobel = cobel.Cobel(self, pos_x, pos_y)
-            self.todas_sprites.add(novo_cobel); self.grupo_cobels.add(novo_cobel)
+            self.todas_sprites.add(novo_cobel)
+            self.grupo_chefes.add(novo_cobel) # Adicionada ao grupo de chefes
 
         self.agendar_proximo_spawn_balao()
         self.timer_spawn_chave = pygame.time.get_ticks() + constants.TIMER_INICIAL_CHAVE
-        self.agendar_proximo_spawn_cafe() # Agenda o primeiro café
+        self.agendar_proximo_spawn_cafe()
         
         self.rodar()
     
@@ -78,7 +75,6 @@ class Game:
             if event.type == pygame.QUIT:
                 if self.jogando: self.jogando = False
                 self.esta_rodando = False
-            
             if event.type == pygame.KEYDOWN:
                 if event.key in [pygame.K_LEFT, pygame.K_a]: self.jogador.adicionar_movimento(dx=-1, dy=0)
                 if event.key in [pygame.K_RIGHT, pygame.K_d]: self.jogador.adicionar_movimento(dx=1, dy=0)
@@ -86,73 +82,64 @@ class Game:
                 if event.key in [pygame.K_DOWN, pygame.K_s]: self.jogador.adicionar_movimento(dx=0, dy=1)
 
     def atualizar_sprites(self):
-            # ATUALIZA O ESTADO DE TODAS AS SPRITES
-            self.checar_spawn_balao()
-            self.checar_spawn_chave()
-            self.checar_spawn_cafe()
-            self.checar_efeito_cafe()
-            self.todas_sprites.update()
+        # ATUALIZA O ESTADO DE TODAS AS SPRITES
+        self.checar_spawn_balao()
+        self.checar_spawn_chave()
+        self.checar_spawn_cafe()
+        self.checar_efeito_cafe()
+        self.todas_sprites.update()
 
-            if self.jogador:
-                # Colisão com o balão de vida
-                if pygame.sprite.spritecollide(self.jogador, self.grupo_vidas_extras, True):
-                    self.vidas += 1
-                    if self.vidas > constants.VIDAS_INICIAIS: self.vidas = constants.VIDAS_INICIAIS
-                
-                # Colisão com as PARTES da chave
-                partes_colididas = pygame.sprite.spritecollide(self.jogador, self.grupo_chave_partes, True)
-                for parte in partes_colididas:
-                    self.partes_coletadas[parte.parte_index] = True
-                    self.proxima_parte_a_spawnar += 1
-                    if self.proxima_parte_a_spawnar < constants.NUMERO_PARTES_CHAVE: self.agendar_proxima_chave()
-                
-                # Colisão com o Café
-                if pygame.sprite.spritecollide(self.jogador, self.grupo_cafe, True):
-                    self.ativar_efeito_cafe()
+        if self.jogador:
+            # Colisões que o jogador pode ter
+            if pygame.sprite.spritecollide(self.jogador, self.grupo_vidas_extras, True):
+                self.vidas += 1
+                if self.vidas > constants.VIDAS_INICIAIS: self.vidas = constants.VIDAS_INICIAIS
+            
+            partes_colididas = pygame.sprite.spritecollide(self.jogador, self.grupo_chave_partes, True)
+            for parte in partes_colididas:
+                self.partes_coletadas[parte.parte_index] = True
+                self.proxima_parte_a_spawnar += 1
+                if self.proxima_parte_a_spawnar < constants.NUMERO_PARTES_CHAVE: self.agendar_proxima_chave()
+            
+            if pygame.sprite.spritecollide(self.jogador, self.grupo_cafe, True):
+                self.ativar_efeito_cafe()
 
-                # --- LÓGICA DE COLISÃO COM 50% DE SOBREPOSIÇÃO ---
-                # Primeiro, pega a lista de todos os seguranças que estão tocando no jogador
-                colisoes_potenciais = pygame.sprite.spritecollide(self.jogador, self.grupo_cobels, False)
-                for inimigo in colisoes_potenciais:
-                    # Calcula a área do retângulo do jogador
-                    area_jogador = self.jogador.rect.width * self.jogador.rect.height
-                    
-                    # Encontra o retângulo exato da sobreposição
-                    rect_intersecao = self.jogador.rect.clip(inimigo.rect)
-                    
-                    # Calcula a área da sobreposição
-                    area_intersecao = rect_intersecao.width * rect_intersecao.height
-                    
-                    # Verifica se a área de sobreposição é de pelo menos 50%
-                    if area_intersecao >= (area_jogador * 0.3):
-                        # Se for, aplica a lógica de dano
-                        if not self.jogador.invencivel:
-                            self.vidas = 0 # Game Over, como a Cobel é a chefona
-                            break # Sai do loop, pois o jogo já acabou
+            # Colisão com a Chefona (Cobel) - Morte instantânea
+            colisoes_chefe = pygame.sprite.spritecollide(self.jogador, self.grupo_chefes, False)
+            if colisoes_chefe:
+                # Usando a lógica de 50% de sobreposição
+                area_jogador = self.jogador.rect.width * self.jogador.rect.height
+                rect_intersecao = self.jogador.rect.clip(colisoes_chefe[0].rect)
+                area_intersecao = rect_intersecao.width * rect_intersecao.height
+                if area_intersecao >= (area_jogador * 0.3):
+                    if not self.jogador.invencivel:
+                        self.vidas = 0
+            
+            # (PARA O FUTURO) Colisão com Seguranças Comuns - Tira 1 vida
+            # colisoes_segurancas = pygame.sprite.spritecollide(self.jogador, self.grupo_segurancas, False)
+            # if colisoes_segurancas:
+            #     agora = pygame.time.get_ticks()
+            #     if not self.jogador.invencivel and agora - self.ultimo_dano_tempo > constants.COOLDOWN_DANO:
+            #         self.ultimo_dano_tempo = agora
+            #         self.perder_vida()
 
     def desenhar_sprites(self):
         # DESENHA TODOS OS ELEMENTOS NA TELA
+        # ... (seu código de desenhar continua o mesmo)
         self.tela.fill(constants.PRETO)
-
         for y, linha in enumerate(self.mapa_do_jogo):
             for x, celula in enumerate(linha):
                 pos_x = x * constants.TAMANHO_BLOCO; pos_y = y * constants.TAMANHO_BLOCO
                 if celula == mapa.PAREDE: self.tela.blit(self.imagem_parede, (pos_x, pos_y))
                 elif celula == mapa.PISO: pygame.draw.rect(self.tela, constants.VERDE, (pos_x, pos_y, constants.TAMANHO_BLOCO, constants.TAMANHO_BLOCO))
-        
         self.todas_sprites.draw(self.tela)
-
-        # Desenha a HUD
         pos_y_interface = constants.ALTURA - (mapa.ALTURA_INTERFACE_INFERIOR // 2)
         for i in range(self.vidas):
              self.tela.blit(self.imagem_balao_vida, (20 + i * 35, pos_y_interface - 15))
-        
-        # Lógica para desenhar o café na HUD com a opacidade correta
         if self.jogador.invencivel:
             self.tela.blit(self.imagem_xicara_cafe, (constants.LARGURA - 50, pos_y_interface - 15))
         else:
             self.tela.blit(self.imagem_xicara_cafe_opaca, (constants.LARGURA - 50, pos_y_interface - 15))
-        
         largura_total_chave = self.imagem_chave_original.get_width()
         pos_x_chave_hud = (constants.LARGURA - largura_total_chave) // 2
         for i in range(constants.NUMERO_PARTES_CHAVE):
@@ -160,7 +147,6 @@ class Game:
                 imagem_da_parte = self.imagens_partes_chave[i]
                 largura_parte = imagem_da_parte.get_width()
                 self.tela.blit(imagem_da_parte, (pos_x_chave_hud + i * largura_parte, pos_y_interface - 20))
-
         pygame.display.flip()
 
     def carregar_arquivos(self):
