@@ -23,7 +23,7 @@ A temática principal do jogo é inspirada na série Ruptura (Severance), cuja a
     <td align="center">
       <a href="https://github.com/laissaraiva">
         <img src="https://avatars.githubusercontent.com/u/224659710?v=4" width="115"><br>
-        <sub>Laís Saraiva (<code>lspc</code>)</sub>
+        <sub>Laís Saraiva (<code> lspc</code>)</sub>
       </a>
     </td>
     <td align="center">
