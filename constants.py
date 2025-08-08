@@ -53,6 +53,7 @@ BALAO = 'baloes_att.png'
 CAFE = 'cafe_att.png'
 PAREDE = 'parede3.png'
 PORTA_SAIDA = 'porta.png'
+VENCEU_IMG = 'imagem_venceu.png'
 
 MARK_BAIXO = 'mark_baixo.png'
 MARK_CIMA = 'mark_cima.png'

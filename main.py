@@ -4,7 +4,7 @@ import mapa
 import os
 from classes import balao, mark, parede, cobel, chave, cafe, porta
 import random
-import game_over, tela_start
+import game_over, tela_start, venceu
 
 class Game:
     def __init__(self):
@@ -50,25 +50,36 @@ class Game:
                 if celula == mapa.PAREDE: self.grupo_paredes.add(parede.Parede(x, y))
                 if celula == mapa.PISO:
                     self.posicoes_livres.append((x, y))
-                    # if posicao_inicial_jogador is None:
-                    #     posicao_inicial_jogador = (x, y)
+        self.vidas = constants.VIDAS_INICIAIS
+        self.partes_coletadas = [False] * constants.NUMERO_PARTES_CHAVE
+        self.proxima_parte_a_spawnar = 0
+        self.venceu_jogo = False # Nova flag para controlar a vitória
+        self.mapa_do_jogo = mapa.gerar_mapa_aleatorio(mapa.LARGURA_GRADE, mapa.ALTURA_GRADE)
+        
+        # Grupos de Sprites
+        self.todas_sprites = pygame.sprite.Group()
+        self.grupo_vidas_extras = pygame.sprite.Group()
+        self.grupo_paredes = pygame.sprite.Group()
+        self.grupo_chave_partes = pygame.sprite.Group()
+        self.grupo_cafe = pygame.sprite.Group()
+        self.grupo_porta = pygame.sprite.Group()
+        self.grupo_chefes = pygame.sprite.Group()
 
-        # Tenta posicionar no canto inferior direito
-        largura = len(self.mapa_do_jogo[0])
-        altura = len(self.mapa_do_jogo)
-        canto_inf_dir = (largura - 1, altura - 1)
-        if self.mapa_do_jogo[canto_inf_dir[1]][canto_inf_dir[0]] == mapa.PISO:
-            posicao_inicial_jogador = canto_inf_dir
-        else:
-            # Busca reversa do fim da lista por um piso o mais próximo possível do canto inferior direito
-            for pos in reversed(self.posicoes_livres):
-                if pos[0] <= canto_inf_dir[0] and pos[1] <= canto_inf_dir[1]:
-                    posicao_inicial_jogador = pos
-                    break
+        # Posiciona jogador, paredes e encontra locais livres
+        posicao_inicial_jogador = None
+        self.posicoes_livres = []
+        for y, linha in enumerate(self.mapa_do_jogo):
+            for x, celula in enumerate(linha):
+                if celula == mapa.PAREDE:
+                    self.grupo_paredes.add(parede.Parede(x, y))
+                if celula == mapa.PISO:
+                    self.posicoes_livres.append((x, y))
 
-        # Se por algum motivo não encontrou, usa a primeira posição livre
-        if not posicao_inicial_jogador and self.posicoes_livres:
-            posicao_inicial_jogador = self.posicoes_livres[0]
+        largura_mapa = len(self.mapa_do_jogo[0])
+        altura_mapa = len(self.mapa_do_jogo)
+        posicao_inicial_jogador = (largura_mapa - 2, altura_mapa - 2)
+        if posicao_inicial_jogador not in self.posicoes_livres:
+             posicao_inicial_jogador = self.posicoes_livres[-1] if self.posicoes_livres else (1,1)
 
         self.jogador = mark.Mark(self, posicao_inicial_jogador[0], posicao_inicial_jogador[1])
         self.todas_sprites.add(self.jogador)
@@ -120,58 +131,51 @@ class Game:
                 if event.key in [pygame.K_DOWN, pygame.K_s]: self.jogador.adicionar_movimento(dx=0, dy=1)
 
     def atualizar_sprites(self):
-        # ATUALIZA O ESTADO DE TODAS AS SPRITES
-        self.checar_spawn_balao()
-        self.checar_spawn_chave()
-        self.checar_spawn_cafe()
-        self.checar_efeito_cafe()
-        self.todas_sprites.update()
+            # ATUALIZA O ESTADO DE TODAS AS SPRITES
+            self.checar_spawn_balao()
+            self.checar_spawn_chave()
+            self.checar_spawn_cafe()
+            self.checar_efeito_cafe()
+            self.todas_sprites.update()
 
-        if self.jogador:
-            # Colisões que o jogador pode ter
-            if pygame.sprite.spritecollide(self.jogador, self.grupo_vidas_extras, True):
-                self.vidas += 1
-                if self.vidas > constants.VIDAS_INICIAIS: self.vidas = constants.VIDAS_INICIAIS
-            
-            partes_colididas = pygame.sprite.spritecollide(self.jogador, self.grupo_chave_partes, True)
-            for parte in partes_colididas:
-                self.partes_coletadas[parte.parte_index] = True
-                self.proxima_parte_a_spawnar += 1
-                if self.proxima_parte_a_spawnar < constants.NUMERO_PARTES_CHAVE: self.agendar_proxima_chave()
-                elif self.proxima_parte_a_spawnar == constants.NUMERO_PARTES_CHAVE:
-                    # Coloca porta
-                    x_porta, y_porta = constants.X_PORTA, constants.Y_PORTA
-                    for y, linha in enumerate(self.mapa_do_jogo):
-                        for x, celula in enumerate(linha):
-                            if x == x_porta and y == y_porta:
-                                self.mapa_do_jogo[y_porta][x_porta] = mapa.PISO 
-                                nova_porta = porta.Porta(x_porta, y_porta, self.imagem_porta)
-                                self.posicoes_livres.append((x, y))
-                                self.todas_sprites.add(nova_porta)   # Para ela ser desenhada e atualizada
-                                self.grupo_porta.add(nova_porta)     # Para detectar colisão depois
-            
-            if pygame.sprite.spritecollide(self.jogador, self.grupo_cafe, True):
-                self.ativar_efeito_cafe()
+            if self.jogador:
+                # Colisões com itens
+                if pygame.sprite.spritecollide(self.jogador, self.grupo_vidas_extras, True):
+                    self.vidas += 1
+                    if self.vidas > constants.VIDAS_INICIAIS: self.vidas = constants.VIDAS_INICIAIS
+                
+                partes_colididas = pygame.sprite.spritecollide(self.jogador, self.grupo_chave_partes, True)
+                for parte in partes_colididas:
+                    self.partes_coletadas[parte.parte_index] = True
+                    self.proxima_parte_a_spawnar += 1
+                    if self.proxima_parte_a_spawnar < constants.NUMERO_PARTES_CHAVE:
+                        self.agendar_proxima_chave()
+                    # Se foi a última parte, cria a porta
+                    elif self.proxima_parte_a_spawnar == constants.NUMERO_PARTES_CHAVE:
+                        x_porta, y_porta = constants.X_PORTA, constants.Y_PORTA
+                        self.mapa_do_jogo[y_porta][x_porta] = mapa.PISO 
+                        nova_porta = porta.Porta(x_porta, y_porta)
+                        self.todas_sprites.add(nova_porta)
+                        self.grupo_porta.add(nova_porta)
+                
+                if pygame.sprite.spritecollide(self.jogador, self.grupo_cafe, True):
+                    self.ativar_efeito_cafe()
 
-            # Colisão com a Chefona (Cobel) - Morte instantânea
-            colisoes_chefe = pygame.sprite.spritecollide(self.jogador, self.grupo_chefes, False)
-            if colisoes_chefe:
-                # Usando a lógica de 50% de sobreposição
-                area_jogador = self.jogador.rect.width * self.jogador.rect.height
-                rect_intersecao = self.jogador.rect.clip(colisoes_chefe[0].rect)
-                area_intersecao = rect_intersecao.width * rect_intersecao.height
-                if area_intersecao >= (area_jogador * constants.INTERSECAO):
+                # Colisão com a Porta (para vencer o jogo)
+                colisoes_porta = pygame.sprite.spritecollide(self.jogador, self.grupo_porta, False)
+                if colisoes_porta:
+                    area_jogador = self.jogador.rect.width * self.jogador.rect.height
+                    rect_intersecao = self.jogador.rect.clip(colisoes_porta[0].rect)
+                    area_intersecao = rect_intersecao.width * rect_intersecao.height
+                    
+                    if area_intersecao >= (area_jogador * constants.INTERSECAO):
+                        self.venceu_jogo = True
+                        self.jogando = False # Termina a partida atual
+
+                # Colisão com a Chefona (Cobel)
+                if pygame.sprite.spritecollide(self.jogador, self.grupo_chefes, False):
                     if not self.jogador.invencivel:
                         self.vidas = 0
-            
-            # (PARA O FUTURO) Colisão com Seguranças Comuns - Tira 1 vida
-            # colisoes_segurancas = pygame.sprite.spritecollide(self.jogador, self.grupo_segurancas, False)
-            # if colisoes_segurancas:
-            #     agora = pygame.time.get_ticks()
-            #     if not self.jogador.invencivel and agora - self.ultimo_dano_tempo > constants.COOLDOWN_DANO:
-            #         self.ultimo_dano_tempo = agora
-            #         self.perder_vida()
-
     def desenhar_sprites(self):
         # DESENHA TODOS OS ELEMENTOS NA TELA
         # ... (seu código de desenhar continua o mesmo)
@@ -212,6 +216,9 @@ class Game:
         self.imagem_xicara_cafe = pygame.image.load(os.path.join(diretorio_imagens, constants.CAFE)).convert_alpha()
         self.imagem_game_over = pygame.image.load(os.path.join(diretorio_imagens, constants.GAME_OVER_IMG)).convert()
         self.imagem_porta = pygame.image.load(os.path.join(diretorio_imagens, constants.PORTA_SAIDA)).convert_alpha()
+
+        self.imagem_game_over = pygame.image.load(os.path.join(diretorio_imagens, constants.GAME_OVER_IMG)).convert()
+        self.imagem_venceu = pygame.image.load(os.path.join(diretorio_imagens, constants.VENCEU_IMG)).convert() # Carrega a imagem de vitória
         
         # Prepara as duas versões do ícone do café para a HUD
         self.imagem_xicara_cafe_opaca = self.imagem_xicara_cafe.copy()
@@ -309,12 +316,21 @@ class Game:
                     esperando = False; self.esta_rodando = False
     def tela_game_over(self):
         return game_over.tela_game_over(self.tela, self.fonte, self.imagem_game_over)
+    
+    def tela_venceu(self):
+        return venceu.tela_venceu(self.tela, self.fonte, self.imagem_venceu)
 
 # --- Inicialização e Loop Principal ---
 g = Game()
 g.tela_start()
 while g.esta_rodando:
     g.novo_jogo()
-    if g.vidas <= 0 and not g.tela_game_over():
-        break
+    # Se o jogo terminou, verifica se foi por vitória ou derrota
+    if g.venceu_jogo:
+        if not g.tela_venceu():
+            break # Sai do jogo se o jogador fechar a tela de vitória
+    elif g.vidas <= 0:
+        if not g.tela_game_over():
+            break # Sai do jogo se o jogador fechar a tela de game over
+
 pygame.quit()
