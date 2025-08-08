@@ -35,5 +35,9 @@ def tela_game_over(tela, fonte, imagem_game_over):
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_x, mouse_y = event.pos
                 if x_botao <= mouse_x <= x_botao + constants.LARGURA_BOTAO and y_botao <= mouse_y <= y_botao + constants.ALTURA_BOTAO:
+                    #parar música game over e iniciar principal
+                    pygame.mixer.music.stop()
+                    pygame.mixer.music.load("audios/música principal.mp3")
+                    pygame.mixer.music.play(-1) #loop infinito
                     esperando = False
                     return True  # Recomeça o jogo
