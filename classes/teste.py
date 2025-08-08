@@ -22,7 +22,7 @@ class Game:
         self.fonte = pygame.font.match_font(constants.FONTE); self.carregar_arquivos()
 
     def novo_jogo(self):
-        """Configura e inicia uma nova partida."""
+        # CONFIGURA E INICIA UMA NOVA PARTIDA
         self.vidas = constants.VIDAS_INICIAIS
         self.partes_coletadas = [False] * constants.NUMERO_PARTES_CHAVE
         self.proxima_parte_a_spawnar = 0
@@ -46,17 +46,14 @@ class Game:
         self.timer_mudanca_modo = pygame.time.get_ticks() + constants.TEMPO_DISPERSAO
 
         # Posiciona jogador, paredes e encontra locais livres
-        posicao_inicial_jogador = None
-        self.posicoes_livres = []
+        posicao_inicial_jogador = None; self.posicoes_livres = []
         for y, linha in enumerate(self.mapa_do_jogo):
             for x, celula in enumerate(linha):
-                if celula == mapa.PAREDE:
-                    self.grupo_paredes.add(parede.Parede(x, y))
+                if celula == mapa.PAREDE: self.grupo_paredes.add(parede.Parede(x, y))
                 if celula == mapa.PISO:
                     self.posicoes_livres.append((x, y))
         
-        largura_mapa = len(self.mapa_do_jogo[0])
-        altura_mapa = len(self.mapa_do_jogo)
+        largura_mapa = len(self.mapa_do_jogo[0]); altura_mapa = len(self.mapa_do_jogo)
         posicao_inicial_jogador = (largura_mapa - 2, altura_mapa - 2)
         if posicao_inicial_jogador not in self.posicoes_livres:
              posicao_inicial_jogador = self.posicoes_livres[-1] if self.posicoes_livres else (1,1)
@@ -64,25 +61,29 @@ class Game:
         self.jogador = mark.Mark(self, posicao_inicial_jogador[0], posicao_inicial_jogador[1])
         self.todas_sprites.add(self.jogador)
         
-        # --- LÓGICA DE SPAWN DOS INIMIGOS ---
-        self.spawnar_inimigo(cobel.Cobel, self.grupo_chefes, posicao_inicial_jogador)
-        self.spawnar_inimigo(segurancas.Huang, self.grupo_segurancas, posicao_inicial_jogador)
+        # Filtra posições seguras para os inimigos
+        posicoes_spawn_seguras = [p for p in self.posicoes_livres if abs(p[0] - posicao_inicial_jogador[0]) + abs(p[1] - posicao_inicial_jogador[1]) >= constants.DISTANCIA_SEGURA]
+        if not posicoes_spawn_seguras: posicoes_spawn_seguras = self.posicoes_livres
+
+        # Spawna a Cobel (Chefona)
+        if posicoes_spawn_seguras:
+            pos_x, pos_y = random.choice(posicoes_spawn_seguras); posicoes_spawn_seguras.remove((pos_x, pos_y))
+            novo_cobel = cobel.Cobel(self, pos_x, pos_y)
+            self.todas_sprites.add(novo_cobel); self.grupo_chefes.add(novo_cobel)
+            
+        # Spawna os 4 Seguranças
+        lista_segurancas = [segurancas.Milchick, segurancas.Huang, segurancas.Drummond, segurancas.Mauer]
+        for classe_seguranca in lista_segurancas:
+            if posicoes_spawn_seguras:
+                pos_x, pos_y = random.choice(posicoes_spawn_seguras); posicoes_spawn_seguras.remove((pos_x, pos_y))
+                novo_seguranca = classe_seguranca(self, pos_x, pos_y)
+                self.todas_sprites.add(novo_seguranca); self.grupo_segurancas.add(novo_seguranca)
         
         self.agendar_proximo_spawn_balao()
         self.timer_spawn_chave = pygame.time.get_ticks() + constants.TIMER_INICIAL_CHAVE
         self.agendar_proximo_spawn_cafe()
         
         self.rodar()
-    
-    def spawnar_inimigo(self, classe_inimigo, grupo, pos_jogador_grid):
-        posicoes_spawn_seguras = [p for p in self.posicoes_livres if abs(p[0] - pos_jogador_grid[0]) + abs(p[1] - pos_jogador_grid[1]) >= constants.DISTANCIA_SEGURA]
-        if not posicoes_spawn_seguras: posicoes_spawn_seguras = self.posicoes_livres
-        
-        if posicoes_spawn_seguras:
-            pos_x, pos_y = random.choice(posicoes_spawn_seguras)
-            novo_inimigo = classe_inimigo(self, pos_x, pos_y)
-            self.todas_sprites.add(novo_inimigo)
-            grupo.add(novo_inimigo)
     
     def rodar(self):
         # CONTROLA O LOOP PRINCIPAL DO JOGO
@@ -105,53 +106,57 @@ class Game:
                 if event.key in [pygame.K_DOWN, pygame.K_s]: self.jogador.adicionar_movimento(dx=0, dy=1)
 
     def atualizar_sprites(self):
-            self.gerenciar_modos_inimigos()
-            self.checar_spawn_balao(); self.checar_spawn_chave(); self.checar_spawn_cafe(); self.checar_efeito_cafe()
-            self.todas_sprites.update()
+        # ATUALIZA O ESTADO DE TODAS AS SPRITES
+        self.gerenciar_modos_inimigos()
+        self.checar_spawn_balao()
+        self.checar_spawn_chave()
+        self.checar_spawn_cafe()
+        self.checar_efeito_cafe()
+        self.todas_sprites.update()
 
-            if self.jogador:
-                # Colisões com itens
-                if pygame.sprite.spritecollide(self.jogador, self.grupo_vidas_extras, True):
-                    self.vidas += 1
-                    if self.vidas > constants.VIDAS_INICIAIS: self.vidas = constants.VIDAS_INICIAIS
+        if self.jogador:
+            # Colisões com itens
+            if pygame.sprite.spritecollide(self.jogador, self.grupo_vidas_extras, True):
+                self.vidas += 1
+                if self.vidas > constants.VIDAS_INICIAIS: self.vidas = constants.VIDAS_INICIAIS
+            
+            partes_colididas = pygame.sprite.spritecollide(self.jogador, self.grupo_chave_partes, True)
+            for parte in partes_colididas:
+                self.partes_coletadas[parte.parte_index] = True
+                self.proxima_parte_a_spawnar += 1
                 
-                partes_colididas = pygame.sprite.spritecollide(self.jogador, self.grupo_chave_partes, True)
-                for parte in partes_colididas:
-                    self.partes_coletadas[parte.parte_index] = True
-                    self.proxima_parte_a_spawnar += 1
-                    
-                    # SPAWNA UM NOVO SEGURANÇA A CADA PARTE DA CHAVE COLETADA
-                    pos_jogador_grid = (self.jogador.rect.x // constants.TAMANHO_BLOCO, self.jogador.rect.y // constants.TAMANHO_BLOCO)
-                    if self.proxima_parte_a_spawnar == 1: # Primeira parte
-                        self.spawnar_inimigo(segurancas.Drummond, self.grupo_segurancas, pos_jogador_grid)
-                    elif self.proxima_parte_a_spawnar == 2: # Segunda parte
-                        self.spawnar_inimigo(segurancas.Milchick, self.grupo_segurancas, pos_jogador_grid)
-                    elif self.proxima_parte_a_spawnar == 3: # Terceira parte
-                        self.spawnar_inimigo(segurancas.Mauer, self.grupo_segurancas, pos_jogador_grid)
+                # SPAWNA UM NOVO SEGURANÇA A CADA PARTE DA CHAVE COLETADA
+                if self.proxima_parte_a_spawnar == 1: # Primeira parte
+                    self.spawnar_inimigo(segurancas.Drummond, self.grupo_segurancas, (self.jogador.rect.x, self.jogador.rect.y))
+                elif self.proxima_parte_a_spawnar == 2: # Segunda parte
+                    self.spawnar_inimigo(segurancas.Milchick, self.grupo_segurancas, (self.jogador.rect.x, self.jogador.rect.y))
+                elif self.proxima_parte_a_spawnar == 3: # Terceira parte
+                    self.spawnar_inimigo(segurancas.Mauer, self.grupo_segurancas, (self.jogador.rect.x, self.jogador.rect.y))
 
-                    if self.proxima_parte_a_spawnar < constants.NUMERO_PARTES_CHAVE:
-                        self.agendar_proxima_chave()
-                    else:
-                        x_porta, y_porta = constants.X_PORTA, constants.Y_PORTA
-                        self.mapa_do_jogo[y_porta][x_porta] = mapa.PISO 
-                        nova_porta = porta.Porta(x_porta, y_porta)
-                        self.todas_sprites.add(nova_porta); self.grupo_porta.add(nova_porta)
+                # Se ainda houver partes para aparecer (não coletar), agenda a próxima
+                if self.proxima_parte_a_spawnar < constants.NUMERO_PARTES_CHAVE:
+                    self.agendar_proxima_chave()
+                # Se foi a última parte, cria a porta
+                else:
+                    x_porta, y_porta = constants.X_PORTA, constants.Y_PORTA
+                    self.mapa_do_jogo[y_porta][x_porta] = mapa.PISO 
+                    nova_porta = porta.Porta(x_porta, y_porta, self.imagem_porta)
+                    self.todas_sprites.add(nova_porta); self.grupo_porta.add(nova_porta)
+            
+            if pygame.sprite.spritecollide(self.jogador, self.grupo_cafe, True):
+                self.ativar_efeito_cafe()
 
-                
-                if pygame.sprite.spritecollide(self.jogador, self.grupo_cafe, True):
-                    self.ativar_efeito_cafe()
-
-                # Colisão com a Chefona (Cobel)
-                if pygame.sprite.spritecollide(self.jogador, self.grupo_chefes, False) and not self.jogador.invencivel:
-                    self.vidas = 0
-                
-                # Colisão com Seguranças Comuns
-                colisoes_segurancas = pygame.sprite.spritecollide(self.jogador, self.grupo_segurancas, False)
-                if colisoes_segurancas:
-                    agora = pygame.time.get_ticks()
-                    if not self.jogador.invencivel and agora - self.ultimo_dano_tempo > constants.COOLDOWN_DANO:
-                        self.ultimo_dano_tempo = agora
-                        self.perder_vida()
+           # Colisão com a Chefona (Cobel) - Morte instantânea
+            if pygame.sprite.spritecollide(self.jogador, self.grupo_chefes, False) and not self.jogador.invencivel:
+                self.vidas = 0
+            
+            # Colisão com Seguranças Comuns - Tira 1 vida com cooldown
+            colisoes_segurancas = pygame.sprite.spritecollide(self.jogador, self.grupo_segurancas, False)
+            if colisoes_segurancas:
+                agora = pygame.time.get_ticks()
+                if not self.jogador.invencivel and agora - self.ultimo_dano_tempo > constants.COOLDOWN_DANO:
+                    self.ultimo_dano_tempo = agora
+                    self.perder_vida()
 
     def desenhar_sprites(self):
         # DESENHA TODOS OS ELEMENTOS NA TELA
@@ -191,6 +196,7 @@ class Game:
         self.imagem_balao_vida = pygame.image.load(os.path.join(diretorio_imagens, constants.BALAO)).convert_alpha()
         self.imagem_xicara_cafe = pygame.image.load(os.path.join(diretorio_imagens, constants.CAFE)).convert_alpha()
         self.imagem_game_over = pygame.image.load(os.path.join(diretorio_imagens, constants.GAME_OVER_IMG)).convert()
+        self.imagem_porta = pygame.image.load(os.path.join(diretorio_imagens, constants.PORTA_SAIDA)).convert_alpha()
         self.imagem_venceu = pygame.image.load(os.path.join(diretorio_imagens, constants.VENCEU_IMG)).convert()
         
         self.imagem_xicara_cafe_opaca = self.imagem_xicara_cafe.copy()
@@ -209,8 +215,8 @@ class Game:
     
     # --- Métodos de Lógica Específica ---
 
-    def spawnar_inimigo(self, classe_inimigo, grupo, pos_jogador_grid):
-        posicoes_spawn_seguras = [p for p in self.posicoes_livres if abs(p[0] - pos_jogador_grid[0]) + abs(p[1] - pos_jogador_grid[1]) >= constants.DISTANCIA_SEGURA]
+    def spawnar_inimigo(self, classe_inimigo, grupo, pos_jogador):
+        posicoes_spawn_seguras = [p for p in self.posicoes_livres if abs(p[0] - pos_jogador[0]) + abs(p[1] - pos_jogador[1]) >= constants.DISTANCIA_SEGURA]
         if not posicoes_spawn_seguras: posicoes_spawn_seguras = self.posicoes_livres
         
         if posicoes_spawn_seguras:
