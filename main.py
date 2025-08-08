@@ -22,7 +22,7 @@ class Game:
         self.fonte = pygame.font.match_font(constants.FONTE); self.carregar_arquivos()
 
     def novo_jogo(self):
-        """Configura e inicia uma nova partida."""
+         # CONFIGURA E INICIA UMA NOVA PARTIDA
         self.vidas = constants.VIDAS_INICIAIS
         self.partes_coletadas = [False] * constants.NUMERO_PARTES_CHAVE
         self.proxima_parte_a_spawnar = 0
@@ -40,23 +40,20 @@ class Game:
         self.grupo_segurancas = pygame.sprite.Group()
 
         self.ultimo_dano_tempo = 0
-
-        # --- CONTROLE DE MODO DE IA ---
         self.modo_inimigo = 'dispersar'
         self.timer_mudanca_modo = pygame.time.get_ticks() + constants.TEMPO_DISPERSAO
 
         # Posiciona jogador, paredes e encontra locais livres
-        posicao_inicial_jogador = None
-        self.posicoes_livres = []
+        posicao_inicial_jogador = None; self.posicoes_livres = []
         for y, linha in enumerate(self.mapa_do_jogo):
             for x, celula in enumerate(linha):
-                if celula == mapa.PAREDE:
+                # O local da porta começa como uma parede de colisão normal
+                if celula == mapa.PAREDE or celula == mapa.PORTA:
                     self.grupo_paredes.add(parede.Parede(x, y))
                 if celula == mapa.PISO:
                     self.posicoes_livres.append((x, y))
         
-        largura_mapa = len(self.mapa_do_jogo[0])
-        altura_mapa = len(self.mapa_do_jogo)
+        largura_mapa = len(self.mapa_do_jogo[0]); altura_mapa = len(self.mapa_do_jogo)
         posicao_inicial_jogador = (largura_mapa - 2, altura_mapa - 2)
         if posicao_inicial_jogador not in self.posicoes_livres:
              posicao_inicial_jogador = self.posicoes_livres[-1] if self.posicoes_livres else (1,1)
@@ -64,7 +61,6 @@ class Game:
         self.jogador = mark.Mark(self, posicao_inicial_jogador[0], posicao_inicial_jogador[1])
         self.todas_sprites.add(self.jogador)
         
-        # --- LÓGICA DE SPAWN DOS INIMIGOS ---
         self.spawnar_inimigo(cobel.Cobel, self.grupo_chefes, posicao_inicial_jogador)
         self.spawnar_inimigo(segurancas.Huang, self.grupo_segurancas, posicao_inicial_jogador)
         
@@ -105,53 +101,70 @@ class Game:
                 if event.key in [pygame.K_DOWN, pygame.K_s]: self.jogador.adicionar_movimento(dx=0, dy=1)
 
     def atualizar_sprites(self):
-            self.gerenciar_modos_inimigos()
-            self.checar_spawn_balao(); self.checar_spawn_chave(); self.checar_spawn_cafe(); self.checar_efeito_cafe()
-            self.todas_sprites.update()
+        self.gerenciar_modos_inimigos()
+        self.checar_spawn_balao(); self.checar_spawn_chave(); self.checar_spawn_cafe(); self.checar_efeito_cafe()
+        self.todas_sprites.update()
 
-            if self.jogador:
-                # Colisões com itens
-                if pygame.sprite.spritecollide(self.jogador, self.grupo_vidas_extras, True):
-                    self.vidas += 1
-                    if self.vidas > constants.VIDAS_INICIAIS: self.vidas = constants.VIDAS_INICIAIS
+        if self.jogador:
+            # Colisões com itens
+            if pygame.sprite.spritecollide(self.jogador, self.grupo_vidas_extras, True):
+                self.vidas += 1
+                if self.vidas > constants.VIDAS_INICIAIS: self.vidas = constants.VIDAS_INICIAIS
+            
+            partes_colididas = pygame.sprite.spritecollide(self.jogador, self.grupo_chave_partes, True)
+            for parte in partes_colididas:
+                self.partes_coletadas[parte.parte_index] = True
+                self.proxima_parte_a_spawnar += 1
                 
-                partes_colididas = pygame.sprite.spritecollide(self.jogador, self.grupo_chave_partes, True)
-                for parte in partes_colididas:
-                    self.partes_coletadas[parte.parte_index] = True
-                    self.proxima_parte_a_spawnar += 1
+                pos_jogador_grid = (self.jogador.rect.x // constants.TAMANHO_BLOCO, self.jogador.rect.y // constants.TAMANHO_BLOCO)
+                if self.proxima_parte_a_spawnar == 1: self.spawnar_inimigo(segurancas.Drummond, self.grupo_segurancas, pos_jogador_grid)
+                elif self.proxima_parte_a_spawnar == 2: self.spawnar_inimigo(segurancas.Milchick, self.grupo_segurancas, pos_jogador_grid)
+                elif self.proxima_parte_a_spawnar == 3: self.spawnar_inimigo(segurancas.Mauer, self.grupo_segurancas, pos_jogador_grid)
+
+                if self.proxima_parte_a_spawnar < constants.NUMERO_PARTES_CHAVE:
+                    self.agendar_proxima_chave()
+                elif all(self.partes_coletadas): # Se foi a última parte
+                    x_porta, y_porta = constants.X_PORTA, constants.Y_PORTA
                     
-                    # SPAWNA UM NOVO SEGURANÇA A CADA PARTE DA CHAVE COLETADA
-                    pos_jogador_grid = (self.jogador.rect.x // constants.TAMANHO_BLOCO, self.jogador.rect.y // constants.TAMANHO_BLOCO)
-                    if self.proxima_parte_a_spawnar == 1: # Primeira parte
-                        self.spawnar_inimigo(segurancas.Drummond, self.grupo_segurancas, pos_jogador_grid)
-                    elif self.proxima_parte_a_spawnar == 2: # Segunda parte
-                        self.spawnar_inimigo(segurancas.Milchick, self.grupo_segurancas, pos_jogador_grid)
-                    elif self.proxima_parte_a_spawnar == 3: # Terceira parte
-                        self.spawnar_inimigo(segurancas.Mauer, self.grupo_segurancas, pos_jogador_grid)
+                    # Procura pela parede de colisão no local da porta e a remove
+                    for parede_sprite in self.grupo_paredes:
+                        if parede_sprite.rect.x == x_porta * constants.TAMANHO_BLOCO and parede_sprite.rect.y == y_porta * constants.TAMANHO_BLOCO:
+                            parede_sprite.kill() # DESTRÓI A BARREIRA INVISÍVEL
+                            break
 
-                    if self.proxima_parte_a_spawnar < constants.NUMERO_PARTES_CHAVE:
-                        self.agendar_proxima_chave()
-                    else:
-                        x_porta, y_porta = constants.X_PORTA, constants.Y_PORTA
-                        self.mapa_do_jogo[y_porta][x_porta] = mapa.PISO 
-                        nova_porta = porta.Porta(x_porta, y_porta)
-                        self.todas_sprites.add(nova_porta); self.grupo_porta.add(nova_porta)
+                    self.mapa_do_jogo[y_porta][x_porta] = mapa.PISO
 
+                    # Adiciona a sprite VISUAL da porta aberta
+                    nova_porta = porta.Porta(x_porta, y_porta)
+                    self.todas_sprites.add(nova_porta)
+                    self.grupo_porta.add(nova_porta)
+
+            
+            if pygame.sprite.spritecollide(self.jogador, self.grupo_cafe, True):
+                self.ativar_efeito_cafe()
+
+            # Colisão com a Chefona (Cobel)
+            if pygame.sprite.spritecollide(self.jogador, self.grupo_chefes, False) and not self.jogador.invencivel:
+                self.vidas = 0
+            
+            # Colisão com Seguranças Comuns
+            colisoes_segurancas = pygame.sprite.spritecollide(self.jogador, self.grupo_segurancas, False)
+            if colisoes_segurancas:
+                agora = pygame.time.get_ticks()
+                if not self.jogador.invencivel and agora - self.ultimo_dano_tempo > constants.COOLDOWN_DANO:
+                    self.ultimo_dano_tempo = agora
+                    self.perder_vida()
+            
+            # Colisão com a Porta (para vencer o jogo)
+            colisoes_porta = pygame.sprite.spritecollide(self.jogador, self.grupo_porta, False)
+            if colisoes_porta:
+                area_jogador = self.jogador.rect.width * self.jogador.rect.height
+                rect_intersecao = self.jogador.rect.clip(colisoes_porta[0].rect)
+                area_intersecao = rect_intersecao.width * rect_intersecao.height
                 
-                if pygame.sprite.spritecollide(self.jogador, self.grupo_cafe, True):
-                    self.ativar_efeito_cafe()
-
-                # Colisão com a Chefona (Cobel)
-                if pygame.sprite.spritecollide(self.jogador, self.grupo_chefes, False) and not self.jogador.invencivel:
-                    self.vidas = 0
-                
-                # Colisão com Seguranças Comuns
-                colisoes_segurancas = pygame.sprite.spritecollide(self.jogador, self.grupo_segurancas, False)
-                if colisoes_segurancas:
-                    agora = pygame.time.get_ticks()
-                    if not self.jogador.invencivel and agora - self.ultimo_dano_tempo > constants.COOLDOWN_DANO:
-                        self.ultimo_dano_tempo = agora
-                        self.perder_vida()
+                if area_intersecao >= (area_jogador * constants.INTERSECAO):
+                    self.venceu_jogo = True
+                    self.jogando = False
 
     def desenhar_sprites(self):
         # DESENHA TODOS OS ELEMENTOS NA TELA
@@ -159,10 +172,14 @@ class Game:
         for y, linha in enumerate(self.mapa_do_jogo):
             for x, celula in enumerate(linha):
                 pos_x = x * constants.TAMANHO_BLOCO; pos_y = y * constants.TAMANHO_BLOCO
-                if celula == mapa.PAREDE: self.tela.blit(self.imagem_parede, (pos_x, pos_y))
-                elif celula == mapa.PISO: pygame.draw.rect(self.tela, constants.VERDE, (pos_x, pos_y, constants.TAMANHO_BLOCO, constants.TAMANHO_BLOCO))
+                # A porta não é mais desenhada aqui, pois agora é uma sprite
+                if celula == mapa.PAREDE:
+                    self.tela.blit(self.imagem_parede, (pos_x, pos_y))
+                elif celula == mapa.PISO:
+                    pygame.draw.rect(self.tela, constants.VERDE, (pos_x, pos_y, constants.TAMANHO_BLOCO, constants.TAMANHO_BLOCO))
+        
+        self.todas_sprites.draw(self.tela) # Desenha o jogador, inimigos, e a porta
 
-        self.todas_sprites.draw(self.tela)
         pos_y_interface = constants.ALTURA - (mapa.ALTURA_INTERFACE_INFERIOR // 2)
         for i in range(self.vidas):
              self.tela.blit(self.imagem_balao_vida, (20 + i * 35, pos_y_interface - 15))
