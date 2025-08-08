@@ -11,7 +11,7 @@ A temática principal do jogo é inspirada na série Ruptura (Severance), cuja a
     <td align="center">
       <a href="https://github.com/analauraboliveira">
         <img src="https://avatars.githubusercontent.com/u/175695622?v=4" width="115"><br>
-        <sub>Ana Laura</sub>
+        <sub>Ana Laura Barboza</sub>
       </a>
     </td>
     <td align="center">
