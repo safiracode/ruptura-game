@@ -16,7 +16,3 @@ class Cafe(pygame.sprite.Sprite):
 
         self.rect = self.image.get_rect()
         self.rect.topleft = (x * constants.TAMANHO_BLOCO, y * constants.TAMANHO_BLOCO)
-
-        #carrega o som do café
-        caminho_som= os.path.join('audios', 'som_café.mp3')
-        self.som_cafe= pygame.mixer.Sound(caminho_som)
