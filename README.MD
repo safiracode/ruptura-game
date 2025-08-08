@@ -40,7 +40,7 @@ A temática principal do jogo é inspirada na série Ruptura (Severance), cuja a
     </td>
     <td align="center">
       <a href="https://github.com/safiracode">
-        <img src="https://avatars.githubusercontent.com/u/174833148?v=4" width="115"><br>
+        <img src="https://avatars.githubusercontent.com/u/206463303?v=4" width="115"><br>
         <sub>Safira Moraes</sub> 
       </a>
     </td>
