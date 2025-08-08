@@ -1,134 +1,130 @@
+# classes/cobel.py
 import pygame
 import constants
 import mapa
 import os
+import collections
 import random
-import math
 
 class Cobel(pygame.sprite.Sprite):
     def __init__(self, game, x, y):
         super().__init__()
         self.game = game
-
-        # Carrega a imagem do Cobel
-        self.sprites = { 
-        'cima': pygame.transform.scale(pygame.image.load(os.path.join('imagens', constants.COBEL_CIMA)).convert_alpha(), (constants.TAMANHO_BLOCO, constants.TAMANHO_BLOCO)),
-        'baixo': pygame.transform.scale(pygame.image.load(os.path.join('imagens', constants.COBEL_BAIXO)).convert_alpha(), (constants.TAMANHO_BLOCO, constants.TAMANHO_BLOCO)),
-        'esquerda': pygame.transform.scale(pygame.image.load(os.path.join('imagens', constants.COBEL_ESQUERDA)).convert_alpha(), (constants.TAMANHO_BLOCO, constants.TAMANHO_BLOCO)),
-        'direita': pygame.transform.scale(pygame.image.load(os.path.join('imagens', constants.COBEL_DIREITA)).convert_alpha(), (constants.TAMANHO_BLOCO, constants.TAMANHO_BLOCO))}
-        self.image = self.sprites['baixo']
+        
+        self.carregar_imagens()
+        self.image = self.imagens['baixo']
         self.rect = self.image.get_rect()
 
-        # Posição inicial
-        self.rect.topleft = (x * constants.TAMANHO_BLOCO, y * constants.TAMANHO_BLOCO)
-        
-        # Velocidade de movimento (mais lenta que o jogador)
         self.velocidade = constants.VELOCIDADE_SEGURANCA
+        self.rect.topleft = (x * constants.TAMANHO_BLOCO, y * constants.TAMANHO_BLOCO)
+        self.x = float(self.rect.x); self.y = float(self.rect.y)
+        self.dx, self.dy = 0, 0
         
-        # Timer para movimento
-        self.ultimo_movimento = pygame.time.get_ticks()
-        self.intervalo_movimento = 300  # Move a cada 300ms
-
-    def pode_mover(self, dx, dy):
-        # VERIFICA SE PODE MOVER PARA POSIÇÃO ESPECIFICADA
-        novo_x_grid = (self.rect.centerx // constants.TAMANHO_BLOCO) + dx
-        novo_y_grid = (self.rect.centery // constants.TAMANHO_BLOCO) + dy
+        self.caminho = []
+        self.ultima_busca = 0
+        self.intervalo_busca = random.randint(400, 600)
         
-        if 0 <= novo_y_grid < mapa.ALTURA_GRADE and 0 <= novo_x_grid < mapa.LARGURA_GRADE:
-            return self.game.mapa_do_jogo[novo_y_grid][novo_x_grid] == mapa.PISO
-        return False
+        # Lógica de Modos (Perseguir/Dispersar)
+        self.modo = 'dispersar'
+        # Define o tempo para a primeira mudança de modo
+        self.tempo_mudanca_modo = pygame.time.get_ticks() + random.randint(constants.TEMPO_MIN_MODO, constants.TEMPO_MAX_MODO)
 
-    def encontrar_direcao_para_jogador(self):
-        # ENCONTRA A DIREÇÃO PARA SE MOVER ATÉ O JOGADOR USANDO DISTÂNCIA EUCLIDIANA
-        jogador_x = self.game.jogador.rect.centerx // constants.TAMANHO_BLOCO
-        jogador_y = self.game.jogador.rect.centery // constants.TAMANHO_BLOCO
-        cobel_x = self.rect.centerx // constants.TAMANHO_BLOCO
-        cobel_y = self.rect.centery // constants.TAMANHO_BLOCO
+    def carregar_imagens(self):
+        # ... (seu método carregar_imagens continua igual)
+        self.imagens = {
+            'cima': pygame.transform.scale(pygame.image.load(os.path.join('imagens', constants.COBEL_CIMA)).convert_alpha(), (constants.TAMANHO_BLOCO, constants.TAMANHO_BLOCO)),
+            'baixo': pygame.transform.scale(pygame.image.load(os.path.join('imagens', constants.COBEL_BAIXO)).convert_alpha(), (constants.TAMANHO_BLOCO, constants.TAMANHO_BLOCO)),
+            'esquerda': pygame.transform.scale(pygame.image.load(os.path.join('imagens', constants.COBEL_ESQUERDA)).convert_alpha(), (constants.TAMANHO_BLOCO, constants.TAMANHO_BLOCO)),
+            'direita': pygame.transform.scale(pygame.image.load(os.path.join('imagens', constants.COBEL_DIREITA)).convert_alpha(), (constants.TAMANHO_BLOCO, constants.TAMANHO_BLOCO))
+        }
 
-        # Descobre a direção anterior (para não voltar)
-        if hasattr(self, 'ultimo_dx') and hasattr(self, 'ultimo_dy'):
-            ultimo_dx, ultimo_dy = self.ultimo_dx, self.ultimo_dy
-        else:
-            ultimo_dx, ultimo_dy = 0, 0
+    def encontrar_caminho(self, alvo_x, alvo_y):
+        # ... (seu método encontrar_caminho continua igual)
+        inicio = (int(self.rect.x // constants.TAMANHO_BLOCO), int(self.rect.y // constants.TAMANHO_BLOCO))
+        fim = (int(alvo_x // constants.TAMANHO_BLOCO), int(alvo_y // constants.TAMANHO_BLOCO))
+        fila = collections.deque([(inicio, [inicio])]); visitados = {inicio}
+        while fila:
+            (cx, cy), caminho_atual = fila.popleft()
+            if (cx, cy) == fim:
+                return caminho_atual[1:]
+            for dx, dy in [(0, 1), (0, -1), (1, 0), (-1, 0)]:
+                nx, ny = cx + dx, cy + dy
+                if 0 <= nx < mapa.LARGURA_GRADE and 0 <= ny < mapa.ALTURA_GRADE and \
+                   self.game.mapa_do_jogo[ny][nx] == mapa.PISO and (nx, ny) not in visitados:
+                    visitados.add((nx, ny)); novo_caminho = list(caminho_atual); novo_caminho.append((nx, ny)); fila.append(((nx, ny), novo_caminho))
+        return []
 
-        # Direções possíveis: cima, esquerda, baixo, direita (ordem de prioridade)
-        direcoes = [ (0, -1), (-1, 0), (0, 1), (1, 0) ]
-
-        # Descobre a direção "em frente" (igual à última direção)
-        if ultimo_dx != 0 or ultimo_dy != 0:
-            frente = (ultimo_dx, ultimo_dy)
-            idx_frente = direcoes.index(frente) if frente in direcoes else None
-        else:
-            idx_frente = None
-
-        opcoes = []
-        for i, (dx, dy) in enumerate(direcoes):
-            # Não pode voltar para trás (180 graus)
-            if (dx, dy) == (-ultimo_dx, -ultimo_dy) and (ultimo_dx != 0 or ultimo_dy != 0):
-                continue
-            # Só pode ir para tiles livres
-            if self.pode_mover(dx, dy):
-                nx, ny = cobel_x + dx, cobel_y + dy
-                distancia = math.hypot(jogador_x - nx, jogador_y - ny)
-                # Prioridade: cima (0), esquerda (1), baixo (2), direita (3)
-                prioridade = i
-                opcoes.append( ((dx, dy), distancia, prioridade) )
+    def checar_colisao_e_parar(self, direcao):
+        """Verifica colisões com as paredes e para o movimento se necessário."""
+        colisoes = pygame.sprite.spritecollide(self, self.game.grupo_paredes, False)
+        if colisoes:
+            if direcao == 'x':
+                if self.dx > 0: self.rect.right = colisoes[0].rect.left
+                if self.dx < 0: self.rect.left = colisoes[0].rect.right
+                self.x = self.rect.x
+            if direcao == 'y':
+                if self.dy > 0: self.rect.bottom = colisoes[0].rect.top
+                if self.dy < 0: self.rect.top = colisoes[0].rect.bottom
+                self.y = self.rect.y
+            self.caminho = []
             
-
-        if not opcoes:
-            print(opcoes)
-            return (0, 0)
-
-        # Escolhe a opção com menor distância, depois maior prioridade
-        opcoes.sort(key=lambda x: (x[1], x[2]))
-        melhor_dx, melhor_dy = opcoes[0][0]
-
-        # Salva a última direção para a próxima decisão
-        self.ultimo_dx, self.ultimo_dy = melhor_dx, melhor_dy
-
-        return melhor_dx, melhor_dy
-
     def update(self):
-        # Verifica se está em movimento
-        if hasattr(self, 'destino'):
-            dx = self.destino[0] - self.rect.x
-            dy = self.destino[1] - self.rect.y
+        agora = pygame.time.get_ticks()
 
-            if dx != 0:
-                passo = self.velocidade if dx > 0 else -self.velocidade
-                self.rect.x += passo
-                if abs(self.rect.x - self.destino[0]) < self.velocidade:
-                    self.rect.x = self.destino[0]
-            elif dy != 0:
-                passo = self.velocidade if dy > 0 else -self.velocidade
-                self.rect.y += passo
-                if abs(self.rect.y - self.destino[1]) < self.velocidade:
-                    self.rect.y = self.destino[1]
+        # 1. Gerencia a mudança de modos (Perseguir/Dispersar)
+        if agora > self.tempo_mudanca_modo:
+            if self.modo == 'perseguir':
+                self.modo = 'dispersar'
+            else:
+                self.modo = 'perseguir'
+            # Agenda a próxima mudança para 20 a 30 segundos no futuro
+            self.tempo_mudanca_modo = agora + random.randint(constants.TEMPO_MIN_MODO, constants.TEMPO_MAX_MODO)
+            self.caminho = [] # Limpa o caminho antigo ao mudar de modo
 
-            # Chegou ao destino
-            if self.rect.topleft == self.destino:
-                del self.destino
+        # 2. Decide o alvo e recalcula o caminho periodicamente
+        if not self.caminho and agora - self.ultima_busca > self.intervalo_busca:
+            self.ultima_busca = agora
+            alvo = None
+            if self.modo == 'perseguir':
+                alvo = self.game.jogador.rect.center
+            else: # modo 'dispersar'
+                # Escolhe um ponto aleatório do mapa para andar
+                pos_x_aleatoria = random.randint(1, mapa.LARGURA_GRADE - 2)
+                pos_y_aleatoria = random.randint(1, mapa.ALTURA_GRADE - 2)
+                alvo = (pos_x_aleatoria * constants.TAMANHO_BLOCO, pos_y_aleatoria * constants.TAMANHO_BLOCO)
+            
+            self.caminho = self.encontrar_caminho(alvo[0], alvo[1])
 
+        # 3. Lógica para seguir o caminho
+        if self.caminho:
+            proximo_ponto_x = self.caminho[0][0] * constants.TAMANHO_BLOCO
+            proximo_ponto_y = self.caminho[0][1] * constants.TAMANHO_BLOCO
+            
+            dist_x = proximo_ponto_x - self.rect.x
+            dist_y = proximo_ponto_y - self.rect.y
+
+            if abs(dist_x) < self.velocidade and abs(dist_y) < self.velocidade:
+                self.caminho.pop(0)
+            else:
+                self.dx = 1 if dist_x > 0 else -1 if dist_x < 0 else 0
+                self.dy = 1 if dist_y > 0 else -1 if dist_y < 0 else 0
         else:
-            # Só escolhe nova direção se estiver exatamente no centro de um bloco
-            if self.rect.x % constants.TAMANHO_BLOCO == 0 and self.rect.y % constants.TAMANHO_BLOCO == 0:
-                dx, dy = self.encontrar_direcao_para_jogador()
+            self.dx, self.dy = 0, 0
 
-                if dx != 0 or dy != 0:
-                    self.destino = (
-                        self.rect.x + dx * constants.TAMANHO_BLOCO,
-                        self.rect.y + dy * constants.TAMANHO_BLOCO
-                    )
+        # 4. Lógica de movimento e colisão
+        vx = self.dx * self.velocidade
+        vy = self.dy * self.velocidade
 
-                    # Atualiza sprite
-                    if dx == 1: self.image = self.sprites['direita']
-                    elif dx == -1: self.image = self.sprites['esquerda']
-                    elif dy == -1: self.image = self.sprites['cima']
-                    elif dy == 1: self.image = self.sprites['baixo']
+        self.x += vx
+        self.rect.x = round(self.x)
+        self.checar_colisao_e_parar('x')
 
-    def causar_dano(self):
-        # CAUSA DANO AO JOGADOR QUANDO HÁ COLISÃO
-        self.game.vidas -= 2
-        if self.game.vidas < 0:
-            self.game.vidas = 0
-        print(f"Cobel atacou! Vidas restantes: {self.game.vidas}")
+        self.y += vy
+        self.rect.y = round(self.y)
+        self.checar_colisao_e_parar('y')
+        
+        # 5. Atualiza a animação
+        if self.dx == 1: self.image = self.imagens['direita']
+        elif self.dx == -1: self.image = self.imagens['esquerda']
+        elif self.dy == 1: self.image = self.imagens['baixo']
+        elif self.dy == -1: self.image = self.imagens['cima']

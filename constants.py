@@ -32,6 +32,9 @@ X_PORTA, Y_PORTA = 1,0
 # --- SEGURANÇAS ---
 VELOCIDADE_SEGURANCA = 1 # Cobel, Milchick, Drummond, Mauer e Huang
 INTERSECAO = 0.2 # Interseção de imagens pra considerar game over ou perda de vida
+DISTANCIA_SEGURA = 7
+TEMPO_MIN_MODO = 20000     # 20 segundos
+TEMPO_MAX_MODO = 30000     # 30 segundos
 
 # --- CORES EM RGB ---
 PRETO = (0, 0, 0)

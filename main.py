@@ -73,17 +73,30 @@ class Game:
         self.jogador = mark.Mark(self, posicao_inicial_jogador[0], posicao_inicial_jogador[1])
         self.todas_sprites.add(self.jogador)
 
-        # Spawna a Cobel e a coloca no grupo de chefes
-        if self.posicoes_livres:
-            pos_x, pos_y = random.choice(self.posicoes_livres)
+    # --- Lógica de Spawn Seguro da Cobel ---
+        posicoes_seguras_cobel = []
+        for pos in self.posicoes_livres:
+            distancia = abs(pos [0] - posicao_inicial_jogador [0]) + abs(pos [1] - posicao_inicial_jogador [1])
+            if distancia >= constants.DISTANCIA_SEGURA:
+                posicoes_seguras_cobel.append(pos)
+
+        if posicoes_seguras_cobel:
+            pos_x, pos_y = random.choice(posicoes_seguras_cobel)
+            self.posicoes_livres.remove((pos_x, pos_y))
             novo_cobel = cobel.Cobel(self, pos_x, pos_y)
             self.todas_sprites.add(novo_cobel)
-            self.grupo_chefes.add(novo_cobel) # Adicionada ao grupo de chefes
+            self.grupo_chefes.add(novo_cobel)
+        elif self.posicoes_livres: # Caso não haja posições seguras, tenta uma aleatória (mapas muito pequenos)
+            pos_x, pos_y = random.choice(self.posicoes_livres)
+            self.posicoes_livres.remove((pos_x, pos_y))
+            novo_cobel = cobel.Cobel(self, pos_x, pos_y)
+            self.todas_sprites.add(novo_cobel)
+            self.grupo_chefes.add(novo_cobel)
 
         self.agendar_proximo_spawn_balao()
         self.timer_spawn_chave = pygame.time.get_ticks() + constants.TIMER_INICIAL_CHAVE
         self.agendar_proximo_spawn_cafe()
-        
+            
         self.rodar()
     
     def rodar(self):
