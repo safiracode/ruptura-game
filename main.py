@@ -11,7 +11,6 @@ class Game:
         # INICIALIZA O JOGO E SUAS VARIAVEIS PRINCIPAIS
         pygame.init()
         pygame.mixer.init()
-        
         #musica de fundo
         pygame.mixer.music.load('audios/música principal.mp3')
         pygame.mixer.music.set_volume(0.5)
