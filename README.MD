@@ -9,9 +9,9 @@ A temática principal do jogo é inspirada na série Ruptura (Severance), cuja a
 <table>
   <tr>
     <td align="center">
-      <a href="https://github.com/safiracode">
-        <img src="https://avatars.githubusercontent.com/u/174833148?v=4" width="115"><br>
-        <sub>Safira Moraes</sub> 
+      <a href="https://github.com/analauraboliveira">
+        <img src="https://avatars.githubusercontent.com/u/175695622?v=4" width="115"><br>
+        <sub>Ana Laura</sub>
       </a>
     </td>
     <td align="center">
@@ -27,21 +27,21 @@ A temática principal do jogo é inspirada na série Ruptura (Severance), cuja a
       </a>
     </td>
     <td align="center">
+      <a href="https://github.com/lauravfonseca">
+        <img src="https://avatars.githubusercontent.com/u/175695605?v=4" width="115"><br>
+        <sub>Laura Fonseca</sub>
+      </a>
+    </td>
+    <td align="center">
       <a href="https://github.com/lestrb">
         <img src="https://avatars.githubusercontent.com/u/174833201?v=4" width="115"><br>
         <sub>Letícia Staudinger</sub> 
       </a>
     </td>
     <td align="center">
-      <a href="https://github.com/analauraboliveira">
-        <img src="https://avatars.githubusercontent.com/u/175695622?v=4" width="115"><br>
-        <sub>Ana Laura</sub>
-      </a>
-    </td>
-    <td align="center">
-      <a href="https://github.com/lauravfonseca">
-        <img src="https://avatars.githubusercontent.com/u/175695605?v=4" width="115"><br>
-        <sub>Laura Fonseca</sub>
+      <a href="https://github.com/safiracode">
+        <img src="https://avatars.githubusercontent.com/u/174833148?v=4" width="115"><br>
+        <sub>Safira Moraes</sub> 
       </a>
     </td>
   </tr>
