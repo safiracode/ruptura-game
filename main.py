@@ -110,11 +110,13 @@ class Game:
             if pygame.sprite.spritecollide(self.jogador, self.grupo_vidas_extras, True):
                 self.vidas += 1
                 if self.vidas > constants.VIDAS_INICIAIS: self.vidas = constants.VIDAS_INICIAIS
+                self.som_balao_ganha.play() #se ele tocar em um balão
             
             partes_colididas = pygame.sprite.spritecollide(self.jogador, self.grupo_chave_partes, True)
             for parte in partes_colididas:
                 self.partes_coletadas[parte.parte_index] = True
                 self.proxima_parte_a_spawnar += 1
+                self.som_chave.play() #som da chave
                 
                 pos_jogador_grid = (self.jogador.rect.x // constants.TAMANHO_BLOCO, self.jogador.rect.y // constants.TAMANHO_BLOCO)
                 if self.proxima_parte_a_spawnar == 1: self.spawnar_inimigo(segurancas.Drummond, self.grupo_segurancas, pos_jogador_grid)
@@ -142,6 +144,7 @@ class Game:
             
             if pygame.sprite.spritecollide(self.jogador, self.grupo_cafe, True):
                 self.ativar_efeito_cafe()
+                self.som_cafe.play() #som café
 
             # Colisão com a Chefona (Cobel)
             if pygame.sprite.spritecollide(self.jogador, self.grupo_chefes, False) and not self.jogador.invencivel:
@@ -223,7 +226,13 @@ class Game:
             area_corte = pygame.Rect(x_corte, 0, largura_parte, altura_chave)
             imagem_cortada = self.imagem_chave_original.subsurface(area_corte)
             self.imagens_partes_chave.append(imagem_cortada)
-    
+
+        #Sons do jogo
+        self.som_cafe = pygame.mixer.Sound(os.path.join('audios', 'som_café.mp3'))
+        self.som_balao_ganha = pygame.mixer.Sound(os.path.join('audios', 'som_balão_ganha.mp3'))
+        self.som_balao_perde= pygame.mixer.Sound(os.path.join('audios', 'som_balão_perde.mp3'))
+        self.som_chaves = pygame.mixer.Sound(os.path.join('audios', 'som_chaves.mp3'))
+
     # --- Métodos de Lógica Específica ---
 
     def spawnar_inimigo(self, classe_inimigo, grupo, pos_jogador_grid):
