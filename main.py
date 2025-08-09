@@ -231,7 +231,7 @@ class Game:
         self.som_cafe = pygame.mixer.Sound(os.path.join('audios', 'som_café.mp3'))
         self.som_balao_ganha = pygame.mixer.Sound(os.path.join('audios', 'som_balão_ganha.mp3'))
         self.som_balao_perde= pygame.mixer.Sound(os.path.join('audios', 'som_balão_perde.mp3'))
-        self.som_chaves = pygame.mixer.Sound(os.path.join('audios', 'som_chaves.mp3'))
+        self.som_chave = pygame.mixer.Sound(os.path.join('audios', 'som_chaves.mp3'))
 
     # --- Métodos de Lógica Específica ---
 
