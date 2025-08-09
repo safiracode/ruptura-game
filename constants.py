@@ -52,6 +52,7 @@ TIMER_MIN_CHAVE = 5000     # 5 segundos
 TIMER_MAX_CHAVE = 15000    # 15 segundos
 
 # --- ARQUIVOS ---
+IMAGEM_START = "ruptura_start_recortado.png"
 CHAVE = 'chave.png'
 BALAO = 'baloes_att.png'
 CAFE = 'cafe_att.png'

@@ -1,20 +1,17 @@
 import pygame
 import sys
 import os
-
+import constants
 def mostrar_tela_start(tela, fonte_path, largura, altura):
     pygame.font.init()
     
     # --- Configurações básicas ---
     COR_FUNDO = (10, 20, 50)
-    COR_TEXTO = (255, 255, 255)
     COR_BOTAO = (50, 50, 200)
     COR_BOTAO_HOVER = (80, 80, 255)
     COR_TEXTO_BOTAO = (255, 255, 255)
-    TEXTO = "Pressione START para jogar"
     TAMANHO_FONTE = 36
-    IMAGEM_NOME = "ruptura_logo.png"
-    CAMINHO_IMAGEM = os.path.join("imagens", IMAGEM_NOME)
+    CAMINHO_IMAGEM = os.path.join("imagens", constants.IMAGEM_START)
     
     #Fonte 
     try:
@@ -25,15 +22,10 @@ def mostrar_tela_start(tela, fonte_path, largura, altura):
     #Imagem
     try:
         imagem = pygame.image.load(CAMINHO_IMAGEM)
-        imagem = pygame.transform.scale(imagem, (300, 300))
     except:
         print(f"Erro ao carregar imagem: {CAMINHO_IMAGEM}")
         pygame.quit()
         sys.exit()
-
-    #Texto
-    texto_render = fonte.render(TEXTO, True, COR_TEXTO)
-    texto_rect = texto_render.get_rect(center=(largura // 2, altura - 150))
 
     #Botão START
     texto_botao = "START"
@@ -52,8 +44,7 @@ def mostrar_tela_start(tela, fonte_path, largura, altura):
 
     while esperando:
         tela.fill(COR_FUNDO)
-        tela.blit(imagem, imagem.get_rect(center=(largura // 2, altura // 2 - 50)))
-        tela.blit(texto_render, texto_rect)
+        tela.blit(imagem, (0, 0))
 
         # Verifica se o mouse está sobre o botão
         mouse_pos = pygame.mouse.get_pos()
@@ -80,4 +71,3 @@ def mostrar_tela_start(tela, fonte_path, largura, altura):
             elif evento.type == pygame.MOUSEBUTTONDOWN:
                 if ret_botao.collidepoint(evento.pos):
                     esperando = False
-
