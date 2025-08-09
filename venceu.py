@@ -8,6 +8,10 @@ def tela_venceu(tela, fonte, imagem_venceu):
 
     #som you win
     pygame.mixer.music.stop() #para qualquer som anterior
+
+    som_aplauso_venceu = pygame.mixer.Sound('audios/som_aplauso_venceu.mp3')    
+    som_aplauso_venceu.play() #inicia o som de aplausos
+    
     pygame.mixer.music.load('audios/música venceu.mp3')
     pygame.mixer.music.play() #inicia a musica venceu
 

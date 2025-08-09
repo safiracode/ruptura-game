@@ -195,6 +195,12 @@ class Game:
                 agora = pygame.time.get_ticks()
                 if not self.jogador.invencivel and agora - self.ultimo_dano_tempo > constants.COOLDOWN_DANO:
                     self.ultimo_dano_tempo = agora
+
+                    #tocar som do segurança
+                    som_segurancas = pygame.mixer.Sound('audios/som_segurancas.mp3')
+                    som_segurancas.set_volume(1.0)  #ajusta o volume do som
+                    som_segurancas.play()
+
                     self.perder_vida()
 
             # Colisão com a Porta (para vencer o jogo)
@@ -291,6 +297,8 @@ class Game:
             os.path.join('audios', 'som_balão_perde.mp3'))
         self.som_chave = pygame.mixer.Sound(
             os.path.join('audios', 'som_chaves.mp3'))
+        self.som_aplauso_venceu = pygame.mixer.Sound(
+            os.path.join('audios', 'som_aplauso_venceu.mp3'))
 
     # --- Métodos de Lógica Específica ---
 

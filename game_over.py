@@ -8,6 +8,11 @@ def tela_game_over(tela, fonte, imagem_game_over):
 
     #som de game over
     pygame.mixer.music.stop() #para qualquer som anterior
+
+    som_cobel = pygame.mixer.Sound('audios/som_cobel.mp3')
+    som_cobel.set_volume(1.0)  #ajusta o volume do som
+    som_cobel.play() #inicia o som do cobel
+
     pygame.mixer.music.load('audios/musica game over.mp3')
     pygame.mixer.music.play() #inicia a musica game over
 
