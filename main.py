@@ -6,6 +6,8 @@ from classes import balao, mark, parede, cobel, chave, cafe, porta, segurancas
 import random
 import game_over, tela_start, venceu
 
+pygame.mixer.init()
+
 class Game:
     def __init__(self):
         # INICIALIZA O JOGO E SUAS VARIAVEIS PRINCIPAIS
