@@ -2,10 +2,11 @@ import pygame
 import sys
 import os
 import constants
+
 def mostrar_tela_start(tela, fonte_path, largura, altura):
     pygame.font.init()
-    
-    # --- Configurações básicas ---
+
+    #Configurações básicas
     COR_FUNDO = (10, 20, 50)
     COR_BOTAO = (50, 50, 200)
     COR_BOTAO_HOVER = (80, 80, 255)
@@ -13,50 +14,86 @@ def mostrar_tela_start(tela, fonte_path, largura, altura):
     TAMANHO_FONTE = 36
     CAMINHO_IMAGEM = os.path.join("imagens", constants.IMAGEM_START)
     
-    #Fonte 
+    if constants and hasattr(constants, 'IMAGEM_START'):
+        CAMINHO_IMAGEM = os.path.join("imagens", constants.IMAGEM_START)
+
+
+    #Fonte
     try:
         fonte = pygame.font.Font(fonte_path, TAMANHO_FONTE)
     except:
         fonte = pygame.font.SysFont(None, TAMANHO_FONTE)
 
     #Imagem
-    try:
-        imagem = pygame.image.load(CAMINHO_IMAGEM)
-    except:
-        print(f"Erro ao carregar imagem: {CAMINHO_IMAGEM}")
-        pygame.quit()
-        sys.exit()
+    imagem = None
+    if CAMINHO_IMAGEM:
+        try:
+            imagem = pygame.image.load(CAMINHO_IMAGEM)
+        except pygame.error as e:
+            print(f"Erro ao carregar imagem: {CAMINHO_IMAGEM} - {e}")
+            
+
+    #Configuração dos Botões
+    largura_botao = 220
+    altura_botao = 60
+    espaco_entre_botoes = 20
+
+    #Posição Y do botão de baixo (START)
+    pos_y_start = altura - altura_botao - 80
+    
+    #Posição Y do botão de cima (TUTORIAL)
+    pos_y_tutorial = pos_y_start - altura_botao - espaco_entre_botoes
 
     #Botão START
-    texto_botao = "START"
-    botao_render = fonte.render(texto_botao, True, COR_TEXTO_BOTAO)
-    largura_botao = 200
-    altura_botao = 60
-    ret_botao = pygame.Rect(
+    texto_start = "START"
+    render_start = fonte.render(texto_start, True, COR_TEXTO_BOTAO)
+    ret_botao_start = pygame.Rect(
         (largura - largura_botao) // 2,
-        altura - 80,
+        pos_y_start,
+        largura_botao,
+        altura_botao
+    )
+
+    #Botão TUTORIAL
+    texto_tutorial = "TUTORIAL"
+    render_tutorial = fonte.render(texto_tutorial, True, COR_TEXTO_BOTAO)
+    ret_botao_tutorial = pygame.Rect(
+        (largura - largura_botao) // 2,
+        pos_y_tutorial,
         largura_botao,
         altura_botao
     )
 
     relogio = pygame.time.Clock()
     esperando = True
+    acao = None  # MODIFICADO: Variável para armazenar a ação a ser retornada
 
     while esperando:
         tela.fill(COR_FUNDO)
-        tela.blit(imagem, (0, 0))
+        if imagem:
+            tela.blit(imagem, (0, 0))
 
-        # Verifica se o mouse está sobre o botão
         mouse_pos = pygame.mouse.get_pos()
-        if ret_botao.collidepoint(mouse_pos):
-            cor_botao_atual = COR_BOTAO_HOVER
-        else:
-            cor_botao_atual = COR_BOTAO
 
-        pygame.draw.rect(tela, cor_botao_atual, ret_botao, border_radius=12)
+        #Cores padrão para os botões
+        cor_start_atual = COR_BOTAO
+        cor_tutorial_atual = COR_BOTAO
 
-        botao_texto_rect = botao_render.get_rect(center=ret_botao.center)
-        tela.blit(botao_render, botao_texto_rect)
+        
+        if ret_botao_start.collidepoint(mouse_pos):
+            cor_start_atual = COR_BOTAO_HOVER
+        elif ret_botao_tutorial.collidepoint(mouse_pos):
+            cor_tutorial_atual = COR_BOTAO_HOVER
+
+        #Desenha o botão START
+        pygame.draw.rect(tela, cor_start_atual, ret_botao_start, border_radius=12)
+        texto_rect_start = render_start.get_rect(center=ret_botao_start.center)
+        tela.blit(render_start, texto_rect_start)
+
+        #Desenha o botão TUTORIAL
+        pygame.draw.rect(tela, cor_tutorial_atual, ret_botao_tutorial, border_radius=12)
+        texto_rect_tutorial = render_tutorial.get_rect(center=ret_botao_tutorial.center)
+        tela.blit(render_tutorial, texto_rect_tutorial)
 
         pygame.display.flip()
         relogio.tick(60)
@@ -65,9 +102,21 @@ def mostrar_tela_start(tela, fonte_path, largura, altura):
             if evento.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+            
+            
+            elif evento.type == pygame.MOUSEBUTTONDOWN:
+                if evento.button == 1: # Botão esquerdo do mouse
+                    if ret_botao_start.collidepoint(evento.pos):
+                        acao = "START"
+                        esperando = False
+                    elif ret_botao_tutorial.collidepoint(evento.pos):
+                        acao = "TUTORIAL"
+                        esperando = False
+            
+            #Opção de iniciar com o teclado
             elif evento.type == pygame.KEYDOWN:
                 if evento.key in [pygame.K_RETURN, pygame.K_SPACE]:
+                    acao = "START"
                     esperando = False
-            elif evento.type == pygame.MOUSEBUTTONDOWN:
-                if ret_botao.collidepoint(evento.pos):
-                    esperando = False
+
+    return acao # MODIFICADO: Retorna a ação escolhida
