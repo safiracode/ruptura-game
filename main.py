@@ -186,6 +186,10 @@ class Game:
 
             # Colisão com a Chefona (Cobel)
             if pygame.sprite.spritecollide(self.jogador, self.grupo_chefes, False) and not self.jogador.invencivel:
+                som_cobel = pygame.mixer.Sound('audios/som_cobel.mp3')
+                som_cobel.set_volume(1.0)  #ajusta o volume do som
+                som_cobel.play()  #inicia o som do cobel
+                
                 self.vidas = 0
 
             # Colisão com Seguranças Comuns
@@ -200,6 +204,12 @@ class Game:
                     som_segurancas = pygame.mixer.Sound('audios/som_segurancas.mp3')
                     som_segurancas.set_volume(1.0)  #ajusta o volume do som
                     som_segurancas.play()
+
+                    #se o jogador já estiver com 1 vida restante e for atingido por um segurança, ele ouvirá o som de "perdeu seguranças" no momento em que perde o último balão
+                    if self.vidas==1: 
+                        som_perdeu_segurancas = pygame.mixer.Sound('audios/som_perdeu_segurancas.mp3')
+                        som_perdeu_segurancas.set_volume(1.0)  #ajusta o volume do som
+                        som_perdeu_segurancas.play()
 
                     self.perder_vida()
 
