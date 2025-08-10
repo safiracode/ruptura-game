@@ -6,6 +6,7 @@ from classes import balao, mark, parede, cobel, chave, cafe, porta, segurancas
 import random
 import game_over
 import tela_start
+import tela_tutorial
 import venceu
 
 pygame.mixer.init()
@@ -419,7 +420,7 @@ class Game:
         self.tela.blit(texto_render, texto_rect)
 
     def tela_start(self):
-        tela_start.mostrar_tela_start(
+        return tela_start.mostrar_tela_start(
             tela=self.tela,
             fonte_path=self.fonte,
             largura=constants.LARGURA,
@@ -446,13 +447,35 @@ class Game:
 g = Game()
 g.tela_start()
 while g.esta_rodando:
-    g.novo_jogo()
-    # Se o jogo terminou, verifica se foi por vitória ou derrota
-    if g.venceu_jogo:
-        if not g.tela_venceu():
-            break  # Sai do jogo se o jogador fechar a tela de vitória
-    elif g.vidas <= 0:
-        if not g.tela_game_over():
-            break  # Sai do jogo se o jogador fechar a tela de game over
+    
+    #MOSTRA O MENU E ESPERA A ESCOLHA DO JOGADOR
+    acao_escolhida = g.tela_start() 
+
+    #VERIFICA A ESCOLHA E AGE DE ACORDO
+    if acao_escolhida == "START":
+        g.novo_jogo()
+        
+        # Se o jogo terminou, verifica se foi por vitória ou derrota
+        if g.venceu_jogo:
+            if not g.tela_venceu():
+                # Sai do jogo se o jogador fechar a tela de vitória
+                g.esta_rodando = False 
+        elif g.vidas <= 0:
+            if not g.tela_game_over():
+                # Sai do jogo se o jogador fechar a tela de game over
+                g.esta_rodando = False
+
+    elif acao_escolhida == "TUTORIAL":
+        # Se a escolha foi "TUTORIAL", apenas mostramos a tela de tutorial.
+        
+        tela_tutorial.mostrar_tela_tutorial(
+            tela=g.tela,
+            fonte_path=g.fonte,
+            largura=constants.LARGURA,
+            altura=constants.ALTURA
+        )
+
+    else: # Se a ação for None (jogador fechou a janela do menu) ou outra coisa.
+        g.esta_rodando = False # Encerra o loop principal.
 
 pygame.quit()
