@@ -66,7 +66,7 @@ def mostrar_tela_start(tela, fonte_path, largura, altura):
 
     relogio = pygame.time.Clock()
     esperando = True
-    acao = None  # MODIFICADO: Variável para armazenar a ação a ser retornada
+    acao = None
 
     while esperando:
         tela.fill(COR_FUNDO)
@@ -105,7 +105,7 @@ def mostrar_tela_start(tela, fonte_path, largura, altura):
             
             
             elif evento.type == pygame.MOUSEBUTTONDOWN:
-                if evento.button == 1: # Botão esquerdo do mouse
+                if evento.button == 1:
                     if ret_botao_start.collidepoint(evento.pos):
                         acao = "START"
                         esperando = False
@@ -119,4 +119,4 @@ def mostrar_tela_start(tela, fonte_path, largura, altura):
                     acao = "START"
                     esperando = False
 
-    return acao # MODIFICADO: Retorna a ação escolhida
+    return acao
