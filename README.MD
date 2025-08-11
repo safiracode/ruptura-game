@@ -60,6 +60,8 @@ A temática principal do jogo é inspirada na série Ruptura (Severance), cuja a
 
 ## Arquitetura do projeto e organizacão do código
 
+## Instruções do jogo
+
 ## Capturas de tela
 
 ## Ferramentas, frameworks e bibliotecas utilizados
@@ -68,5 +70,4 @@ A temática principal do jogo é inspirada na série Ruptura (Severance), cuja a
 
 ## Desafios, erros e lições aprendidas
 
-## Links importantes
 
