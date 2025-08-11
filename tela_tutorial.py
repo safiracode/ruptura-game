@@ -180,31 +180,26 @@ def mostrar_tela_tutorial(tela, fonte_path, largura, altura):
             altura_imgs_total = y_offset
 
             # --- BLOCO DE RENDERIZAÇÃO DE TEXTO MODIFICADO ---
-            # Verifica se a linha atual tem uma imagem para ser colocada ao lado do texto
             if "inline_img" in linha:
-                # Caso especial: desenha o texto e a imagem lado a lado
                 texto_surface = fonte_tutorial.render(
                     linha["texto"], True, constants.BRANCO)
                 texto_rect = texto_surface.get_rect(
                     topleft=(pos_x_texto, pos_y_atual))
 
-                # Centraliza o texto verticalmente em relação à imagem à esquerda
                 if altura_imgs_total > texto_rect.height:
                     texto_rect.centery = pos_y_atual + altura_imgs_total / 2
 
                 tela.blit(texto_surface, texto_rect)
 
-                # Pega a imagem inline e a posiciona à direita do texto
                 img_inline = linha["inline_img"]
                 img_inline_rect = img_inline.get_rect(
-                    left=texto_rect.right + 5)  # 5 pixels de espaço
-                img_inline_rect.centery = texto_rect.centery  # Alinha verticalmente com o texto
+                    left=texto_rect.right + 5)
+                img_inline_rect.centery = texto_rect.centery
                 tela.blit(img_inline, img_inline_rect)
 
                 altura_total_texto = texto_rect.height
 
             else:
-                # Lógica original para as outras linhas (com quebra de texto)
                 linhas_quebradas = wrap_text(
                     linha["texto"], fonte_tutorial, max_largura_texto)
 
@@ -215,22 +210,21 @@ def mostrar_tela_tutorial(tela, fonte_path, largura, altura):
 
                     y_pos_final = pos_y_atual + y_texto_offset
 
-                    # Centraliza o bloco de texto na primeira linha, se houver imagem na esquerda
                     if altura_imgs_total > 0 and i == 0:
                         altura_bloco_texto = len(
                             linhas_quebradas) * fonte_tutorial.get_linesize()
                         if altura_imgs_total > altura_bloco_texto:
-                            # Desloca o início do bloco para centralizá-lo
+                            
                             y_pos_final = pos_y_atual + \
                                 (altura_imgs_total / 2) - \
                                 (altura_bloco_texto / 2)
-                            # Recalcula o offset para as próximas linhas do mesmo bloco
+                            
                             y_texto_offset = (y_pos_final - pos_y_atual)
 
                     tela.blit(texto_renderizado, (pos_x_texto, y_pos_final))
                     y_texto_offset += fonte_tutorial.get_linesize()
                 altura_total_texto = y_texto_offset
-            # --- FIM DO BLOCO MODIFICADO ---
+            
 
             # Calcula a altura da linha e atualiza a posição Y para o próximo item
             altura_linha = max(altura_imgs_total, altura_total_texto)
