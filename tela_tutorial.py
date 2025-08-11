@@ -16,7 +16,7 @@ def desenhar_texto(surface, text, size, x, y, fonte_path, cor=constants.BRANCO):
     text_rect = text_surface.get_rect()
     text_rect.midtop = (x, y)
     surface.blit(text_surface, text_rect)
-    return text_rect # Retorna para obter a altura e usar como referência
+    return text_rect
 
 def carregar_imagem_tutorial(nome_arquivo, escala):
 
