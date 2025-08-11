@@ -1,14 +1,12 @@
 import pygame
 import sys
 import os
-import constants # Certifique-se de que este arquivo existe
+import constants
 
-# =============================================================================
 # FUNÇÕES AUXILIARES
-# =============================================================================
+
 
 def wrap_text(text, font, max_width):
-    """Quebra o texto em múltiplas linhas para caber em uma largura máxima."""
     words = text.split(' ')
     lines = []
     current_line = ""
@@ -22,13 +20,11 @@ def wrap_text(text, font, max_width):
             # Se não couber, finaliza a linha atual e começa uma nova
             lines.append(current_line.strip())
             current_line = word + " "
-    lines.append(current_line.strip()) # Adiciona a última linha
+    lines.append(current_line.strip())
     return lines
 
 def desenhar_texto_alinhado(surface, text, size, x, y, fonte_path, cor=constants.BRANCO, align="center"):
-    """
-    Desenha texto com alinhamento customizável ('left', 'center', 'right').
-    """
+    
     try:
         fonte = pygame.font.Font(fonte_path, size)
     except:
@@ -48,7 +44,7 @@ def desenhar_texto_alinhado(surface, text, size, x, y, fonte_path, cor=constants
     return text_rect
 
 def carregar_imagem_tutorial(nome_arquivo, escala):
-    """Carrega e redimensiona uma imagem da pasta 'imagens'."""
+    
     try:
         caminho = os.path.join('imagens', nome_arquivo)
         imagem = pygame.image.load(caminho).convert_alpha()
@@ -62,9 +58,8 @@ def carregar_imagem_tutorial(nome_arquivo, escala):
         return pygame.Surface((int(50*escala), int(50*escala)), pygame.SRCALPHA)
 
 
-# =============================================================================
 # FUNÇÃO PRINCIPAL DA TELA DE TUTORIAL
-# =============================================================================
+
 
 def mostrar_tela_tutorial(tela, fonte_path, largura, altura):
   
@@ -115,7 +110,8 @@ def mostrar_tela_tutorial(tela, fonte_path, largura, altura):
         {
             "titulo": "DICA FINAL",
             "linhas": [
-                { "texto": "A cada chave coletada, um novo segurança aparece. O desafio aumenta, então planeje seus movimentos e use o café com sabedoria.", "imgs": [] },
+                { "texto": "A cada chave coletada, um novo segurança aparece.", "imgs": [] },
+                { "texto": "O desafio aumenta, então planeje seus movimentos e use o café com sabedoria.", "imgs": [] },
                 { "texto": "Boa sorte na sua fuga!", "imgs": [] }
             ]
         }
@@ -124,7 +120,7 @@ def mostrar_tela_tutorial(tela, fonte_path, largura, altura):
     pagina_atual = 0
     num_paginas = len(paginas)
 
-    # --- CONFIGURAÇÃO DOS BOTÕES DE NAVEGAÇÃO ---
+    # CONFIGURAÇÃO DOS BOTÕES DE NAVEGAÇÃO
     fonte_botao = pygame.font.Font(fonte_path, 24)
     largura_botao = 110
     altura_botao = 50
@@ -135,14 +131,13 @@ def mostrar_tela_tutorial(tela, fonte_path, largura, altura):
     ret_anterior = pygame.Rect(30, altura - 70, largura_botao, altura_botao)
     texto_anterior = fonte_botao.render("ANTERIOR", True, COR_TEXTO_BOTAO)
 
-    # --- FONTES E LAYOUT OTIMIZADOS PARA 480x600 ---
     tamanho_fonte_tutorial = 24
     fonte_tutorial = pygame.font.Font(fonte_path, tamanho_fonte_tutorial)
     pos_x_texto = 150
     margem_direita_texto = 40
     max_largura_texto = largura - pos_x_texto - margem_direita_texto
 
-    # --- LOOP PRINCIPAL DO TUTORIAL ---
+    # LOOP PRINCIPAL DO TUTORIAL
     relogio = pygame.time.Clock()
     mostrando_tutorial = True
     while mostrando_tutorial:
@@ -185,7 +180,7 @@ def mostrar_tela_tutorial(tela, fonte_path, largura, altura):
             altura_linha = max(altura_imgs_total, altura_total_texto)
             pos_y_atual += altura_linha + espaco_entre_linhas
 
-        # --- Desenha os Botões de Navegação ---
+        # Desenha os Botões de Navegação
         cor_voltar = COR_BOTAO_HOVER if ret_voltar.collidepoint(mouse_pos) else COR_BOTAO
         pygame.draw.rect(tela, cor_voltar, ret_voltar, border_radius=10)
         texto_rect_voltar = texto_voltar.get_rect(center=ret_voltar.center)
@@ -206,7 +201,7 @@ def mostrar_tela_tutorial(tela, fonte_path, largura, altura):
         pygame.display.flip()
         relogio.tick(constants.FPS)
 
-        # --- Processa Eventos ---
+        # Processa Eventos
         for evento in pygame.event.get():
             if evento.type == pygame.QUIT:
                 pygame.quit()
