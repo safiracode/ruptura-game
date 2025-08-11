@@ -60,10 +60,10 @@ def carregar_imagem_tutorial(nome_arquivo, escala):
 
 def mostrar_tela_tutorial(tela, fonte_path, largura, altura):
     # --- CONFIGURAÇÕES ---
-    COR_BOTAO = (56, 167, 164)           # cor normal
-    COR_BOTAO_HOVER = (1, 94, 93)        # cor no hover
-    #COR_BOTAO = (31, 125, 83)           # cor normal
-    #COR_BOTAO_HOVER = (47, 191, 122)    # cor no hover
+    #COR_BOTAO = (56, 167, 164)           # cor normal -- azulado
+    #COR_BOTAO_HOVER = (1, 94, 93)        # cor no hover -- azulado
+    COR_BOTAO = (31, 125, 83)           # cor normal -- verde
+    COR_BOTAO_HOVER = (47, 191, 122)    # cor no hover -- verde
     COR_TEXTO_BOTAO = (255, 255, 255) 
 
     # --- CARREGAR IMAGENS ---
