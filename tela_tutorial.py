@@ -4,8 +4,6 @@ import os
 import constants
 
 # FUNÇÕES AUXILIARES
-
-
 def wrap_text(text, font, max_width):
     words = text.split(' ')
     lines = []
@@ -59,8 +57,6 @@ def carregar_imagem_tutorial(nome_arquivo, escala):
 
 
 # FUNÇÃO PRINCIPAL DA TELA DE TUTORIAL
-
-
 def mostrar_tela_tutorial(tela, fonte_path, largura, altura):
   
     # --- CONFIGURAÇÕES ---
@@ -80,7 +76,7 @@ def mostrar_tela_tutorial(tela, fonte_path, largura, altura):
     img_seguranca = carregar_imagem_tutorial('milchick.png', 1.5)
     img_cobel = carregar_imagem_tutorial('cobel.png', 1.5)
 
-    # --- CONTEÚDO DAS PÁGINAS ---
+    # CONTEÚDO DAS PÁGINAS
     paginas = [
         {
             "titulo": "OBJETIVO",
