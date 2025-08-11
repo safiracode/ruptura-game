@@ -4,6 +4,8 @@ import os
 import constants
 
 # FUNÇÕES AUXILIARES
+
+
 def wrap_text(text, font, max_width):
     words = text.split(' ')
     lines = []
@@ -21,28 +23,30 @@ def wrap_text(text, font, max_width):
     lines.append(current_line.strip())
     return lines
 
+
 def desenhar_texto_alinhado(surface, text, size, x, y, fonte_path, cor=constants.BRANCO, align="center"):
-    
+
     try:
         fonte = pygame.font.Font(fonte_path, size)
     except:
         fonte = pygame.font.SysFont(None, size)
-    
+
     text_surface = fonte.render(text, True, cor)
     text_rect = text_surface.get_rect()
-    
+
     if align == "left":
         text_rect.topleft = (x, y)
     elif align == "right":
         text_rect.topright = (x, y)
-    else: # Padrão é 'center'
+    else:  # Padrão é 'center'
         text_rect.midtop = (x, y)
-        
+
     surface.blit(text_surface, text_rect)
     return text_rect
 
+
 def carregar_imagem_tutorial(nome_arquivo, escala):
-    
+
     try:
         caminho = os.path.join('imagens', nome_arquivo)
         imagem = pygame.image.load(caminho).convert_alpha()
@@ -57,8 +61,10 @@ def carregar_imagem_tutorial(nome_arquivo, escala):
 
 
 # FUNÇÃO PRINCIPAL DA TELA DE TUTORIAL
+
+
 def mostrar_tela_tutorial(tela, fonte_path, largura, altura):
-  
+
     # --- CONFIGURAÇÕES ---
     COR_FUNDO = (10, 20, 50)
     COR_BOTAO = (50, 50, 200)
@@ -76,43 +82,51 @@ def mostrar_tela_tutorial(tela, fonte_path, largura, altura):
     img_seguranca = carregar_imagem_tutorial('milchick.png', 1.5)
     img_cobel = carregar_imagem_tutorial('cobel.png', 1.5)
 
-    # CONTEÚDO DAS PÁGINAS
+    # --- CONTEÚDO DAS PÁGINAS ---
     paginas = [
         {
             "titulo": "OBJETIVO",
             "linhas": [
-                { "texto": "Você é Mark, um funcionário da Neurotreco.", "imgs": [img_mark] },
-                { "texto": "Sua missão é escapar da empresa.", "imgs": [] },
-                { "texto": "Para isso, colete as 4 partes da chave...", "imgs": [img_chave] },
-                { "texto": "...e use-as para abrir a porta de saída!", "imgs": [img_porta] }
+                {"texto": "Você é Mark, um funcionário da Neurotreco.",
+                    "imgs": [img_mark]},
+                {"texto": "Sua missão é escapar da empresa.", "imgs": []},
+                {"texto": "Para isso, colete as 4 partes da chave...",
+                    "imgs": [img_chave]},
+                {"texto": "...e use-as para abrir a porta de saída!",
+                    "imgs": [img_porta]}
             ]
         },
         {
             "titulo": "ITENS E CONTROLES",
             "linhas": [
-                { "texto": "Use as SETAS ou W,A,S,D para se mover pelo escritório.", "imgs": [img_setas, img_wasd] },
-                { "texto": "Colete BALÕES para recuperar vidas perdidas.", "imgs": [img_balao] },
-                { "texto": "Pegue o CAFÉ para ganhar invencibilidade temporária.", "imgs": [img_cafe] }
+                {"texto": "Use as SETAS ou W,A,S,D para se mover pelo escritório.", "imgs": [
+                    img_setas, img_wasd]},
+                {"texto": "Colete BALÕES para recuperar vidas perdidas.",
+                    "imgs": [img_balao]},
+                {"texto": "Pegue o CAFÉ para ganhar invencibilidade temporária.",
+                    "imgs": [img_cafe]}
             ]
         },
         {
             "titulo": "OS PERIGOS",
             "linhas": [
-                { "texto": "Os SEGURANÇAS patrulham o local.", "imgs": [img_seguranca] },
-                { "texto": "Evite-os para não perder vidas.", "imgs": [] },
-                { "texto": "COBEL é a chefe. Ser pego por ela é o fim do jogo!", "imgs": [img_cobel] }
+                {"texto": "Os SEGURANÇAS patrulham o local.",
+                    "imgs": [img_seguranca]},
+                {"texto": "Evite-os para não perder vidas.", "imgs": []},
+                {"texto": "COBEL é a chefe. Ser pego por ela é o fim do jogo!",
+                    "imgs": [img_cobel]}
             ]
         },
         {
             "titulo": "DICA FINAL",
             "linhas": [
-                { "texto": "A cada chave coletada, um novo segurança aparece.", "imgs": [] },
-                { "texto": "O desafio aumenta, então planeje seus movimentos e use o café com sabedoria.", "imgs": [] },
-                { "texto": "Boa sorte na sua fuga!", "imgs": [] }
+                {"texto": "A cada chave coletada, um novo segurança aparece.", "imgs": []},
+                {"texto": "O desafio aumenta, então planeje seus movimentos e use o café com sabedoria.", "imgs": []},
+                {"texto": "Boa sorte na sua fuga!", "imgs": []}
             ]
         }
     ]
-    
+
     pagina_atual = 0
     num_paginas = len(paginas)
 
@@ -120,9 +134,11 @@ def mostrar_tela_tutorial(tela, fonte_path, largura, altura):
     fonte_botao = pygame.font.Font(fonte_path, 24)
     largura_botao = 110
     altura_botao = 50
-    ret_voltar = pygame.Rect(largura / 2 - largura_botao / 2, altura - 70, largura_botao, altura_botao)
+    ret_voltar = pygame.Rect(
+        largura / 2 - largura_botao / 2, altura - 70, largura_botao, altura_botao)
     texto_voltar = fonte_botao.render("VOLTAR", True, COR_TEXTO_BOTAO)
-    ret_proximo = pygame.Rect(largura - largura_botao - 30, altura - 70, largura_botao, altura_botao)
+    ret_proximo = pygame.Rect(
+        largura - largura_botao - 30, altura - 70, largura_botao, altura_botao)
     texto_proximo = fonte_botao.render("PRÓXIMO", True, COR_TEXTO_BOTAO)
     ret_anterior = pygame.Rect(30, altura - 70, largura_botao, altura_botao)
     texto_anterior = fonte_botao.render("ANTERIOR", True, COR_TEXTO_BOTAO)
@@ -141,9 +157,10 @@ def mostrar_tela_tutorial(tela, fonte_path, largura, altura):
         mouse_pos = pygame.mouse.get_pos()
 
         pagina = paginas[pagina_atual]
-        
+
         # Desenha o Título
-        desenhar_texto_alinhado(tela, pagina["titulo"], 48, largura / 2, 50, fonte_path, align="center")
+        desenhar_texto_alinhado(
+            tela, pagina["titulo"], 48, largura / 2, 50, fonte_path, align="center")
 
         # Posições e espaçamentos para o conteúdo
         pos_y_atual = 160
@@ -153,22 +170,26 @@ def mostrar_tela_tutorial(tela, fonte_path, largura, altura):
         # Loop para desenhar cada linha da página (texto + imagens)
         for linha in pagina["linhas"]:
             altura_imgs_total = 0
-            
+
             # Desenha as imagens da linha
             y_offset = 0
             for img in linha["imgs"]:
-                img_rect = img.get_rect(topleft=(pos_x_imgs, pos_y_atual + y_offset))
+                img_rect = img.get_rect(
+                    topleft=(pos_x_imgs, pos_y_atual + y_offset))
                 tela.blit(img, img_rect)
                 y_offset += img.get_height() + 5
             altura_imgs_total = y_offset
 
             # Quebra o texto e desenha as linhas resultantes
-            linhas_quebradas = wrap_text(linha["texto"], fonte_tutorial, max_largura_texto)
-            
+            linhas_quebradas = wrap_text(
+                linha["texto"], fonte_tutorial, max_largura_texto)
+
             y_texto_offset = 0
             for sub_linha in linhas_quebradas:
-                texto_renderizado = fonte_tutorial.render(sub_linha, True, constants.BRANCO)
-                tela.blit(texto_renderizado, (pos_x_texto, pos_y_atual + y_texto_offset))
+                texto_renderizado = fonte_tutorial.render(
+                    sub_linha, True, constants.BRANCO)
+                tela.blit(texto_renderizado, (pos_x_texto,
+                          pos_y_atual + y_texto_offset))
                 y_texto_offset += fonte_tutorial.get_linesize()
             altura_total_texto = y_texto_offset
 
@@ -177,21 +198,27 @@ def mostrar_tela_tutorial(tela, fonte_path, largura, altura):
             pos_y_atual += altura_linha + espaco_entre_linhas
 
         # Desenha os Botões de Navegação
-        cor_voltar = COR_BOTAO_HOVER if ret_voltar.collidepoint(mouse_pos) else COR_BOTAO
+        cor_voltar = COR_BOTAO_HOVER if ret_voltar.collidepoint(
+            mouse_pos) else COR_BOTAO
         pygame.draw.rect(tela, cor_voltar, ret_voltar, border_radius=10)
         texto_rect_voltar = texto_voltar.get_rect(center=ret_voltar.center)
         tela.blit(texto_voltar, texto_rect_voltar)
 
         if pagina_atual < num_paginas - 1:
-            cor_proximo = COR_BOTAO_HOVER if ret_proximo.collidepoint(mouse_pos) else COR_BOTAO
+            cor_proximo = COR_BOTAO_HOVER if ret_proximo.collidepoint(
+                mouse_pos) else COR_BOTAO
             pygame.draw.rect(tela, cor_proximo, ret_proximo, border_radius=10)
-            texto_rect_proximo = texto_proximo.get_rect(center=ret_proximo.center)
+            texto_rect_proximo = texto_proximo.get_rect(
+                center=ret_proximo.center)
             tela.blit(texto_proximo, texto_rect_proximo)
 
         if pagina_atual > 0:
-            cor_anterior = COR_BOTAO_HOVER if ret_anterior.collidepoint(mouse_pos) else COR_BOTAO
-            pygame.draw.rect(tela, cor_anterior, ret_anterior, border_radius=10)
-            texto_rect_anterior = texto_anterior.get_rect(center=ret_anterior.center)
+            cor_anterior = COR_BOTAO_HOVER if ret_anterior.collidepoint(
+                mouse_pos) else COR_BOTAO
+            pygame.draw.rect(tela, cor_anterior,
+                             ret_anterior, border_radius=10)
+            texto_rect_anterior = texto_anterior.get_rect(
+                center=ret_anterior.center)
             tela.blit(texto_anterior, texto_rect_anterior)
 
         pygame.display.flip()
