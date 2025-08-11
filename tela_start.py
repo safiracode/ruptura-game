@@ -38,11 +38,16 @@ def mostrar_tela_start(tela, fonte_path, largura, altura):
     altura_botao = 60
     espaco_entre_botoes = 20
 
-    #Posição Y do botão de baixo (START)
-    pos_y_start = altura - altura_botao - 80
-    
-    #Posição Y do botão de cima (TUTORIAL)
-    pos_y_tutorial = pos_y_start - altura_botao - espaco_entre_botoes
+    posicao_y_base_texto = 350  
+
+    # Define um espaço entre o texto e o primeiro botão
+    espaco_abaixo_texto = 20
+
+    # Posição Y do botão de cima (TUTORIAL)
+    pos_y_tutorial = posicao_y_base_texto + espaco_abaixo_texto
+
+    # Posição Y do botão de baixo (START)
+    pos_y_start = pos_y_tutorial + altura_botao + espaco_entre_botoes
 
     #Botão START
     texto_start = "START"
