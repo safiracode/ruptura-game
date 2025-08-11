@@ -1,7 +1,7 @@
 import pygame
 import sys
 import os
-import constants # Certifique-se de que este arquivo existe
+import constants
 
 # FUNÇÕES AUXILIARES
 
