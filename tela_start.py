@@ -1,5 +1,3 @@
-TELA START
-
 import pygame
 import sys
 import os
