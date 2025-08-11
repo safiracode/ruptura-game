@@ -47,22 +47,22 @@ def mostrar_tela_tutorial(tela, fonte_path, largura, altura):
     img_mark = carregar_imagem_tutorial('mark.png', 1.5)
     img_chave = carregar_imagem_tutorial(constants.CHAVE, 1.2)
     img_porta = carregar_imagem_tutorial('porta.png', 1.5)
-    img_setas = carregar_imagem_tutorial('setas.png', 1.0) # Você precisará de uma imagem 'setas.png'
-    img_wasd = carregar_imagem_tutorial('wasd.png', 1.0) # Você precisará de uma imagem 'wasd.png'
+    img_setas = carregar_imagem_tutorial('setas.png', 1.0)
+    img_wasd = carregar_imagem_tutorial('wasd.png', 1.0)
     img_balao = carregar_imagem_tutorial(constants.BALAO, 1.5)
     img_cafe = carregar_imagem_tutorial(constants.CAFE, 1.5)
     img_seguranca = carregar_imagem_tutorial('milchick.png', 1.5) # Usando um segurança como exemplo
     img_cobel = carregar_imagem_tutorial('cobel.png', 1.5)
 
-    # --- Conteúdo das Páginas ---
+    # Conteúdo das Páginas
     paginas = [
         {
             "titulo": "OBJETIVO",
             "textos": [
-                "Você é Mark, um funcionário da Lumon.",
-                "Sua missão é escapar do andar seccionado.",
+                "Você é Mark, um funcionário da Neurotreco",
+                "Sua missão é escapar da empresa",
                 "Para isso, colete as 4 partes da chave",
-                "e abra a porta de saída."
+                "e abra a porta de saída!"
             ],
             "imagens": [
                 (img_mark, largura * 0.25, altura * 0.5),
@@ -89,7 +89,7 @@ def mostrar_tela_tutorial(tela, fonte_path, largura, altura):
             "textos": [
                 "Os SEGURANÇAS patrulham o local.",
                 "Evite-os para não perder vidas.",
-                "Harmony COBEL é a chefe. Um toque é fatal!",
+                "COBEL é a chefe. Um toque é fatal!",
                 "Fique longe dela a todo custo."
             ],
             "imagens": [
