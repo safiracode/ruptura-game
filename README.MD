@@ -58,15 +58,15 @@ A temática principal do jogo é inspirada na série Ruptura (Severance), cuja a
 | [Letícia Staudinger]                                  | |
 | [Safira Moraes]                                       | |
 
-## Arquitetura e organizacão do código
+## Arquitetura do projeto e organizacão do código
 
 ## Capturas de tela
 
-## Ferramentas, Frameworks e Bibliotecas utilizados
+## Ferramentas, frameworks e bibliotecas utilizados
 
 ## Conceitos da disciplina aplicados
 
 ## Desafios, erros e lições aprendidas
 
-## Instruções para execução e instalação
+## Links importantes
 
