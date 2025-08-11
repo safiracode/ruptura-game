@@ -115,7 +115,7 @@ def mostrar_tela_tutorial(tela, fonte_path, largura, altura):
 
     # Botões de Navegação 
     fonte_botao = pygame.font.Font(fonte_path, 24)
-    largura_botao = 140
+    largura_botao = 110
     altura_botao = 50
     
     # Botão Voltar ao Menu
@@ -124,10 +124,10 @@ def mostrar_tela_tutorial(tela, fonte_path, largura, altura):
 
     # Botões Próximo e Anterior
     ret_proximo = pygame.Rect(largura - largura_botao - 30, altura - 70, largura_botao, altura_botao)
-    texto_proximo = fonte_botao.render("PRÓXIMO >", True, COR_TEXTO_BOTAO)
+    texto_proximo = fonte_botao.render("PRÓXIMO", True, COR_TEXTO_BOTAO)
     
     ret_anterior = pygame.Rect(30, altura - 70, largura_botao, altura_botao)
-    texto_anterior = fonte_botao.render("< ANTERIOR", True, COR_TEXTO_BOTAO)
+    texto_anterior = fonte_botao.render("ANTERIOR", True, COR_TEXTO_BOTAO)
 
     # Loop do Tutorial 
     relogio = pygame.time.Clock()
