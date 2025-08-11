@@ -1,12 +1,34 @@
 import pygame
 import sys
 import os
-import constants
+import constants # Certifique-se de que este arquivo existe
 
-# Funções Auxiliares para Texto e Imagens
+# =============================================================================
+# FUNÇÕES AUXILIARES
+# =============================================================================
 
-def desenhar_texto(surface, text, size, x, y, fonte_path, cor=constants.BRANCO):
+def wrap_text(text, font, max_width):
+    """Quebra o texto em múltiplas linhas para caber em uma largura máxima."""
+    words = text.split(' ')
+    lines = []
+    current_line = ""
+    for word in words:
+        # Testa se a linha atual + a nova palavra cabem na largura
+        test_line = current_line + word + " "
+        # font.size() retorna a largura e altura do texto
+        if font.size(test_line)[0] <= max_width:
+            current_line = test_line
+        else:
+            # Se não couber, finaliza a linha atual e começa uma nova
+            lines.append(current_line.strip())
+            current_line = word + " "
+    lines.append(current_line.strip()) # Adiciona a última linha
+    return lines
 
+def desenhar_texto_alinhado(surface, text, size, x, y, fonte_path, cor=constants.BRANCO, align="center"):
+    """
+    Desenha texto com alinhamento customizável ('left', 'center', 'right').
+    """
     try:
         fonte = pygame.font.Font(fonte_path, size)
     except:
@@ -14,12 +36,19 @@ def desenhar_texto(surface, text, size, x, y, fonte_path, cor=constants.BRANCO):
     
     text_surface = fonte.render(text, True, cor)
     text_rect = text_surface.get_rect()
-    text_rect.midtop = (x, y)
+    
+    if align == "left":
+        text_rect.topleft = (x, y)
+    elif align == "right":
+        text_rect.topright = (x, y)
+    else: # Padrão é 'center'
+        text_rect.midtop = (x, y)
+        
     surface.blit(text_surface, text_rect)
-    return text_rect # Retorna para obter a altura e usar como referência
+    return text_rect
 
 def carregar_imagem_tutorial(nome_arquivo, escala):
-
+    """Carrega e redimensiona uma imagem da pasta 'imagens'."""
     try:
         caminho = os.path.join('imagens', nome_arquivo)
         imagem = pygame.image.load(caminho).convert_alpha()
@@ -29,176 +58,170 @@ def carregar_imagem_tutorial(nome_arquivo, escala):
         return pygame.transform.scale(imagem, (nova_largura, nova_altura))
     except Exception as e:
         print(f"Erro ao carregar imagem para o tutorial: {nome_arquivo} - {e}")
-        # Cria uma superfície vazia se a imagem não for encontrada
+        # Retorna uma superfície vazia em caso de erro
         return pygame.Surface((int(50*escala), int(50*escala)), pygame.SRCALPHA)
 
 
-# Função Principal do Tutorial
+# =============================================================================
+# FUNÇÃO PRINCIPAL DA TELA DE TUTORIAL
+# =============================================================================
 
 def mostrar_tela_tutorial(tela, fonte_path, largura, altura):
   
-    # Configurações 
+    # --- CONFIGURAÇÕES ---
     COR_FUNDO = (10, 20, 50)
     COR_BOTAO = (50, 50, 200)
     COR_BOTAO_HOVER = (80, 80, 255)
     COR_TEXTO_BOTAO = (255, 255, 255)
 
-    # Carregar Imagens do Tutorial
+    # --- CARREGAR IMAGENS ---
     img_mark = carregar_imagem_tutorial('mark.png', 1.5)
     img_chave = carregar_imagem_tutorial(constants.CHAVE, 1.2)
     img_porta = carregar_imagem_tutorial('porta.png', 1.5)
-    img_setas = carregar_imagem_tutorial('setas.png', 1.0) # Você precisará de uma imagem 'setas.png'
-    img_wasd = carregar_imagem_tutorial('wasd.png', 1.0) # Você precisará de uma imagem 'wasd.png'
+    img_setas = carregar_imagem_tutorial('setas.png', 1.0)
+    img_wasd = carregar_imagem_tutorial('wasd.png', 1.0)
     img_balao = carregar_imagem_tutorial(constants.BALAO, 1.5)
     img_cafe = carregar_imagem_tutorial(constants.CAFE, 1.5)
-    img_seguranca = carregar_imagem_tutorial('milchick.png', 1.5) # Usando um segurança como exemplo
+    img_seguranca = carregar_imagem_tutorial('milchick.png', 1.5)
     img_cobel = carregar_imagem_tutorial('cobel.png', 1.5)
 
-    # --- Conteúdo das Páginas ---
+    # --- CONTEÚDO DAS PÁGINAS ---
     paginas = [
         {
             "titulo": "OBJETIVO",
-            "textos": [
-                "Você é Mark, um funcionário da Neurotreco e sua missão é escapar do andar seccionado",
-                "Para isso, colete as 4 partes da chave",
-                "e abra a porta de saída."
-            ],
-            "imagens": [
-                (img_mark, largura * 0.25, altura * 0.5),
-                (img_chave, largura * 0.5, altura * 0.5),
-                (img_porta, largura * 0.75, altura * 0.5)
+            "linhas": [
+                { "texto": "Você é Mark, um funcionário da Neurotreco.", "imgs": [img_mark] },
+                { "texto": "Sua missão é escapar da empresa.", "imgs": [] },
+                { "texto": "Para isso, colete as 4 partes da chave...", "imgs": [img_chave] },
+                { "texto": "...e use-as para abrir a porta de saída!", "imgs": [img_porta] }
             ]
         },
         {
             "titulo": "ITENS E CONTROLES",
-            "textos": [
-                "Use as SETAS ou W,A,S,D para mover.",
-                "Colete BALÕES para recuperar vidas.",
-                "Pegue o CAFÉ para invencibilidade temporária."
-            ],
-            "imagens": [
-                (img_setas, largura * 0.25, altura * 0.4),
-                (img_wasd, largura * 0.25, altura * 0.6),
-                (img_balao, largura * 0.5, altura * 0.5),
-                (img_cafe, largura * 0.75, altura * 0.5)
+            "linhas": [
+                { "texto": "Use as SETAS ou W,A,S,D para se mover pelo escritório.", "imgs": [img_setas, img_wasd] },
+                { "texto": "Colete BALÕES para recuperar vidas perdidas.", "imgs": [img_balao] },
+                { "texto": "Pegue o CAFÉ para ganhar invencibilidade temporária.", "imgs": [img_cafe] }
             ]
         },
         {
             "titulo": "OS PERIGOS",
-            "textos": [
-                "Os SEGURANÇAS patrulham o local.",
-                "Evite-os para não perder vidas.",
-                "Harmony COBEL é a chefe. Um toque é fatal!",
-                "Fique longe dela a todo custo."
-            ],
-            "imagens": [
-                (img_seguranca, largura * 0.33, altura * 0.55),
-                (img_cobel, largura * 0.66, altura * 0.55)
+            "linhas": [
+                { "texto": "Os SEGURANÇAS patrulham o local.", "imgs": [img_seguranca] },
+                { "texto": "Evite-os para não perder vidas.", "imgs": [] },
+                { "texto": "COBEL é a chefe. Ser pego por ela é o fim do jogo!", "imgs": [img_cobel] }
             ]
         },
         {
             "titulo": "DICA FINAL",
-            "textos": [
-                "A cada parte da chave coletada, um novo",
-                "segurança aparecerá no mapa.",
-                "O desafio aumenta, então planeje seus",
-                "movimentos e use o café com sabedoria.",
-                "Boa sorte!"
-            ],
-            "imagens": []
+            "linhas": [
+                { "texto": "A cada chave coletada, um novo segurança aparece. O desafio aumenta, então planeje seus movimentos e use o café com sabedoria.", "imgs": [] },
+                { "texto": "Boa sorte na sua fuga!", "imgs": [] }
+            ]
         }
     ]
     
     pagina_atual = 0
     num_paginas = len(paginas)
 
-    # Botões de Navegação 
+    # --- CONFIGURAÇÃO DOS BOTÕES DE NAVEGAÇÃO ---
     fonte_botao = pygame.font.Font(fonte_path, 24)
-    largura_botao = 140
+    largura_botao = 110
     altura_botao = 50
-    
-    # Botão Voltar ao Menu
     ret_voltar = pygame.Rect(largura / 2 - largura_botao / 2, altura - 70, largura_botao, altura_botao)
     texto_voltar = fonte_botao.render("VOLTAR", True, COR_TEXTO_BOTAO)
-
-    # Botões Próximo e Anterior
     ret_proximo = pygame.Rect(largura - largura_botao - 30, altura - 70, largura_botao, altura_botao)
-    texto_proximo = fonte_botao.render("PRÓXIMO >", True, COR_TEXTO_BOTAO)
-    
+    texto_proximo = fonte_botao.render("PRÓXIMO", True, COR_TEXTO_BOTAO)
     ret_anterior = pygame.Rect(30, altura - 70, largura_botao, altura_botao)
-    texto_anterior = fonte_botao.render("< ANTERIOR", True, COR_TEXTO_BOTAO)
+    texto_anterior = fonte_botao.render("ANTERIOR", True, COR_TEXTO_BOTAO)
 
-    # Loop do Tutorial 
+    # --- FONTES E LAYOUT OTIMIZADOS PARA 480x600 ---
+    tamanho_fonte_tutorial = 24
+    fonte_tutorial = pygame.font.Font(fonte_path, tamanho_fonte_tutorial)
+    pos_x_texto = 150
+    margem_direita_texto = 40
+    max_largura_texto = largura - pos_x_texto - margem_direita_texto
+
+    # --- LOOP PRINCIPAL DO TUTORIAL ---
     relogio = pygame.time.Clock()
     mostrando_tutorial = True
     while mostrando_tutorial:
         tela.fill(COR_FUNDO)
         mouse_pos = pygame.mouse.get_pos()
 
-        # Desenhar Conteúdo da Página Atual 
         pagina = paginas[pagina_atual]
         
-        # Título
-        desenhar_texto(tela, pagina["titulo"], 48, largura / 2, 50, fonte_path)
+        # Desenha o Título
+        desenhar_texto_alinhado(tela, pagina["titulo"], 48, largura / 2, 50, fonte_path, align="center")
 
-        # Textos
-        pos_y_texto = 150
-        for linha in pagina["textos"]:
-            rect = desenhar_texto(tela, linha, 28, largura / 2, pos_y_texto, fonte_path)
-            pos_y_texto += rect.height + 10 
+        # Posições e espaçamentos para o conteúdo
+        pos_y_atual = 160
+        pos_x_imgs = 50
+        espaco_entre_linhas = 40
 
-        # Imagens
-        for img, x, y in pagina["imagens"]:
-            rect_img = img.get_rect(center=(x, y))
-            tela.blit(img, rect_img)
+        # Loop para desenhar cada linha da página (texto + imagens)
+        for linha in pagina["linhas"]:
+            altura_imgs_total = 0
             
-        # Desenhar Botões
-        # Botão Voltar
+            # Desenha as imagens da linha
+            y_offset = 0
+            for img in linha["imgs"]:
+                img_rect = img.get_rect(topleft=(pos_x_imgs, pos_y_atual + y_offset))
+                tela.blit(img, img_rect)
+                y_offset += img.get_height() + 5
+            altura_imgs_total = y_offset
+
+            # Quebra o texto e desenha as linhas resultantes
+            linhas_quebradas = wrap_text(linha["texto"], fonte_tutorial, max_largura_texto)
+            
+            y_texto_offset = 0
+            for sub_linha in linhas_quebradas:
+                texto_renderizado = fonte_tutorial.render(sub_linha, True, constants.BRANCO)
+                tela.blit(texto_renderizado, (pos_x_texto, pos_y_atual + y_texto_offset))
+                y_texto_offset += fonte_tutorial.get_linesize()
+            altura_total_texto = y_texto_offset
+
+            # Calcula a altura da linha e atualiza a posição Y para o próximo item
+            altura_linha = max(altura_imgs_total, altura_total_texto)
+            pos_y_atual += altura_linha + espaco_entre_linhas
+
+        # --- Desenha os Botões de Navegação ---
         cor_voltar = COR_BOTAO_HOVER if ret_voltar.collidepoint(mouse_pos) else COR_BOTAO
         pygame.draw.rect(tela, cor_voltar, ret_voltar, border_radius=10)
-        texto_rect = texto_voltar.get_rect(center=ret_voltar.center)
-        tela.blit(texto_voltar, texto_rect)
+        texto_rect_voltar = texto_voltar.get_rect(center=ret_voltar.center)
+        tela.blit(texto_voltar, texto_rect_voltar)
 
-        # Botão Próximo
         if pagina_atual < num_paginas - 1:
             cor_proximo = COR_BOTAO_HOVER if ret_proximo.collidepoint(mouse_pos) else COR_BOTAO
             pygame.draw.rect(tela, cor_proximo, ret_proximo, border_radius=10)
-            texto_rect = texto_proximo.get_rect(center=ret_proximo.center)
-            tela.blit(texto_proximo, texto_rect)
+            texto_rect_proximo = texto_proximo.get_rect(center=ret_proximo.center)
+            tela.blit(texto_proximo, texto_rect_proximo)
 
-        # Botão Anterior
         if pagina_atual > 0:
             cor_anterior = COR_BOTAO_HOVER if ret_anterior.collidepoint(mouse_pos) else COR_BOTAO
             pygame.draw.rect(tela, cor_anterior, ret_anterior, border_radius=10)
-            texto_rect = texto_anterior.get_rect(center=ret_anterior.center)
-            tela.blit(texto_anterior, texto_rect)
+            texto_rect_anterior = texto_anterior.get_rect(center=ret_anterior.center)
+            tela.blit(texto_anterior, texto_rect_anterior)
 
         pygame.display.flip()
         relogio.tick(constants.FPS)
 
-        # Processar Eventos
+        # --- Processa Eventos ---
         for evento in pygame.event.get():
             if evento.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
-            if evento.type == pygame.MOUSEBUTTONDOWN:
-                if evento.button == 1:
-                    # Clicou em Voltar
-                    if ret_voltar.collidepoint(mouse_pos):
-                        mostrando_tutorial = False # Fecha o tutorial e volta ao menu
-                    
-                    # Clicou em Próximo
-                    if pagina_atual < num_paginas - 1 and ret_proximo.collidepoint(mouse_pos):
-                        pagina_atual += 1
-
-                    # Clicou em Anterior
-                    if pagina_atual > 0 and ret_anterior.collidepoint(mouse_pos):
-                        pagina_atual -= 1
-            
+            if evento.type == pygame.MOUSEBUTTONDOWN and evento.button == 1:
+                if ret_voltar.collidepoint(mouse_pos):
+                    mostrando_tutorial = False
+                if pagina_atual < num_paginas - 1 and ret_proximo.collidepoint(mouse_pos):
+                    pagina_atual += 1
+                if pagina_atual > 0 and ret_anterior.collidepoint(mouse_pos):
+                    pagina_atual -= 1
             if evento.type == pygame.KEYDOWN:
                 if evento.key == pygame.K_ESCAPE:
                     mostrando_tutorial = False
                 if evento.key == pygame.K_RIGHT and pagina_atual < num_paginas - 1:
-                     pagina_atual += 1
+                    pagina_atual += 1
                 if evento.key == pygame.K_LEFT and pagina_atual > 0:
-                     pagina_atual -= 1
+                    pagina_atual -= 1
