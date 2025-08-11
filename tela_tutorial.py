@@ -59,8 +59,7 @@ def mostrar_tela_tutorial(tela, fonte_path, largura, altura):
         {
             "titulo": "OBJETIVO",
             "textos": [
-                "Você é Mark, um funcionário da Lumon.",
-                "Sua missão é escapar do andar seccionado.",
+                "Você é Mark, um funcionário da Neurotreco e sua missão é escapar do andar seccionado",
                 "Para isso, colete as 4 partes da chave",
                 "e abra a porta de saída."
             ],
