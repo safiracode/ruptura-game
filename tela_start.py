@@ -10,7 +10,7 @@ def mostrar_tela_start(tela, fonte_path, largura, altura):
     # Configurações básicas
     COR_FUNDO = (10, 20, 50)
     COR_BOTAO = (26, 52, 46)
-    COR_BOTAO_HOVER = (29, 52, 24)
+    COR_BOTAO_HOVER = (45, 95, 79)
     COR_TEXTO_BOTAO = (255, 255, 255)
     TAMANHO_FONTE = 36
 

@@ -55,29 +55,28 @@ def carregar_imagem_tutorial(nome_arquivo, escala):
 
         return pygame.Surface((int(50*escala), int(50*escala)), pygame.SRCALPHA)
 
-
 # FUNÇÃO PRINCIPAL DA TELA DE TUTORIAL
-
 def mostrar_tela_tutorial(tela, fonte_path, largura, altura):
     # --- CONFIGURAÇÕES ---
-    #COR_BOTAO = (56, 167, 164)           # cor normal -- azulado
-    #COR_BOTAO_HOVER = (1, 94, 93)        # cor no hover -- azulado
-    COR_BOTAO = (31, 125, 83)           # cor normal -- verde
-    COR_BOTAO_HOVER = (47, 191, 122)    # cor no hover -- verde
+    COR_BOTAO = (31, 125, 83)           # cor normal
+    COR_BOTAO_HOVER = (47, 191, 122)    # cor no hover
     COR_TEXTO_BOTAO = (255, 255, 255) 
 
     # --- CARREGAR IMAGENS ---
     img_mark = carregar_imagem_tutorial('mark_baixo.png', 0.06)
-    img_logo_neurotreco = carregar_imagem_tutorial(
-        'neurotreco_tutorial.png', 0.07)
+    img_logo_neurotreco = carregar_imagem_tutorial('logo_neurotreco.png', 0.22)
     img_chave = carregar_imagem_tutorial(constants.CHAVE, 1.2)
-    img_porta = carregar_imagem_tutorial('porta.png', 1.5)
+    img_pedaco_chave = carregar_imagem_tutorial('pedaco_chave.png', 0.15)
+    img_porta = carregar_imagem_tutorial('porta.png', 2.1)
     img_setas = carregar_imagem_tutorial('setas.png', 0.1)
     img_wasd = carregar_imagem_tutorial('wasd.png', 0.1)
-    img_balao = carregar_imagem_tutorial(constants.BALAO, 1.5)
+    img_balao = carregar_imagem_tutorial(constants.BALAO, 1.7)
     img_cafe = carregar_imagem_tutorial(constants.CAFE, 1.5)
-    img_segurancas = carregar_imagem_tutorial('img_segurancas.png', 0.15)
-    img_cobel = carregar_imagem_tutorial('cobel.png', 1.5)
+    img_segurancas = carregar_imagem_tutorial('img_segurancas.png', 0.18)
+    img_cobel = carregar_imagem_tutorial('cobel_baixo.png', 0.07)
+    img_segurancas_block = carregar_imagem_tutorial('img_segurancas_block.png', 0.16)
+    img_logo_tutorial = carregar_imagem_tutorial('logo_tutorial.png', 0.06)
+    img_trevo = carregar_imagem_tutorial('trevo.png', 0.1)
 
     img_fundo_tutorial = pygame.image.load(os.path.join("imagens", "img_fundo_tutorial_att.png")).convert()
     img_fundo_tutorial = pygame.transform.scale(img_fundo_tutorial, (largura, altura))
@@ -115,7 +114,7 @@ def mostrar_tela_tutorial(tela, fonte_path, largura, altura):
             "linhas": [
                 {"texto": "Os SEGURANÇAS patrulham o local.",
                     "imgs": [img_segurancas]},
-                {"texto": "Evite-os para não perder vidas.", "imgs": []},
+                {"texto": "Evite-os para não perder vidas.", "imgs": [img_segurancas_block]},
                 {"texto": "COBEL é a chefe. Ser pego por ela é o fim do jogo!",
                     "imgs": [img_cobel]}
             ]
@@ -123,9 +122,9 @@ def mostrar_tela_tutorial(tela, fonte_path, largura, altura):
         {
             "titulo": "DICA FINAL",
             "linhas": [
-                {"texto": "A cada chave coletada, um novo segurança aparece.", "imgs": []},
-                {"texto": "O desafio aumenta, então planeje seus movimentos e use o café com sabedoria.", "imgs": []},
-                {"texto": "Boa sorte na sua fuga!", "imgs": []}
+                {"texto": "A cada pedaço de chave coletado, um novo segurança aparece.", "imgs": [img_pedaco_chave]},
+                {"texto": "O desafio aumenta, então planeje seus movimentos e use o café com sabedoria.", "imgs": [img_logo_tutorial]},
+                {"texto": "Boa sorte na sua fuga!", "imgs": [img_trevo]}
             ]
         }
     ]
@@ -179,7 +178,7 @@ def mostrar_tela_tutorial(tela, fonte_path, largura, altura):
             for img in linha["imgs"]:
                 if img in (img_setas, img_wasd, img_chave, img_logo_neurotreco):
                     img_rect = img.get_rect(topleft=(pos_x_imgs - 10, pos_y_atual + y_offset)) # coloca essas imagens mais pra esquerda
-                elif img in (img_balao, img_porta):
+                elif img in (img_balao,img_trevo):
                     img_rect = img.get_rect(topleft=(pos_x_imgs + 5, pos_y_atual + y_offset)) # coloca essas imagens mais pra direita
                 else:
                     img_rect = img.get_rect(topleft=(pos_x_imgs, pos_y_atual + y_offset))
@@ -188,27 +187,6 @@ def mostrar_tela_tutorial(tela, fonte_path, largura, altura):
                 y_offset += img.get_height() + 5
             altura_imgs_total = y_offset
 
-            # --- BLOCO DE RENDERIZAÇÃO DE TEXTO MODIFICADO ---  // REMOÇÃO DA PARTE INLINE
-            # if "inline_img" in linha:  
-            #     texto_surface = fonte_tutorial.render(
-            #         linha["texto"], True, constants.BRANCO)
-            #     texto_rect = texto_surface.get_rect(
-            #         topleft=(pos_x_texto, pos_y_atual))
-
-            #     if altura_imgs_total > texto_rect.height:
-            #         texto_rect.centery = pos_y_atual + altura_imgs_total / 2
-
-            #     tela.blit(texto_surface, texto_rect)
-
-            #     img_inline = linha["inline_img"]
-            #     img_inline_rect = img_inline.get_rect(
-            #         left=texto_rect.right + 5)
-            #     img_inline_rect.centery = texto_rect.centery
-            #     tela.blit(img_inline, img_inline_rect)
-
-            #     altura_total_texto = texto_rect.height
-
-            #else:
             linhas_quebradas = wrap_text(
                linha["texto"], fonte_tutorial, max_largura_texto)
 
