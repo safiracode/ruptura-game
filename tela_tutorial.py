@@ -11,13 +11,11 @@ def wrap_text(text, font, max_width):
     lines = []
     current_line = ""
     for word in words:
-        # Testa se a linha atual + a nova palavra cabem na largura
         test_line = current_line + word + " "
-        # font.size() retorna a largura e altura do texto
+
         if font.size(test_line)[0] <= max_width:
             current_line = test_line
         else:
-            # Se não couber, finaliza a linha atual e começa uma nova
             lines.append(current_line.strip())
             current_line = word + " "
     lines.append(current_line.strip())
@@ -25,7 +23,6 @@ def wrap_text(text, font, max_width):
 
 
 def desenhar_texto_alinhado(surface, text, size, x, y, fonte_path, cor=constants.BRANCO, align="center"):
-
     try:
         fonte = pygame.font.Font(fonte_path, size)
     except:
@@ -46,7 +43,6 @@ def desenhar_texto_alinhado(surface, text, size, x, y, fonte_path, cor=constants
 
 
 def carregar_imagem_tutorial(nome_arquivo, escala):
-
     try:
         caminho = os.path.join('imagens', nome_arquivo)
         imagem = pygame.image.load(caminho).convert_alpha()
@@ -56,15 +52,13 @@ def carregar_imagem_tutorial(nome_arquivo, escala):
         return pygame.transform.scale(imagem, (nova_largura, nova_altura))
     except Exception as e:
         print(f"Erro ao carregar imagem para o tutorial: {nome_arquivo} - {e}")
-        # Retorna uma superfície vazia em caso de erro
+
         return pygame.Surface((int(50*escala), int(50*escala)), pygame.SRCALPHA)
 
 
 # FUNÇÃO PRINCIPAL DA TELA DE TUTORIAL
 
-
 def mostrar_tela_tutorial(tela, fonte_path, largura, altura):
-
     # --- CONFIGURAÇÕES ---
     COR_FUNDO = (10, 20, 50)
     COR_BOTAO = (50, 50, 200)
@@ -72,11 +66,13 @@ def mostrar_tela_tutorial(tela, fonte_path, largura, altura):
     COR_TEXTO_BOTAO = (255, 255, 255)
 
     # --- CARREGAR IMAGENS ---
-    img_mark = carregar_imagem_tutorial('mark.png', 1.5)
+    img_mark = carregar_imagem_tutorial('mark_baixo.png', 0.06)
+    img_logo_neurotreco = carregar_imagem_tutorial(
+        'neurotreco_tutorial.png', 0.07)
     img_chave = carregar_imagem_tutorial(constants.CHAVE, 1.2)
     img_porta = carregar_imagem_tutorial('porta.png', 1.5)
-    img_setas = carregar_imagem_tutorial('setas.png', 1.0)
-    img_wasd = carregar_imagem_tutorial('wasd.png', 1.0)
+    img_setas = carregar_imagem_tutorial('setas.png', 0.1)
+    img_wasd = carregar_imagem_tutorial('wasd.png', 0.1)
     img_balao = carregar_imagem_tutorial(constants.BALAO, 1.5)
     img_cafe = carregar_imagem_tutorial(constants.CAFE, 1.5)
     img_seguranca = carregar_imagem_tutorial('milchick.png', 1.5)
@@ -87,10 +83,13 @@ def mostrar_tela_tutorial(tela, fonte_path, largura, altura):
         {
             "titulo": "OBJETIVO",
             "linhas": [
-                {"texto": "Você é Mark, um funcionário da Neurotreco.",
-                    "imgs": [img_mark]},
+                {
+                    "texto": "Você é Mark, um funcionário da ",
+                    "imgs": [img_mark],
+                    "inline_img": img_logo_neurotreco
+                },
                 {"texto": "Sua missão é escapar da empresa.", "imgs": []},
-                {"texto": "Para isso, colete as 4 partes da chave...",
+                {"texto": "Para isso, colete as 3 partes da chave...",
                     "imgs": [img_chave]},
                 {"texto": "...e use-as para abrir a porta de saída!",
                     "imgs": [img_porta]}
@@ -145,7 +144,7 @@ def mostrar_tela_tutorial(tela, fonte_path, largura, altura):
 
     tamanho_fonte_tutorial = 24
     fonte_tutorial = pygame.font.Font(fonte_path, tamanho_fonte_tutorial)
-    pos_x_texto = 150
+    pos_x_texto = 120
     margem_direita_texto = 40
     max_largura_texto = largura - pos_x_texto - margem_direita_texto
 
@@ -163,7 +162,7 @@ def mostrar_tela_tutorial(tela, fonte_path, largura, altura):
             tela, pagina["titulo"], 48, largura / 2, 50, fonte_path, align="center")
 
         # Posições e espaçamentos para o conteúdo
-        pos_y_atual = 160
+        pos_y_atual = 150
         pos_x_imgs = 50
         espaco_entre_linhas = 40
 
@@ -171,7 +170,7 @@ def mostrar_tela_tutorial(tela, fonte_path, largura, altura):
         for linha in pagina["linhas"]:
             altura_imgs_total = 0
 
-            # Desenha as imagens da linha
+            # Desenha as imagens da linha (da coluna da esquerda)
             y_offset = 0
             for img in linha["imgs"]:
                 img_rect = img.get_rect(
@@ -180,18 +179,58 @@ def mostrar_tela_tutorial(tela, fonte_path, largura, altura):
                 y_offset += img.get_height() + 5
             altura_imgs_total = y_offset
 
-            # Quebra o texto e desenha as linhas resultantes
-            linhas_quebradas = wrap_text(
-                linha["texto"], fonte_tutorial, max_largura_texto)
+            # --- BLOCO DE RENDERIZAÇÃO DE TEXTO MODIFICADO ---
+            # Verifica se a linha atual tem uma imagem para ser colocada ao lado do texto
+            if "inline_img" in linha:
+                # Caso especial: desenha o texto e a imagem lado a lado
+                texto_surface = fonte_tutorial.render(
+                    linha["texto"], True, constants.BRANCO)
+                texto_rect = texto_surface.get_rect(
+                    topleft=(pos_x_texto, pos_y_atual))
 
-            y_texto_offset = 0
-            for sub_linha in linhas_quebradas:
-                texto_renderizado = fonte_tutorial.render(
-                    sub_linha, True, constants.BRANCO)
-                tela.blit(texto_renderizado, (pos_x_texto,
-                          pos_y_atual + y_texto_offset))
-                y_texto_offset += fonte_tutorial.get_linesize()
-            altura_total_texto = y_texto_offset
+                # Centraliza o texto verticalmente em relação à imagem à esquerda
+                if altura_imgs_total > texto_rect.height:
+                    texto_rect.centery = pos_y_atual + altura_imgs_total / 2
+
+                tela.blit(texto_surface, texto_rect)
+
+                # Pega a imagem inline e a posiciona à direita do texto
+                img_inline = linha["inline_img"]
+                img_inline_rect = img_inline.get_rect(
+                    left=texto_rect.right + 5)  # 5 pixels de espaço
+                img_inline_rect.centery = texto_rect.centery  # Alinha verticalmente com o texto
+                tela.blit(img_inline, img_inline_rect)
+
+                altura_total_texto = texto_rect.height
+
+            else:
+                # Lógica original para as outras linhas (com quebra de texto)
+                linhas_quebradas = wrap_text(
+                    linha["texto"], fonte_tutorial, max_largura_texto)
+
+                y_texto_offset = 0
+                for i, sub_linha in enumerate(linhas_quebradas):
+                    texto_renderizado = fonte_tutorial.render(
+                        sub_linha, True, constants.BRANCO)
+
+                    y_pos_final = pos_y_atual + y_texto_offset
+
+                    # Centraliza o bloco de texto na primeira linha, se houver imagem na esquerda
+                    if altura_imgs_total > 0 and i == 0:
+                        altura_bloco_texto = len(
+                            linhas_quebradas) * fonte_tutorial.get_linesize()
+                        if altura_imgs_total > altura_bloco_texto:
+                            # Desloca o início do bloco para centralizá-lo
+                            y_pos_final = pos_y_atual + \
+                                (altura_imgs_total / 2) - \
+                                (altura_bloco_texto / 2)
+                            # Recalcula o offset para as próximas linhas do mesmo bloco
+                            y_texto_offset = (y_pos_final - pos_y_atual)
+
+                    tela.blit(texto_renderizado, (pos_x_texto, y_pos_final))
+                    y_texto_offset += fonte_tutorial.get_linesize()
+                altura_total_texto = y_texto_offset
+            # --- FIM DO BLOCO MODIFICADO ---
 
             # Calcula a altura da linha e atualiza a posição Y para o próximo item
             altura_linha = max(altura_imgs_total, altura_total_texto)
@@ -222,7 +261,8 @@ def mostrar_tela_tutorial(tela, fonte_path, largura, altura):
             tela.blit(texto_anterior, texto_rect_anterior)
 
         pygame.display.flip()
-        relogio.tick(constants.FPS)
+        relogio.tick(constants.FPS if 'constants' in sys.modules and hasattr(
+            constants, 'FPS') else 60)
 
         # Processa Eventos
         for evento in pygame.event.get():
