@@ -15,7 +15,7 @@ TITULO_JOGO = 'Ruptura'
 # FPS
 FPS = 60
 
-VIDAS_INICIAIS = 5
+VIDAS_INICIAIS = 3
 
 # --- CAFÉ (POWER-UP) ---
 DURACAO_EFEITO_CAFE = 10000 # 10 segundos em milissegundos
