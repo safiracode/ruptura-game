@@ -5,7 +5,7 @@ Este projeto consiste em um jogo 2D desenvolvido como parte da disciplina de Int
 A temática principal do jogo é inspirada na série Ruptura (Severance), cuja ambientação e estética únicas serviram de referência para a construção dos cenários e da atmosfera do jogo — uma escolha apreciada por várias integrantes do grupo.
 
 
- <strong>EQUIPE 5:</strong>
+## Membros da Equipe 5
 <table>
   <tr>
     <td align="center">
@@ -46,4 +46,27 @@ A temática principal do jogo é inspirada na série Ruptura (Severance), cuja a
     </td>
   </tr>
 </table>
+
+## Divisão de tarefas do projeto
+
+| Time                                                  | Tarefas                                                                                |
+| ----------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| [Ana Laura Barboza]                                   |   |
+| [Izadora Andrade]                                     |                          |
+| [Laís Saraiva]                                        |    |
+| [Laura Fonseca]                                       |                            |
+| [Letícia Staudinger]                                  | |
+| [Safira Moraes]                                       | |
+
+## Arquitetura e organizacão do código
+
+## Capturas de tela
+
+## Ferramentas, Frameworks e Bibliotecas utilizados
+
+## Conceitos da disciplina aplicados
+
+## Desafios, erros e lições aprendidas
+
+## Instruções para execução e instalação
 
