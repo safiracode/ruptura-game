@@ -60,10 +60,11 @@ def carregar_imagem_tutorial(nome_arquivo, escala):
 
 def mostrar_tela_tutorial(tela, fonte_path, largura, altura):
     # --- CONFIGURAÇÕES ---
-    COR_FUNDO = (10, 20, 50)
-    COR_BOTAO = (50, 50, 200)
-    COR_BOTAO_HOVER = (80, 80, 255)
-    COR_TEXTO_BOTAO = (255, 255, 255)
+    COR_BOTAO = (56, 167, 164)           # cor normal
+    COR_BOTAO_HOVER = (1, 94, 93)        # cor no hover
+    #COR_BOTAO = (31, 125, 83)           # cor normal
+    #COR_BOTAO_HOVER = (47, 191, 122)    # cor no hover
+    COR_TEXTO_BOTAO = (255, 255, 255) 
 
     # --- CARREGAR IMAGENS ---
     img_mark = carregar_imagem_tutorial('mark_baixo.png', 0.06)
@@ -75,8 +76,11 @@ def mostrar_tela_tutorial(tela, fonte_path, largura, altura):
     img_wasd = carregar_imagem_tutorial('wasd.png', 0.1)
     img_balao = carregar_imagem_tutorial(constants.BALAO, 1.5)
     img_cafe = carregar_imagem_tutorial(constants.CAFE, 1.5)
-    img_seguranca = carregar_imagem_tutorial('milchick.png', 1.5)
+    img_segurancas = carregar_imagem_tutorial('img_segurancas.png', 0.15)
     img_cobel = carregar_imagem_tutorial('cobel.png', 1.5)
+
+    img_fundo_tutorial = pygame.image.load(os.path.join("imagens", "img_fundo_tutorial_att.png")).convert()
+    img_fundo_tutorial = pygame.transform.scale(img_fundo_tutorial, (largura, altura))
 
     # --- CONTEÚDO DAS PÁGINAS ---
     paginas = [
@@ -84,11 +88,11 @@ def mostrar_tela_tutorial(tela, fonte_path, largura, altura):
             "titulo": "OBJETIVO",
             "linhas": [
                 {
-                    "texto": "Você é Mark, um funcionário da ",
+                    "texto": "Você é Mark, um funcionário da Neurotreco",
                     "imgs": [img_mark],
-                    "inline_img": img_logo_neurotreco
+                    # "inline_img": img_logo_neurotreco
                 },
-                {"texto": "Sua missão é escapar da empresa.", "imgs": []},
+                {"texto": "Sua missão é escapar da empresa.", "imgs": [img_logo_neurotreco]},
                 {"texto": "Para isso, colete as 3 partes da chave...",
                     "imgs": [img_chave]},
                 {"texto": "...e use-as para abrir a porta de saída!",
@@ -110,7 +114,7 @@ def mostrar_tela_tutorial(tela, fonte_path, largura, altura):
             "titulo": "OS PERIGOS",
             "linhas": [
                 {"texto": "Os SEGURANÇAS patrulham o local.",
-                    "imgs": [img_seguranca]},
+                    "imgs": [img_segurancas]},
                 {"texto": "Evite-os para não perder vidas.", "imgs": []},
                 {"texto": "COBEL é a chefe. Ser pego por ela é o fim do jogo!",
                     "imgs": [img_cobel]}
@@ -152,7 +156,7 @@ def mostrar_tela_tutorial(tela, fonte_path, largura, altura):
     relogio = pygame.time.Clock()
     mostrando_tutorial = True
     while mostrando_tutorial:
-        tela.fill(COR_FUNDO)
+        tela.blit(img_fundo_tutorial, (0, 0))
         mouse_pos = pygame.mouse.get_pos()
 
         pagina = paginas[pagina_atual]
@@ -173,57 +177,62 @@ def mostrar_tela_tutorial(tela, fonte_path, largura, altura):
             # Desenha as imagens da linha (da coluna da esquerda)
             y_offset = 0
             for img in linha["imgs"]:
-                img_rect = img.get_rect(
-                    topleft=(pos_x_imgs, pos_y_atual + y_offset))
+                if img in (img_setas, img_wasd, img_chave, img_logo_neurotreco):
+                    img_rect = img.get_rect(topleft=(pos_x_imgs - 10, pos_y_atual + y_offset)) # coloca essas imagens mais pra esquerda
+                elif img in (img_balao, img_porta):
+                    img_rect = img.get_rect(topleft=(pos_x_imgs + 5, pos_y_atual + y_offset)) # coloca essas imagens mais pra direita
+                else:
+                    img_rect = img.get_rect(topleft=(pos_x_imgs, pos_y_atual + y_offset))
+
                 tela.blit(img, img_rect)
                 y_offset += img.get_height() + 5
             altura_imgs_total = y_offset
 
-            # --- BLOCO DE RENDERIZAÇÃO DE TEXTO MODIFICADO ---
-            if "inline_img" in linha:
-                texto_surface = fonte_tutorial.render(
-                    linha["texto"], True, constants.BRANCO)
-                texto_rect = texto_surface.get_rect(
-                    topleft=(pos_x_texto, pos_y_atual))
+            # --- BLOCO DE RENDERIZAÇÃO DE TEXTO MODIFICADO ---  // REMOÇÃO DA PARTE INLINE
+            # if "inline_img" in linha:  
+            #     texto_surface = fonte_tutorial.render(
+            #         linha["texto"], True, constants.BRANCO)
+            #     texto_rect = texto_surface.get_rect(
+            #         topleft=(pos_x_texto, pos_y_atual))
 
-                if altura_imgs_total > texto_rect.height:
-                    texto_rect.centery = pos_y_atual + altura_imgs_total / 2
+            #     if altura_imgs_total > texto_rect.height:
+            #         texto_rect.centery = pos_y_atual + altura_imgs_total / 2
 
-                tela.blit(texto_surface, texto_rect)
+            #     tela.blit(texto_surface, texto_rect)
 
-                img_inline = linha["inline_img"]
-                img_inline_rect = img_inline.get_rect(
-                    left=texto_rect.right + 5)
-                img_inline_rect.centery = texto_rect.centery
-                tela.blit(img_inline, img_inline_rect)
+            #     img_inline = linha["inline_img"]
+            #     img_inline_rect = img_inline.get_rect(
+            #         left=texto_rect.right + 5)
+            #     img_inline_rect.centery = texto_rect.centery
+            #     tela.blit(img_inline, img_inline_rect)
 
-                altura_total_texto = texto_rect.height
+            #     altura_total_texto = texto_rect.height
 
-            else:
-                linhas_quebradas = wrap_text(
-                    linha["texto"], fonte_tutorial, max_largura_texto)
+            #else:
+            linhas_quebradas = wrap_text(
+               linha["texto"], fonte_tutorial, max_largura_texto)
 
-                y_texto_offset = 0
-                for i, sub_linha in enumerate(linhas_quebradas):
-                    texto_renderizado = fonte_tutorial.render(
-                        sub_linha, True, constants.BRANCO)
+            y_texto_offset = 0
+            for i, sub_linha in enumerate(linhas_quebradas):
+                texto_renderizado = fonte_tutorial.render(
+                    sub_linha, True, constants.BRANCO)
 
-                    y_pos_final = pos_y_atual + y_texto_offset
+                y_pos_final = pos_y_atual + y_texto_offset
 
-                    if altura_imgs_total > 0 and i == 0:
-                        altura_bloco_texto = len(
-                            linhas_quebradas) * fonte_tutorial.get_linesize()
-                        if altura_imgs_total > altura_bloco_texto:
+                if altura_imgs_total > 0 and i == 0:
+                    altura_bloco_texto = len(
+                        linhas_quebradas) * fonte_tutorial.get_linesize()
+                    if altura_imgs_total > altura_bloco_texto:
                             
-                            y_pos_final = pos_y_atual + \
-                                (altura_imgs_total / 2) - \
-                                (altura_bloco_texto / 2)
+                        y_pos_final = pos_y_atual + \
+                            (altura_imgs_total / 2) - \
+                            (altura_bloco_texto / 2)
                             
-                            y_texto_offset = (y_pos_final - pos_y_atual)
+                        y_texto_offset = (y_pos_final - pos_y_atual)
 
-                    tela.blit(texto_renderizado, (pos_x_texto, y_pos_final))
-                    y_texto_offset += fonte_tutorial.get_linesize()
-                altura_total_texto = y_texto_offset
+                tela.blit(texto_renderizado, (pos_x_texto, y_pos_final))
+                y_texto_offset += fonte_tutorial.get_linesize()
+            altura_total_texto = y_texto_offset
             
 
             # Calcula a altura da linha e atualiza a posição Y para o próximo item
