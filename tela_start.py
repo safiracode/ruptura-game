@@ -31,8 +31,13 @@ def mostrar_tela_start(tela, fonte_path, largura, altura):
             
 
     # Configuração dos Botões
+<<<<<<< HEAD
     largura_botao = 200 # Aumentei um pouco para ficar mais parecido com a imagem
     altura_botao = 55   # Diminuí um pouco
+=======
+    largura_botao = 200 
+    altura_botao = 55   
+>>>>>>> c79bfdf61a7d8f4ff3f734e2bc2314c631cb5d9a
     espaco_entre_botoes = 20
 
     # Posição X: Alinhada à direita com uma margem
