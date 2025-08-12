@@ -199,32 +199,28 @@ class Game:
 
             # Colisão com Seguranças Comuns
             colisoes_segurancas = pygame.sprite.spritecollide(
-                self.jogador, self.grupo_segurancas, False)
+              self.jogador, self.grupo_segurancas, False)
             if colisoes_segurancas:
-                agora = pygame.time.get_ticks()
-                if not self.jogador.invencivel and agora - self.ultimo_dano_tempo > constants.COOLDOWN_DANO:
-                    self.ultimo_dano_tempo = agora
+              agora = pygame.time.get_ticks()
+              # Verifica se o jogador não está invencível e se o tempo de recarga de dano já passou
+              if not self.jogador.invencivel and agora - self.ultimo_dano_tempo > constants.COOLDOWN_DANO:
+                  self.ultimo_dano_tempo = agora
 
-                    if self.vidas == 1:
-                        self.causa_da_morte = 'Segurança'
+                  # Toca o som padrão de dano do segurança
+                  som_segurancas = pygame.mixer.Sound('audios/som_segurancas.mp3')
+                  som_segurancas.set_volume(1.0)
+                  som_segurancas.play()
 
-                    self.perder_vida()
+                  # Verifica se esta é a última vida ANTES de realmente perdê-la
+                  if self.vidas == 1:
+                      self.causa_da_morte = 'Segurança'
+                      # Toca o som especial de derrota para o segurança
+                      som_perdeu_segurancas = pygame.mixer.Sound('audios/som_perdeu_segurancas.mp3')
+                      som_perdeu_segurancas.set_volume(1.0)
+                      som_perdeu_segurancas.play()
 
-                    # tocar som do segurança
-                    som_segurancas = pygame.mixer.Sound(
-                        'audios/som_segurancas.mp3')
-                    som_segurancas.set_volume(1.0)
-                    som_segurancas.play()
-
-                    # se o jogador já estiver com 1 vida restante e for atingido por um segurança, ele ouvirá o som de "perdeu seguranças" no momento em que perde o último balão
-                    if self.vidas == 1:
-                        som_perdeu_segurancas = pygame.mixer.Sound(
-                            'audios/som_perdeu_segurancas.mp3')
-                        som_perdeu_segurancas.set_volume(
-                            1.0)  # ajusta o volume do som
-                        som_perdeu_segurancas.play()
-
-                    self.perder_vida()
+                  # Chama a função para perder vida
+                  self.perder_vida()
 
             # Colisão com a Porta (para vencer o jogo)
             colisoes_porta = pygame.sprite.spritecollide(
