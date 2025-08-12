@@ -18,7 +18,7 @@ def tela_game_over(tela, fonte, imagem_game_over):
     fonte_botao = pygame.font.Font(fonte, 36)
 
     # Retângulo do botão
-    ret_botao = pygame.Rect(x_botao, y_botao, 210, constants.ALTURA_BOTAO)
+    ret_botao = pygame.Rect(x_botao, y_botao, constants.LARGURA_BOTAO_GAMEOVERWIN, constants.ALTURA_BOTAO)
 
     while esperando:
         tela.blit(imagem_game_over, (0, 0))
