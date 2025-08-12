@@ -414,7 +414,7 @@ class Game:
 
     def mostrar_texto(self, texto, tamanho, cor, x, y):
         fonte = pygame.font.Font(self.fonte, tamanho)
-        texto_render = fonte.render(texto, True, cor)
+        texto_render = fonte.render(texto, False, cor)
         texto_rect = texto_render.get_rect()
         texto_rect.midtop = (x, y)
         self.tela.blit(texto_render, texto_rect)

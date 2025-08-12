@@ -54,7 +54,7 @@ def mostrar_tela_start(tela, fonte_path, largura, altura):
 
     # Botão START
     texto_start = "START"
-    render_start = fonte.render(texto_start, True, COR_TEXTO_BOTAO)
+    render_start = fonte.render(texto_start, False, COR_TEXTO_BOTAO)
     ret_botao_start = pygame.Rect(
         pos_x_botoes,
         pos_y_start,
@@ -64,7 +64,7 @@ def mostrar_tela_start(tela, fonte_path, largura, altura):
 
     # Botão TUTORIAL
     texto_tutorial = "TUTORIAL"
-    render_tutorial = fonte.render(texto_tutorial, True, COR_TEXTO_BOTAO)
+    render_tutorial = fonte.render(texto_tutorial, False, COR_TEXTO_BOTAO)
     ret_botao_tutorial = pygame.Rect(
         pos_x_botoes,
         pos_y_tutorial,
@@ -96,13 +96,13 @@ def mostrar_tela_start(tela, fonte_path, largura, altura):
 
         # Desenha o botão START
         pygame.draw.rect(tela, cor_start_atual, ret_botao_start,
-                         border_radius=25)  # Aumentei o raio
+                         border_radius=10)  # Aumentei o raio
         texto_rect_start = render_start.get_rect(center=ret_botao_start.center)
         tela.blit(render_start, texto_rect_start)
 
         # Desenha o botão TUTORIAL
         pygame.draw.rect(tela, cor_tutorial_atual,
-                         ret_botao_tutorial, border_radius=25)  # Aumentei o raio
+                         ret_botao_tutorial, border_radius=10)  # Aumentei o raio
         texto_rect_tutorial = render_tutorial.get_rect(
             center=ret_botao_tutorial.center)
         tela.blit(render_tutorial, texto_rect_tutorial)

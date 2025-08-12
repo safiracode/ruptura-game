@@ -91,30 +91,30 @@ def mostrar_tela_tutorial(tela, fonte_path, largura, altura):
                     "imgs": [img_mark],
                     # "inline_img": img_logo_neurotreco
                 },
-                {"texto": "Sua missão é escapar da empresa.", "imgs": [img_logo_neurotreco]},
+                {"texto": "Sua missão é escapar da empresa", "imgs": [img_logo_neurotreco]},
                 {"texto": "Para isso, colete as 3 partes da chave...",
                     "imgs": [img_chave]},
-                {"texto": "...e use-as para abrir a porta de saída!",
+                {"texto": "E use-as para abrir a porta de saída!",
                     "imgs": [img_porta]}
             ]
         },
         {
-            "titulo": "ITENS E CONTROLES",
+            "titulo": "ITENS/CONTROLES",
             "linhas": [
-                {"texto": "Use as SETAS ou W,A,S,D para se mover pelo escritório.", "imgs": [
+                {"texto": "Use as SETAS ou W,A,S,D para se mover pelo escritório", "imgs": [
                     img_setas, img_wasd]},
-                {"texto": "Colete BALÕES para recuperar vidas perdidas.",
+                {"texto": "Colete BALÕES para recuperar vidas perdidas",
                     "imgs": [img_balao]},
-                {"texto": "Pegue o CAFÉ para ganhar invencibilidade temporária.",
+                {"texto": "Pegue o CAFÉ para se tornar invulnerável por um tempo",
                     "imgs": [img_cafe]}
             ]
         },
         {
             "titulo": "OS PERIGOS",
             "linhas": [
-                {"texto": "Os SEGURANÇAS patrulham o local.",
+                {"texto": "Os SEGURANÇAS patrulham o local",
                     "imgs": [img_segurancas]},
-                {"texto": "Evite-os para não perder vidas.", "imgs": [img_segurancas_block]},
+                {"texto": "Evite-os para não perder vidas", "imgs": [img_segurancas_block]},
                 {"texto": "COBEL é a chefe. Ser pego por ela é o fim do jogo!",
                     "imgs": [img_cobel]}
             ]
@@ -122,8 +122,8 @@ def mostrar_tela_tutorial(tela, fonte_path, largura, altura):
         {
             "titulo": "DICA FINAL",
             "linhas": [
-                {"texto": "A cada pedaço de chave coletado, um novo segurança aparece.", "imgs": [img_pedaco_chave]},
-                {"texto": "O desafio aumenta, então planeje seus movimentos e use o café com sabedoria.", "imgs": [img_logo_tutorial]},
+                {"texto": "A cada pedaço de chave coletado, um novo segurança aparece", "imgs": [img_pedaco_chave]},
+                {"texto": "O desafio aumenta, então planeje seus movimentos e use o café com sabedoria", "imgs": [img_logo_tutorial]},
                 {"texto": "Boa sorte na sua fuga!", "imgs": [img_trevo]}
             ]
         }
@@ -138,17 +138,17 @@ def mostrar_tela_tutorial(tela, fonte_path, largura, altura):
     altura_botao = 50
     ret_voltar = pygame.Rect(
         largura / 2 - largura_botao / 2, altura - 70, largura_botao, altura_botao)
-    texto_voltar = fonte_botao.render("VOLTAR", True, COR_TEXTO_BOTAO)
+    texto_voltar = fonte_botao.render("INÍCIO", False, COR_TEXTO_BOTAO)
     ret_proximo = pygame.Rect(
         largura - largura_botao - 30, altura - 70, largura_botao, altura_botao)
-    texto_proximo = fonte_botao.render("PRÓXIMO", True, COR_TEXTO_BOTAO)
+    texto_proximo = fonte_botao.render("PRÓXIMO", False, COR_TEXTO_BOTAO)
     ret_anterior = pygame.Rect(30, altura - 70, largura_botao, altura_botao)
-    texto_anterior = fonte_botao.render("ANTERIOR", True, COR_TEXTO_BOTAO)
+    texto_anterior = fonte_botao.render("VOLTAR", False, COR_TEXTO_BOTAO)
 
     tamanho_fonte_tutorial = 24
     fonte_tutorial = pygame.font.Font(fonte_path, tamanho_fonte_tutorial)
     pos_x_texto = 120
-    margem_direita_texto = 40
+    margem_direita_texto = 30
     max_largura_texto = largura - pos_x_texto - margem_direita_texto
 
     # LOOP PRINCIPAL DO TUTORIAL
@@ -159,8 +159,11 @@ def mostrar_tela_tutorial(tela, fonte_path, largura, altura):
         mouse_pos = pygame.mouse.get_pos()
 
         pagina = paginas[pagina_atual]
-
+        
         # Desenha o Título
+        fonte_titulo = pygame.font.Font(fonte_path, 48)  # Fonte base
+        fonte_titulo.set_bold(True)  # Ativa negrito
+        
         desenhar_texto_alinhado(
             tela, pagina["titulo"], 48, largura / 2, 50, fonte_path, align="center")
 
