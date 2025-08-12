@@ -65,7 +65,7 @@ def tela_game_over_cobel(tela, fonte_path, imagem_fundo):
 
         # Lógica para desenhar o botão
         pygame.draw.rect(tela, cor_botao_atual, botao_rect, border_radius=10)
-        mostrar_texto(tela, fonte_path, "RECOMEÇAR", 30, COR_BRANCO,
+        mostrar_texto(tela, fonte_path, "RECOMEÇAR", 36, COR_BRANCO,
                       botao_rect.centerx, botao_rect.centery)
 
         pygame.display.flip()
