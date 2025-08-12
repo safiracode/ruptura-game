@@ -90,5 +90,6 @@ IMG_BOTAO = os.path.join('imagens', 'botao.png')
 SPRITESHEET = os.path.join('ideias de imagens', 'spritesheet.png') # checar uso
 RUPTURA_START_LOGO = 'ruptura_logo.png'
 GAME_OVER_IMG = 'game_over_vertical.png'
+GAME_OVER_COBEL = 'game_over_cobel.png'
 
 FONTE = 'ocraextended'

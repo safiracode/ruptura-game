@@ -10,6 +10,9 @@ import tela_tutorial
 import game_over_cobel
 import venceu
 
+pygame.mixer.init()
+
+
 class Game:
     def __init__(self):
         # INICIALIZA O JOGO E SUAS VARIAVEIS PRINCIPAIS
@@ -36,6 +39,7 @@ class Game:
         self.partes_coletadas = [False] * constants.NUMERO_PARTES_CHAVE
         self.proxima_parte_a_spawnar = 0
         self.venceu_jogo = False
+        self.causa_da_morte = None
         self.mapa_do_jogo = mapa.gerar_mapa_aleatorio(
             mapa.LARGURA_GRADE, mapa.ALTURA_GRADE)
 
@@ -186,10 +190,12 @@ class Game:
             # Colisão com a Chefona (Cobel)
             if pygame.sprite.spritecollide(self.jogador, self.grupo_chefes, False) and not self.jogador.invencivel:
                 som_cobel = pygame.mixer.Sound('audios/som_cobel.mp3')
-                som_cobel.set_volume(1.0)  # ajusta o volume do som
-                som_cobel.play()  # inicia o som do cobel
+                som_cobel.set_volume(1.0)
+                som_cobel.play() 
 
+                self.causa_da_morte = 'Cobel'
                 self.vidas = 0
+                self.jogando = False
 
             # Colisão com Seguranças Comuns
             colisoes_segurancas = pygame.sprite.spritecollide(
@@ -199,10 +205,15 @@ class Game:
                 if not self.jogador.invencivel and agora - self.ultimo_dano_tempo > constants.COOLDOWN_DANO:
                     self.ultimo_dano_tempo = agora
 
+                    if self.vidas == 1:
+                        self.causa_da_morte = 'Segurança'
+
+                    self.perder_vida()
+
                     # tocar som do segurança
                     som_segurancas = pygame.mixer.Sound(
                         'audios/som_segurancas.mp3')
-                    som_segurancas.set_volume(1.0)  # ajusta o volume do som
+                    som_segurancas.set_volume(1.0)
                     som_segurancas.play()
 
                     # se o jogador já estiver com 1 vida restante e for atingido por um segurança, ele ouvirá o som de "perdeu seguranças" no momento em que perde o último balão
@@ -282,6 +293,8 @@ class Game:
             diretorio_imagens, constants.CAFE)).convert_alpha()
         self.imagem_game_over = pygame.image.load(os.path.join(
             diretorio_imagens, constants.GAME_OVER_IMG)).convert()
+        self.imagem_game_over_cobel = pygame.image.load(os.path.join(
+            diretorio_imagens, constants.GAME_OVER_COBEL)).convert()
         self.imagem_venceu = pygame.image.load(os.path.join(
             diretorio_imagens, constants.VENCEU_IMG)).convert()
 
@@ -415,7 +428,7 @@ class Game:
 
     def mostrar_texto(self, texto, tamanho, cor, x, y):
         fonte = pygame.font.Font(self.fonte, tamanho)
-        texto_render = fonte.render(texto, False, cor)
+        texto_render = fonte.render(texto, True, cor)
         texto_rect = texto_render.get_rect()
         texto_rect.midtop = (x, y)
         self.tela.blit(texto_render, texto_rect)
@@ -440,6 +453,9 @@ class Game:
     def tela_game_over(self):
         return game_over.tela_game_over(self.tela, self.fonte, self.imagem_game_over)
 
+    def tela_game_over_cobel(self):
+        return game_over_cobel.tela_game_over_cobel(self.tela, self.fonte, self.imagem_game_over_cobel)
+
     def tela_venceu(self):
         return venceu.tela_venceu(self.tela, self.fonte, self.imagem_venceu)
 
@@ -462,9 +478,15 @@ while g.esta_rodando:
                 # Sai do jogo se o jogador fechar a tela de vitória
                 g.esta_rodando = False
         elif g.vidas <= 0:
-            if not g.tela_game_over():
-                # Sai do jogo se o jogador fechar a tela de game over
-                g.esta_rodando = False
+            if g.causa_da_morte == 'Cobel':
+                # Chama a tela específica
+                if not g.tela_game_over_cobel():
+                    # Sai do jogo se o jogador fechar a tela de game over
+                    g.esta_rodando = False
+            else:
+                # Chama a tela game over padrão
+                if not g.tela_game_over():
+                    g.esta_rodando = False
 
     elif acao_escolhida == "TUTORIAL":
         # Se a escolha foi "TUTORIAL", apenas mostramos a tela de tutorial.
