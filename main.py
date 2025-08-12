@@ -7,6 +7,7 @@ import random
 import game_over
 import tela_start
 import tela_tutorial
+import game_over_cobel
 import venceu
 
 pygame.mixer.init()
@@ -188,9 +189,9 @@ class Game:
             # Colisão com a Chefona (Cobel)
             if pygame.sprite.spritecollide(self.jogador, self.grupo_chefes, False) and not self.jogador.invencivel:
                 som_cobel = pygame.mixer.Sound('audios/som_cobel.mp3')
-                som_cobel.set_volume(1.0)  #ajusta o volume do som
-                som_cobel.play()  #inicia o som do cobel
-                
+                som_cobel.set_volume(1.0)  # ajusta o volume do som
+                som_cobel.play()  # inicia o som do cobel
+
                 self.vidas = 0
 
             # Colisão com Seguranças Comuns
@@ -201,15 +202,18 @@ class Game:
                 if not self.jogador.invencivel and agora - self.ultimo_dano_tempo > constants.COOLDOWN_DANO:
                     self.ultimo_dano_tempo = agora
 
-                    #tocar som do segurança
-                    som_segurancas = pygame.mixer.Sound('audios/som_segurancas.mp3')
-                    som_segurancas.set_volume(1.0)  #ajusta o volume do som
+                    # tocar som do segurança
+                    som_segurancas = pygame.mixer.Sound(
+                        'audios/som_segurancas.mp3')
+                    som_segurancas.set_volume(1.0)  # ajusta o volume do som
                     som_segurancas.play()
 
-                    #se o jogador já estiver com 1 vida restante e for atingido por um segurança, ele ouvirá o som de "perdeu seguranças" no momento em que perde o último balão
-                    if self.vidas==1: 
-                        som_perdeu_segurancas = pygame.mixer.Sound('audios/som_perdeu_segurancas.mp3')
-                        som_perdeu_segurancas.set_volume(1.0)  #ajusta o volume do som
+                    # se o jogador já estiver com 1 vida restante e for atingido por um segurança, ele ouvirá o som de "perdeu seguranças" no momento em que perde o último balão
+                    if self.vidas == 1:
+                        som_perdeu_segurancas = pygame.mixer.Sound(
+                            'audios/som_perdeu_segurancas.mp3')
+                        som_perdeu_segurancas.set_volume(
+                            1.0)  # ajusta o volume do som
                         som_perdeu_segurancas.play()
 
                     self.perder_vida()
@@ -447,19 +451,19 @@ class Game:
 g = Game()
 g.tela_start()
 while g.esta_rodando:
-    
-    #MOSTRA O MENU E ESPERA A ESCOLHA DO JOGADOR
-    acao_escolhida = g.tela_start() 
 
-    #VERIFICA A ESCOLHA E AGE DE ACORDO
+    # MOSTRA O MENU E ESPERA A ESCOLHA DO JOGADOR
+    acao_escolhida = g.tela_start()
+
+    # VERIFICA A ESCOLHA E AGE DE ACORDO
     if acao_escolhida == "START":
         g.novo_jogo()
-        
+
         # Se o jogo terminou, verifica se foi por vitória ou derrota
         if g.venceu_jogo:
             if not g.tela_venceu():
                 # Sai do jogo se o jogador fechar a tela de vitória
-                g.esta_rodando = False 
+                g.esta_rodando = False
         elif g.vidas <= 0:
             if not g.tela_game_over():
                 # Sai do jogo se o jogador fechar a tela de game over
@@ -467,7 +471,7 @@ while g.esta_rodando:
 
     elif acao_escolhida == "TUTORIAL":
         # Se a escolha foi "TUTORIAL", apenas mostramos a tela de tutorial.
-        
+
         tela_tutorial.mostrar_tela_tutorial(
             tela=g.tela,
             fonte_path=g.fonte,
@@ -475,7 +479,8 @@ while g.esta_rodando:
             altura=constants.ALTURA
         )
 
-    else: # Se a ação for None (jogador fechou a janela do menu) ou outra coisa.
-        g.esta_rodando = False # Encerra o loop principal.
+    # Se a ação for None (jogador fechou a janela do menu) ou outra coisa.
+    else:
+        g.esta_rodando = False  # Encerra o loop principal.
 
 pygame.quit()
