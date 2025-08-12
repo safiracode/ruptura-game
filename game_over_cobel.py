@@ -2,19 +2,22 @@ import pygame
 import os
 import constants
 
+
 def mostrar_texto(tela, fonte_path, texto, tamanho, cor, x, y):
     try:
         fonte = pygame.font.Font(fonte_path, tamanho)
     except FileNotFoundError:
         fonte = pygame.font.Font(None, tamanho)
-        
+
     texto_surface = fonte.render(texto, True, cor)
     texto_rect = texto_surface.get_rect(center=(x, y))
     tela.blit(texto_surface, texto_rect)
 
+
 def tela_game_over_cobel(tela, fonte_path, imagem_fundo):
+    # Para a música principal e toca o som de derrota da Cobel
     pygame.mixer.music.stop()
-    
+
     caminho_som_cobel = os.path.join('audios', 'som_perdeu_cobel.mp3')
     if os.path.exists(caminho_som_cobel):
         som_derrota = pygame.mixer.Sound(caminho_som_cobel)
@@ -41,10 +44,13 @@ def tela_game_over_cobel(tela, fonte_path, imagem_fundo):
     COR_AMARELO = (255, 255, 0)
 
     # Desenha as mensagens na tela
-    mostrar_texto(tela, fonte_path, titulo, 60, COR_VERMELHO_LUMON, largura_tela / 2, altura_tela / 2 - 60)
-    mostrar_texto(tela, fonte_path, subtitulo, 28, COR_BRANCO, largura_tela / 2, altura_tela / 2 + 10)
-    mostrar_texto(tela, fonte_path, instrucao, 22, COR_AMARELO, largura_tela / 2, altura_tela - 100)
-    
+    mostrar_texto(tela, fonte_path, titulo, 60, COR_VERMELHO_LUMON,
+                  largura_tela / 2, altura_tela / 2 - 60)
+    mostrar_texto(tela, fonte_path, subtitulo, 28, COR_BRANCO,
+                  largura_tela / 2, altura_tela / 2 + 10)
+    mostrar_texto(tela, fonte_path, instrucao, 22, COR_AMARELO,
+                  largura_tela / 2, altura_tela - 100)
+
     pygame.display.flip()
 
     # Loop que aguarda o jogador pressionar uma tecla para continuar
@@ -56,6 +62,5 @@ def tela_game_over_cobel(tela, fonte_path, imagem_fundo):
             if event.type == pygame.KEYUP:
                 esperando = False
 
-    # Reinicia a música principal antes de voltar ao menu
     pygame.mixer.music.play(-1)
     return True
