@@ -3,7 +3,7 @@ import constants
 
 def tela_game_over(tela, fonte, imagem_game_over):
     esperando = True
-    x_botao = (constants.LARGURA - constants.LARGURA_BOTAO) // 2 + 80
+    x_botao = (constants.LARGURA - constants.LARGURA_BOTAO) // 2 + 60
     y_botao = constants.ALTURA // 2 + 220
 
     #som de game over
@@ -11,19 +11,29 @@ def tela_game_over(tela, fonte, imagem_game_over):
     pygame.mixer.music.load('audios/musica game over.mp3')
     pygame.mixer.music.play() #inicia a musica game over
 
-    img_botao = pygame.image.load(constants.IMG_BOTAO).convert_alpha()
-    img_botao = pygame.transform.scale(img_botao, (constants.LARGURA_BOTAO, constants.ALTURA_BOTAO))
+    # Configurações do botão | feito "manualmente" assim como da tela start
+    COR_BOTAO = (115, 160, 35)
+    COR_BOTAO_HOVER = (140, 195, 40)
+    COR_TEXTO = constants.BRANCO
+    fonte_botao = pygame.font.Font(fonte, 36)
+
+    # Retângulo do botão
+    ret_botao = pygame.Rect(x_botao, y_botao, 210, constants.ALTURA_BOTAO)
 
     while esperando:
         tela.blit(imagem_game_over, (0, 0))
 
-        # Desenha a imagem do botão como fundo do botão
-        tela.blit(img_botao, (x_botao, y_botao))
+        mouse_pos = pygame.mouse.get_pos()
 
-        # Texto do botão
-        fonte_botao = pygame.font.Font(fonte, 36)
-        texto = fonte_botao.render("Recomeçar", True, constants.BRANCO)
-        texto_rect = texto.get_rect(center=(x_botao + constants.LARGURA_BOTAO // 2, y_botao + constants.ALTURA_BOTAO // 2))
+        # Cor muda se o mouse estiver em cima
+        cor_atual = COR_BOTAO_HOVER if ret_botao.collidepoint(mouse_pos) else COR_BOTAO
+
+        # Desenha o botão
+        pygame.draw.rect(tela, cor_atual, ret_botao, border_radius=10)
+
+        # Texto centralizado no botão
+        texto = fonte_botao.render("Recomeçar", True, COR_TEXTO)
+        texto_rect = texto.get_rect(center=ret_botao.center)
         tela.blit(texto, texto_rect)
 
         pygame.display.flip()
@@ -33,8 +43,7 @@ def tela_game_over(tela, fonte, imagem_game_over):
                 esperando = False
                 return False  # Sai do jogo
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                mouse_x, mouse_y = event.pos
-                if x_botao <= mouse_x <= x_botao + constants.LARGURA_BOTAO and y_botao <= mouse_y <= y_botao + constants.ALTURA_BOTAO:
+                if event.button == 1 and ret_botao.collidepoint(event.pos):
                     #parar música game over e iniciar principal
                     pygame.mixer.music.stop()
                     pygame.mixer.music.load("audios/música principal.mp3")
