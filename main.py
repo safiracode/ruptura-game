@@ -10,9 +10,6 @@ import tela_tutorial
 import game_over_cobel
 import venceu
 
-pygame.mixer.init()
-
-
 class Game:
     def __init__(self):
         # INICIALIZA O JOGO E SUAS VARIAVEIS PRINCIPAIS
