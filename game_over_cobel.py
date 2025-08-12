@@ -2,7 +2,6 @@ import pygame
 import os
 import constants
 
-
 def mostrar_texto(tela, fonte_path, texto, tamanho, cor, x, y):
     try:
         fonte = pygame.font.Font(fonte_path, tamanho)
@@ -15,52 +14,60 @@ def mostrar_texto(tela, fonte_path, texto, tamanho, cor, x, y):
 
 
 def tela_game_over_cobel(tela, fonte_path, imagem_fundo):
-    # Para a música principal e toca o som de derrota da Cobel
     pygame.mixer.music.stop()
-
     caminho_som_cobel = os.path.join('audios', 'som_perdeu_cobel.mp3')
     if os.path.exists(caminho_som_cobel):
         som_derrota = pygame.mixer.Sound(caminho_som_cobel)
         som_derrota.set_volume(1.0)
         som_derrota.play()
 
-    # Define a imagem de fundo
-    if imagem_fundo:
-        tela.blit(imagem_fundo, (0, 0))
-    else:
-        tela.fill(constants.PRETO)
-
     largura_tela = tela.get_width()
     altura_tela = tela.get_height()
 
-    # Mensagens customizadas para a Cobel
-    titulo = ""
-    subtitulo = ""
-    instrucao = ""
-
-    # Cores
-    COR_VERMELHO_LUMON = (200, 0, 0)
+    # Definição do Botão
     COR_BRANCO = (255, 255, 255)
-    COR_AMARELO = (255, 255, 0)
+    COR_BOTAO_NORMAL = (115, 160, 35)      
+    COR_BOTAO_HOVER = (140, 195, 40)      
 
-    # Desenha as mensagens na tela
-    mostrar_texto(tela, fonte_path, titulo, 60, COR_VERMELHO_LUMON,
-                  largura_tela / 2, altura_tela / 2 - 60)
-    mostrar_texto(tela, fonte_path, subtitulo, 28, COR_BRANCO,
-                  largura_tela / 2, altura_tela / 2 + 10)
-    mostrar_texto(tela, fonte_path, instrucao, 22, COR_AMARELO,
-                  largura_tela / 2, altura_tela - 100)
+    # Posição e dimensões do botão
+    botao_largura = 220
+    botao_altura = 50
+    
+    # Botão centralizado na tela 
+    botao_x = (constants.LARGURA - constants.LARGURA_BOTAO) // 2 + 60
+    botao_y = constants.ALTURA // 2 + 220
 
-    pygame.display.flip()
+    botao_rect = pygame.Rect(botao_x, botao_y, botao_largura, botao_altura)
 
-    # Loop que aguarda o jogador pressionar uma tecla para continuar
+    # Lógica de Interação no Loop 
     esperando = True
     while esperando:
+        mouse_pos = pygame.mouse.get_pos()
+        
+        cor_botao_atual = COR_BOTAO_NORMAL
+        if botao_rect.collidepoint(mouse_pos):
+            cor_botao_atual = COR_BOTAO_HOVER
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                return False
-            if event.type == pygame.KEYUP:
-                esperando = False
+                return "QUIT" 
+            
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if botao_rect.collidepoint(mouse_pos):
+                    return "RESTART"
 
-    pygame.mixer.music.play(-1)
-    return True
+        # Desenho dos Elementos na Tela
+        if imagem_fundo:
+            tela.blit(imagem_fundo, (0, 0))
+        else:
+            tela.fill(constants.PRETO)
+
+
+        # Lógica para desenhar o botão
+        pygame.draw.rect(tela, cor_botao_atual, botao_rect, border_radius=10)
+        mostrar_texto(tela, fonte_path, "RECOMEÇAR", 30, COR_BRANCO,
+                      botao_rect.centerx, botao_rect.centery)
+
+        pygame.display.flip()
+    
+    return "QUIT"

@@ -32,7 +32,7 @@ def tela_game_over(tela, fonte, imagem_game_over):
         pygame.draw.rect(tela, cor_atual, ret_botao, border_radius=10)
 
         # Texto centralizado no botão
-        texto = fonte_botao.render("Recomeçar", True, COR_TEXTO)
+        texto = fonte_botao.render("RECOMEÇAR", True, COR_TEXTO)
         texto_rect = texto.get_rect(center=ret_botao.center)
         tela.blit(texto, texto_rect)
 
