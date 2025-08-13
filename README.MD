@@ -70,11 +70,11 @@ A estrutura do repositório está organizada assim:
 - `game_over.py` : lógica e exibição da tela de derrota padrão.  
 - `game_over_cobel.py` : tela de derrota específica para quando Mark é vencido pela personagem Cobel.  
 - `venceu.py` : lógica e exibição da tela de vitória.  
-- `classes/` : contém as classes principais, como personagens, inimigos e objetos interativos.  
-- `audios/` : reúne todos os arquivos sonoros, incluindo efeitos e trilhas.  
-- `imagens/` : ideias de imagens gerais, como ícones e fundos.
-- `imagens_jogo/` : recursos visuais definitivos usados no jogo.  
-- `ideias de imagens/` : material de referência para a criação da estética do jogo.  
+- `classes` : contém as classes principais, como personagens, inimigos e objetos coletáveis.  
+- `audios` : reúne todos os arquivos sonoros usados no jogo, incluindo efeitos e trilhas.  
+- `imagens` : ideias de imagens gerais, como ícones dos coletáveis e os movimentos dos personagens.
+- `imagens_jogo` : telas de início, derrota, vitória, tutorial e a tela geral do jogo.
+- `ideias de imagens` : material de referência para a criação da estética do jogo.  
 - `__pycache__/` : arquivos compilados automaticamente pelo Python.  
 
 
