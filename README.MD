@@ -51,11 +51,11 @@ A temática principal é inspirada na série _Ruptura (Severance)_, cuja ambient
 | Time                                                  | Tarefas                                                                                |
 | ----------------------------------------------------- | -------------------------------------------------------------------------------------- |
 | [Ana Laura Barboza]                                   | Desenvolvimento do código e solução de problemas, design dos personagens, sonoplastia do jogo, organização do código, documentação nas planilhas e organização do GitHub |
-| [Izadora Andrade]                                     | Desenvolvimento do código e solução de problemas,    |
+| [Izadora Andrade]                                     | Desenvolvimento do código e solução de problemas, Implementação do Mark, Implementação da tela de Game Over, Auxílio no README.md   |
 | [Laís Saraiva]                                        | Desenvolvimento do código e solução de problemas,   |
-| [Laura Fonseca]                                       | Desenvolvimento do código e solução de problemas, Implementação de sons do jogo, Apresentação final dos slides, Design da tela you win |
+| [Laura Fonseca]                                       | Desenvolvimento do código e solução de problemas, Implementação de sons do jogo, Apresentação final dos slides, Design da tela "You Win", Implementação da tela "Venceu"|
 | [Letícia Staudinger]                                  | Desenvolvimento do código e solução de problemas, |
-| [Safira Moraes]                                       | Desenvolvimento do código e solução de problemas, |
+| [Safira Moraes]                                       | Desenvolvimento do código e solução de problemas, Organização e criação da base do codigo, Implementação do mapa aleatório, Implementação dos coletáveis: balão, chave e café, Implementação dos seguranças e algoritmo de busca com dois modos: perseguir e dispersar, Melhoria na movimentação do mark, Melhoria no algoritmo de busca da Cobel |
 
 ## Arquitetura do projeto e organizacão do código 🏛
 Organizamos o _Ruptura Game_ através de arquivos e pastas de acordo com suas funções para facilitar a manutenção e permitir que as integrantes do grupo trabalhasse em partes diferentes do código sem conflitos.  
