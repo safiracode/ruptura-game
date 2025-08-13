@@ -53,7 +53,7 @@ A temática principal é inspirada na série _Ruptura (Severance)_, cuja ambient
 | [Ana Laura Barboza]                                   | Desenvolvimento do código e solução de problemas, design dos personagens, sonoplastia do jogo, organização do código, documentação nas planilhas e organização do GitHub |
 | [Izadora Andrade]                                     | Desenvolvimento do código e solução de problemas,    |
 | [Laís Saraiva]                                        | Desenvolvimento do código e solução de problemas,   |
-| [Laura Fonseca]                                       | Desenvolvimento do código e solução de problemas,    |
+| [Laura Fonseca]                                       | Desenvolvimento do código e solução de problemas, Implementação de sons do jogo, Apresentação final dos slides, Design da tela you win |
 | [Letícia Staudinger]                                  | Desenvolvimento do código e solução de problemas, |
 | [Safira Moraes]                                       | Desenvolvimento do código e solução de problemas, |
 
