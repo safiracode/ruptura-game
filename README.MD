@@ -75,7 +75,7 @@ A estrutura do repositório está organizada assim:
 - `imagens` : ideias de imagens gerais, como ícones dos coletáveis e os movimentos dos personagens.
 - `imagens_jogo` : telas de início, derrota, vitória, tutorial e a tela geral do jogo.
 - `ideias de imagens` : material de referência para a criação da estética do jogo.  
-- `__pycache__/` : arquivos compilados automaticamente pelo Python.  
+- `__pycache__` : arquivos compilados automaticamente pelo Python.  
 
 
 ## Capturas de tela 🖼️
@@ -105,6 +105,15 @@ Para o desenvolvimento do _Ruptura Game_, utilizamos um conjunto de ferramentas 
 - **YouTube, OpenGameArt e FreeSound** — Bibliotecas de efeitos sonoros e trilhas, enriquecendo o jogo. 
 
 ## Conceitos da disciplina aplicados 💡
+Durante o desenvolvimento do _Ruptura Game_, colocamos em prática diversos conceitos vistos ao longo da disciplina, aplicando-os diretamente na lógica e na estrutura do jogo.  
+
+Os _comandos condicionais_ (`if`, `elif`, `else`) foram fundamentais para controlar o fluxo de execução, determinando ações diferentes a depender de eventos como colisões, transições de fases ou escolha de opções no menu. Já os _laços de repetição_ (`for` e `while`) foram essenciais para percorrer coleções de dados, atualizar elementos em tela e manter o _game loop_ rodando de forma contínua até que uma condição de término fosse atingida.  
+
+As _listas_ foram amplamente utilizadas para armazenar e gerenciar elementos do jogo, como conjuntos de sprites, obstáculos e sequências de frames de animação. Em alguns casos, usamos _tuplas_ para representar dados que não precisariam ser modificados, ou seja, que se mantêm constantes ao longo da execução do jogo. O uso de _matrizes_ também foi útil para representar mapas e fases do jogo, onde cada posição correspondia a um elemento do cenário. Isso possibilitou um controle mais intuitivo sobre a disposição dos objetos e facilitou a lógica de colisão e movimentação.  
+
+As _funções_ desempenharam um papel importante na organização do código, separando responsabilidades em blocos lógicos, como: inicializar o jogo, processar entradas do usuário, atualizar o estado dos personagens e renderizar os elementos na tela.
+
+Por fim, também aplicamos _Programação Orientada a Objetos (POO)_ para estruturar o jogo de forma modular e reutilizável. Criamos classes para representar entidades como o jogador, inimigos e elementos de cenário, encapsulando seus atributos e comportamentos e permitindo instanciar múltiplos objetos de forma independente.  
 
 ## Desafios, erros e lições aprendidas 💥
 
