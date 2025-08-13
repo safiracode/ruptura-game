@@ -116,13 +116,13 @@ As _funções_ desempenharam um papel importante na organização do código, se
 Por fim, também aplicamos _Programação Orientada a Objetos (POO)_ para estruturar o jogo de forma modular e reutilizável. Criamos classes para representar entidades como o jogador, inimigos e elementos de cenário, encapsulando seus atributos e comportamentos e permitindo instanciar múltiplos objetos de forma independente.  
 
 ## Desafios, erros e lições aprendidas 💥
-> **Qual foi o maior erro cometido durante o projeto? Como vocês lidaram com ele?**  
+> **Qual foi o maior erro cometido durante o projeto? Como vocês lidaram com ele?** <
 O maior erro cometido ao longo do desenvolvimento do *Ruptura Game* foi a subestimação do tempo necessário para integrar todos os elementos do jogo, especialmente no início do trabalho. Essa falta de planejamento prejudicou o andamento das etapas iniciais, atrasando a implementação de funcionalidades-chave. Lidamos com essa situação estabelecendo um cronograma mais rígido, redistribuindo tarefas e definindo responsabilidades claras para cada integrante, o que melhorou tanto a organização interna quanto o uso do nosso tempo.  
 
-> **Qual foi o maior desafio enfrentado durante o projeto? Como vocês lidaram com ele?**  
+> **Qual foi o maior desafio enfrentado durante o projeto? Como vocês lidaram com ele?** <
 O maior desafio foi implementar a inteligência do inimigo de forma que sua movimentação e ações fossem coerentes com a proposta do jogo. Para superar essa dificuldade, realizamos pesquisas aprofundadas, estudamos referências de IA em outros jogos desenvolvidos em Pygame e fizemos vários testes práticos até encontrar um comportamento que equilibrasse desafio e jogabilidade.  
 
-> **Quais as lições aprendidas durante o projeto?**  
+> **Quais as lições aprendidas durante o projeto?**  <
 Aprendemos a importância de um bom planejamento desde o início, a necessidade de testar constantemente cada funcionalidade antes de integrá-la ao jogo e a valorizar a colaboração em equipe. Além disso, nos aprofundamos em ferramentas que antes não dominávamos — como Pygame, GitHub e Trello — e fortalecemos nossa capacidade de delegar funções, adaptar soluções e trabalhar de forma coesa para alcançar um resultado final satisfatório.  
 
 
