@@ -15,11 +15,11 @@ def mostrar_texto(tela, fonte_path, texto, tamanho, cor, x, y):
 
 def tela_game_over_cobel(tela, fonte_path, imagem_fundo):
     pygame.mixer.music.stop()
-    caminho_som_cobel = os.path.join('audios', 'som_perdeu_cobel.mp3')
+    caminho_som_cobel = os.path.join('audios', 'musica game over.mp3')
     if os.path.exists(caminho_som_cobel):
-        som_derrota = pygame.mixer.Sound(caminho_som_cobel)
-        som_derrota.set_volume(1.0)
-        som_derrota.play()
+        pygame.mixer.music.load(caminho_som_cobel)
+        pygame.mixer.music.set_volume(1.0)
+        pygame.mixer.music.play()
 
     largura_tela = tela.get_width()
     altura_tela = tela.get_height()
