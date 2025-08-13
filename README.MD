@@ -1,4 +1,4 @@
-# Projeto final de Introdução à Programação: Ruptura game ▶️
+# Projeto final de Introdução à Programação: _Ruptura Game_ ▶️
 
 Este projeto consiste em um jogo 2D desenvolvido como parte da disciplina de Introdução à Programação. Utilizando a biblioteca _Pygame_, criamos uma experiência interativa que coloca em prática os conhecimentos adquiridos ao longo do semestre, desde estruturas de controle e manipulação de eventos até o uso de recursos gráficos e sonoros. Nosso objetivo foi transformar conceitos teóricos em algo concreto e funcional, unindo programação e criatividade.
 
