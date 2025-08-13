@@ -118,14 +118,14 @@ Por fim, também aplicamos _Programação Orientada a Objetos (POO)_ para estrut
 ## Desafios, erros e lições aprendidas 💥
 > **Qual foi o maior erro cometido durante o projeto? Como vocês lidaram com ele?** 
 
-O maior erro cometido ao longo do desenvolvimento do *Ruptura Game* foi a subestimação do tempo necessário para integrar todos os elementos do jogo, especialmente no início do trabalho. Essa falta de planejamento prejudicou o andamento das etapas iniciais, atrasando a implementação de funcionalidades-chave. Lidamos com essa situação estabelecendo um cronograma mais rígido, redistribuindo tarefas e definindo responsabilidades claras para cada integrante, o que melhorou tanto a organização interna quanto o uso do nosso tempo.  
+O maior erro cometido no desenvolvimento do _Ruptura Game_ foi priorizar, nas etapas iniciais, partes do trabalho que poderiam ter sido deixadas para depois, como decisões de design e de sonoplastia, em vez de focar no código base que sustentaria toda a lógica do jogo. Essa escolha acabou atrasando a implementação de funcionalidades essenciais. Para lidar com isso, reorganizamos as prioridades, redistribuindo tarefas para que o núcleo do jogo fosse finalizado antes dos elementos complementares.  
 
 > **Qual foi o maior desafio enfrentado durante o projeto? Como vocês lidaram com ele?** 
 
-O maior desafio foi implementar a inteligência do inimigo de forma que sua movimentação e ações fossem coerentes com a proposta do jogo. Para superar essa dificuldade, realizamos pesquisas aprofundadas, estudamos referências de IA em outros jogos desenvolvidos em Pygame e fizemos vários testes práticos até encontrar um comportamento que equilibrasse desafio e jogabilidade.  
+O maior desafio foi implementar os seguranças, a lógica da Cobel e os coletáveis de forma que o jogo se mantivesse equilibrado (nem muito fácil, nem excessivamente difícil) e, ao mesmo tempo, garantir que todos esses elementos funcionassem de maneira integrada, simultaneamente. Para superar essa dificuldade, realizamos pesquisas, analisamos referências de jogos semelhantes e realizamos diversos testes para ajustar velocidades, padrões de movimento e posicionamento, até alcançar um resultado coerente com a proposta do jogo.  
 
 > **Quais as lições aprendidas durante o projeto?**  
 
-Aprendemos a importância de um bom planejamento desde o início, a necessidade de testar constantemente cada funcionalidade antes de integrá-la ao jogo e a valorizar a colaboração em equipe. Além disso, nos aprofundamos em ferramentas que antes não dominávamos — como Pygame, GitHub e Trello — e fortalecemos nossa capacidade de delegar funções, adaptar soluções e trabalhar de forma coesa para alcançar um resultado final satisfatório.  
+Uma das maiores lições foi a importância do planejamento prévio para a execução eficiente de qualquer trabalho. Aprendemos também a lidar com uma biblioteca completamente nova, o _Pygame_; a utilizar de forma eficaz uma plataforma de repositório (nesse caso, o GitHub) para gerenciar arquivos em constante mudança; e a trabalhar com Programação Orientada a Objetos, que, até então,não havia sido muito explorada por nós. Além disso, reforçamos a importância de delegar funções de forma equilibrada, organizar o código de forma legível, colaborar ativamente na criação em equipe e manter uma comunicação constante, tanto entre os integrantes do grupo quanto com as monitoras e os professores.  
 
 
