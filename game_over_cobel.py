@@ -54,6 +54,16 @@ def tela_game_over_cobel(tela, fonte_path, imagem_fundo):
             
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if botao_rect.collidepoint(mouse_pos):
+                    #parar musica game over
+                    pygame.mixer.music.stop()
+
+                    #tocar musica principal quando clicar em recomeçar
+                    caminho_musica_principal = os.path.join('audios', 'música principal.mp3')
+                    if os.path.exists(caminho_musica_principal):
+                        pygame.mixer.music.load(caminho_musica_principal)
+                        pygame.mixer.music.set_volume(1.0)
+                        pygame.mixer.music.play(-1)  #loop infinito
+                        
                     return "RESTART"
 
         # Desenho dos Elementos na Tela
