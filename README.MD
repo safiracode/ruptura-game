@@ -94,7 +94,7 @@ Abaixo estão algumas imagens do jogo:
 ## Ferramentas, frameworks e bibliotecas utilizados 🛠️ 
 Para o desenvolvimento do _Ruptura Game_, utilizamos um conjunto de ferramentas e tecnologias, que tornaram possível criar um projeto funcional, visualmente interessante e tecnicamente funcional. Esses recursos foram:
 
-- **Python ** — Linguagem principal do projeto, utilizada para a implementação da lógica, organização das classes e integração de todas as partes do sistema.  
+- **Python** — Linguagem principal do projeto, utilizada para a implementação da lógica, organização das classes e integração de todas as partes do sistema.  
 - **Pygame** — Biblioteca que serviu como base para o desenvolvimento gráfico, detecção de eventos, manipulação de sons e controle de animações.  
 - **Visual Studio Code** — Editor de código adotado pelo grupo, com suporte a extensões úteis e integração com GitHub.  
 - **GitHub** — Usado para o controle de versão, acompanhamento das alterações e colaboração remota de forma organizada.  
