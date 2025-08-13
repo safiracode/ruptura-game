@@ -51,14 +51,15 @@ A temática principal do jogo é inspirada na série Ruptura (Severance), cuja a
 
 | Time                                                  | Tarefas                                                                                |
 | ----------------------------------------------------- | -------------------------------------------------------------------------------------- |
-| [Ana Laura Barboza]                                   |   |
-| [Izadora Andrade]                                     |                          |
-| [Laís Saraiva]                                        |    |
-| [Laura Fonseca]                                       |                            |
-| [Letícia Staudinger]                                  | |
-| [Safira Moraes]                                       | |
+| [Ana Laura Barboza]                                   | Desenvolvimento do código e solução de problemas, design dos personagens, sonoplastia do jogo, organização do código e documentação |
+| [Izadora Andrade]                                     | Desenvolvimento do código e solução de problemas,    |
+| [Laís Saraiva]                                        | Desenvolvimento do código e solução de problemas,   |
+| [Laura Fonseca]                                       | Desenvolvimento do código e solução de problemas,    |
+| [Letícia Staudinger]                                  | Desenvolvimento do código e solução de problemas, |
+| [Safira Moraes]                                       | Desenvolvimento do código e solução de problemas, |
 
 ## Arquitetura do projeto e organizacão do código
+
 
 ## Instruções do jogo
 
