@@ -81,13 +81,23 @@ A estrutura do repositório está organizada assim:
 Abaixo estão algumas imagens do jogo:
 
 <p align="center">
+  
+  # Tela Inicial
   <img src="imagens_jogo/tela_inicial.png" alt="Tela inicial" width="350"/>
+
+  # Telas Tutorial
   <img src="imagens_jogo/tela_tutorial.png" alt="Tela Tutorial" width="350"/>
   <img src="imagens_jogo/tela_tutorial_2.png" alt="Tela Tutorial 1" width="350"/>
   <img src="imagens_jogo/tela_tutorial_3.png" alt="Tela Tutorial 2" width="350"/>
   <img src="imagens_jogo/tela_tutorial_4.png" alt="Tela Tutorial 3" width="350"/>
+
+  # Tela Jogo
   <img src="imagens_jogo/tela_jogo.png" alt="Tela do Jogo" width="350"/>
+
+  # Tela Game Over
   <img src="imagens_jogo/tela_game_over.png" alt="Tela Game Over" width="350"/>
+
+  # Tela You Win
   <img src="imagens_jogo/tela_venceu.png" alt="Tela Venceu" width="350"/>
 </p>
 
