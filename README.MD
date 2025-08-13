@@ -1,8 +1,8 @@
 # Projeto final de Introdução à Programação: Ruptura game ▶️
 
-Este projeto consiste em um jogo 2D desenvolvido como parte da disciplina de Introdução à Programação. Utilizando a biblioteca Pygame, o jogo foi criado com base nos conhecimentos adquiridos ao longo da disciplina, com o objetivo de aplicar esses conceitos de forma prática.
+Este projeto consiste em um jogo 2D desenvolvido como parte da disciplina de Introdução à Programação. Utilizando a biblioteca _Pygame_, criamos uma experiência interativa que coloca em prática os conhecimentos adquiridos ao longo do semestre, desde estruturas de controle e manipulação de eventos até o uso de recursos gráficos e sonoros. Nosso objetivo foi transformar conceitos teóricos em algo concreto e funcional, unindo programação e criatividade.
 
-A temática principal do jogo é inspirada na série Ruptura (Severance), cuja ambientação e estética únicas serviram de referência para a construção dos cenários e da atmosfera do jogo — uma escolha apreciada por várias integrantes do grupo.
+A temática principal é inspirada na série _Ruptura (Severance)_, cuja ambientação enigmática e estética minimalista influenciaram fortemente a construção dos cenários, da paleta de cores e da atmosfera geral do jogo. Buscamos reproduzir a sensação de mistério e tensão característica da obra, adaptando-a para um formato interativo, no qual o jogador mergulha em um mundo dividido entre o trabalho e a vida pessoal, enfrentando desafios que testam tanto a lógica quanto a atenção aos detalhes. Ao longo do desenvolvimento, exploramos diferentes ideias de programação, narrativa e design, sempre buscando manter a identidade visual e o clima narrativo que definem o universo de _Ruptura_.
 
 
 ## Membros da Equipe 5 👥 
