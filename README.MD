@@ -1,9 +1,10 @@
 # Projeto final de Introdução à Programação: _Ruptura Game_ ▶️
 
+<p align="justify">
 Este projeto consiste em um jogo 2D desenvolvido como parte da disciplina de Introdução à Programação. Utilizando a biblioteca _Pygame_, criamos uma experiência interativa que coloca em prática os conhecimentos adquiridos ao longo do semestre, desde estruturas de controle e manipulação de eventos até o uso de recursos gráficos e sonoros. Nosso objetivo foi transformar conceitos teóricos em algo concreto e funcional, unindo programação e criatividade.
 
 A temática principal é inspirada na série _Ruptura (Severance)_, cuja ambientação enigmática e estética minimalista influenciaram fortemente a construção dos cenários, da paleta de cores e da atmosfera geral do jogo. Buscamos reproduzir a sensação de mistério e tensão característica da obra, adaptando-a para um formato interativo, no qual o jogador mergulha em um mundo dividido entre o trabalho e a vida pessoal, enfrentando desafios que testam tanto a lógica quanto a atenção aos detalhes. Ao longo do desenvolvimento, exploramos diferentes ideias de programação, narrativa e design, sempre buscando manter a identidade visual e o clima narrativo que definem o universo de _Ruptura_.
-
+</p>
 
 ## Membros da Equipe 5 👥 
 <table>
@@ -59,6 +60,7 @@ A temática principal é inspirada na série _Ruptura (Severance)_, cuja ambient
 | [Safira Moraes]                                       | Desenvolvimento do código e solução de problemas, |
 
 ## Arquitetura do projeto e organizacão do código 🏛
+<p align="justify">
 Organizamos o _Ruptura Game_ através de arquivos e pastas de acordo com suas funções para facilitar a manutenção e permitir que as integrantes do grupo trabalhasse em partes diferentes do código sem conflitos.  
 
 A estrutura do repositório está organizada assim:  
@@ -76,7 +78,7 @@ A estrutura do repositório está organizada assim:
 - `imagens_jogo` : telas de início, derrota, vitória, tutorial e a tela geral do jogo.
 - `ideias de imagens` : material de referência para a criação da estética do jogo.  
 - `__pycache__` : arquivos compilados automaticamente pelo Python.  
-
+</p>
 
 ## Capturas de tela 🖼️
 
@@ -94,6 +96,7 @@ Abaixo estão algumas imagens do jogo:
 </p>
 
 ## Ferramentas, frameworks e bibliotecas utilizados 🛠️ 
+<p align="justify">
 Para o desenvolvimento do _Ruptura Game_, utilizamos um conjunto de ferramentas e tecnologias, que tornaram possível criar um projeto funcional, visualmente interessante e tecnicamente funcional. Esses recursos foram:
 
 - **Python ** — Linguagem principal do projeto, utilizada para a implementação da lógica, organização das classes e integração de todas as partes do sistema.  
@@ -103,8 +106,10 @@ Para o desenvolvimento do _Ruptura Game_, utilizamos um conjunto de ferramentas 
 - **Canva e Photoshop** — Utilizados para a criação e edição de elementos visuais, preservando a identidade visual.  
 - **Discord / WhatsApp** — Aplicativos de comunicação, utilizados para o alinhamento de equipe, com mensagens e reuniões por chamada de vídeo.  
 - **YouTube, OpenGameArt e FreeSound** — Bibliotecas de efeitos sonoros e trilhas, enriquecendo o jogo. 
+</p>
 
 ## Conceitos da disciplina aplicados 💡
+<p align="justify">
 Durante o desenvolvimento do _Ruptura Game_, colocamos em prática diversos conceitos vistos ao longo da disciplina, aplicando-os diretamente na lógica e na estrutura do jogo.  
 
 Os _comandos condicionais_ (`if`, `elif`, `else`) foram fundamentais para controlar o fluxo de execução, determinando ações diferentes a depender de eventos como colisões, transições de fases ou escolha de opções no menu. Já os _laços de repetição_ (`for` e `while`) foram essenciais para percorrer coleções de dados, atualizar elementos em tela e manter o _game loop_ rodando de forma contínua até que uma condição de término fosse atingida.  
@@ -114,18 +119,24 @@ As _listas_ foram amplamente utilizadas para armazenar e gerenciar elementos do 
 As _funções_ desempenharam um papel importante na organização do código, separando responsabilidades em blocos lógicos, como: inicializar o jogo, processar entradas do usuário, atualizar o estado dos personagens e renderizar os elementos na tela.
 
 Por fim, também aplicamos _Programação Orientada a Objetos (POO)_ para estruturar o jogo de forma modular e reutilizável. Criamos classes para representar entidades como o jogador, inimigos e elementos de cenário, encapsulando seus atributos e comportamentos e permitindo instanciar múltiplos objetos de forma independente.  
+</p>
 
 ## Desafios, erros e lições aprendidas 💥
 > **Qual foi o maior erro cometido durante o projeto? Como vocês lidaram com ele?** 
 
+<p align="justify">
 O maior erro cometido no desenvolvimento do _Ruptura Game_ foi priorizar, nas etapas iniciais, partes do trabalho que poderiam ter sido deixadas para depois, como decisões de design e de sonoplastia, em vez de focar no código base que sustentaria toda a lógica do jogo. Essa escolha acabou atrasando a implementação de funcionalidades essenciais. Para lidar com isso, reorganizamos as prioridades, redistribuindo tarefas para que o núcleo do jogo fosse finalizado antes dos elementos complementares.  
+</p>
 
 > **Qual foi o maior desafio enfrentado durante o projeto? Como vocês lidaram com ele?** 
 
+<p align="justify">
 O maior desafio foi implementar os seguranças, a lógica da Cobel e os coletáveis de forma que o jogo se mantivesse equilibrado (nem muito fácil, nem excessivamente difícil) e, ao mesmo tempo, garantir que todos esses elementos funcionassem de maneira integrada, simultaneamente. Para superar essa dificuldade, realizamos pesquisas, analisamos referências de jogos semelhantes e realizamos diversos testes para ajustar velocidades, padrões de movimento e posicionamento, até alcançar um resultado coerente com a proposta do jogo.  
+</p>
 
 > **Quais as lições aprendidas durante o projeto?**  
 
+<p align="justify">
 Uma das maiores lições foi a importância do planejamento prévio para a execução eficiente de qualquer trabalho. Aprendemos também a lidar com uma biblioteca completamente nova, o _Pygame_; a utilizar de forma eficaz uma plataforma de repositório (nesse caso, o GitHub) para gerenciar arquivos em constante mudança; e a trabalhar com Programação Orientada a Objetos, que, até então,não havia sido muito explorada por nós. Além disso, reforçamos a importância de delegar funções de forma equilibrada, organizar o código de forma legível, colaborar ativamente no trabalho em equipe e manter uma comunicação constante, tanto entre os integrantes do grupo quanto com as monitoras e os professores.  
-
+</p>
 
