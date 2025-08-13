@@ -126,6 +126,6 @@ O maior desafio foi implementar os seguranças, a lógica da Cobel e os coletáv
 
 > **Quais as lições aprendidas durante o projeto?**  
 
-Uma das maiores lições foi a importância do planejamento prévio para a execução eficiente de qualquer trabalho. Aprendemos também a lidar com uma biblioteca completamente nova, o _Pygame_; a utilizar de forma eficaz uma plataforma de repositório (nesse caso, o GitHub) para gerenciar arquivos em constante mudança; e a trabalhar com Programação Orientada a Objetos, que, até então,não havia sido muito explorada por nós. Além disso, reforçamos a importância de delegar funções de forma equilibrada, organizar o código de forma legível, colaborar ativamente na criação em equipe e manter uma comunicação constante, tanto entre os integrantes do grupo quanto com as monitoras e os professores.  
+Uma das maiores lições foi a importância do planejamento prévio para a execução eficiente de qualquer trabalho. Aprendemos também a lidar com uma biblioteca completamente nova, o _Pygame_; a utilizar de forma eficaz uma plataforma de repositório (nesse caso, o GitHub) para gerenciar arquivos em constante mudança; e a trabalhar com Programação Orientada a Objetos, que, até então,não havia sido muito explorada por nós. Além disso, reforçamos a importância de delegar funções de forma equilibrada, organizar o código de forma legível, colaborar ativamente no trabalho em equipe e manter uma comunicação constante, tanto entre os integrantes do grupo quanto com as monitoras e os professores.  
 
 
