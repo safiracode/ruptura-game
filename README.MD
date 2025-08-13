@@ -59,6 +59,24 @@ A temática principal é inspirada na série _Ruptura (Severance)_, cuja ambient
 | [Safira Moraes]                                       | Desenvolvimento do código e solução de problemas, |
 
 ## Arquitetura do projeto e organizacão do código 🏛
+Organizamos o _Ruptura Game_ através de arquivos e pastas de acordo com suas funções para facilitar a manutenção e permitir que as integrantes do grupo trabalhasse em partes diferentes do código sem conflitos.  
+
+A estrutura do repositório está organizada assim:  
+- `main.py` : ponto de entrada do jogo, onde o Pygame é inicializado e o loop principal é executado.  
+- `constants.py` : centraliza variáveis e configurações fixas, como cores, dimensões da tela, FPS e outros parâmetros globais.  
+- `mapa.py` : gerencia a estrutura do mapa, posicionamento de elementos e obstáculos.  
+- `tela_start.py` : tela inicial do jogo, com título e opções de navegação.  
+- `tela_tutorial.py` : apresenta as instruções básicas para orientar o jogador.  
+- `game_over.py` : lógica e exibição da tela de derrota padrão.  
+- `game_over_cobel.py` : tela de derrota específica para quando Mark é vencido pela personagem Cobel.  
+- `venceu.py` : lógica e exibição da tela de vitória.  
+- `classes/` : contém as classes principais, como personagens, inimigos e objetos interativos.  
+- `audios/` : reúne todos os arquivos sonoros, incluindo efeitos e trilhas.  
+- `imagens/` : ideias de imagens gerais, como ícones e fundos.
+- `imagens_jogo/` : recursos visuais definitivos usados no jogo.  
+- `ideias de imagens/` : material de referência para a criação da estética do jogo.  
+- `__pycache__/` : arquivos compilados automaticamente pelo Python.  
+
 
 ## Capturas de tela 🖼️
 
