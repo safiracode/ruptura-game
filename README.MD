@@ -100,7 +100,7 @@ Para o desenvolvimento do _Ruptura Game_, utilizamos um conjunto de ferramentas 
 - **GitHub** — Usado para o controle de versão, acompanhamento das alterações e colaboração remota de forma organizada.  
 - **Canva e Photoshop** — Utilizados para a criação e edição de elementos visuais, preservando a identidade visual.  
 - **Discord / WhatsApp** — Aplicativos de comunicação, utilizados para o alinhamento de equipe, com mensagens e reuniões por chamada de vídeo.  
-- **YouTube, OpenGameArt e FreeSound** — Bibliotecas de efeitos sonoros e trilhas, enriquecendo o jogo. 
+- **YouTube, OpenGameArt e FreeSound** — Bibliotecas de efeitos sonoros e trilhas, para formar a sonoplastia do jogo. 
 
 ## Conceitos da disciplina aplicados 💡
 Durante o desenvolvimento do _Ruptura Game_, colocamos em prática diversos conceitos vistos ao longo da disciplina, aplicando-os diretamente na lógica e na estrutura do jogo.  
