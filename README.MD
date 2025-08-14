@@ -52,7 +52,7 @@ A temática principal é inspirada na série _Ruptura (Severance)_, cuja ambient
 | ----------------------------------------------------- | -------------------------------------------------------------------------------------- |
 | [Ana Laura Barboza]                                   | Desenvolvimento do código e solução de problemas, design dos personagens, sonoplastia do jogo, organização do código, documentação nas planilhas e organização do GitHub |
 | [Izadora Andrade]                                     | Desenvolvimento do código e solução de problemas, Implementação do Mark, Implementação da tela de Game Over, Auxílio no README.md   |
-| [Laís Saraiva]                                        | Desenvolvimento do código e solução de problemas,   |
+| [Laís Saraiva]                                        | Desenvolvimento do código e solução de problemas, Implementação da tela Start, Implementação das telas de Tutorial, Implementação da tela de Game Over da Cobel, Geração de algumas sprites |
 | [Laura Fonseca]                                       | Desenvolvimento do código e solução de problemas, Implementação de sons do jogo, Apresentação final dos slides, Design da tela "You Win", Implementação da tela Venceu, Auxílio no README.md|
 | [Letícia Staudinger]                                  | Desenvolvimento do código e solução de problemas, Geração das sprites, ⁠Implementação: sprites, mudança de sprite para cada direção, porta de saída do labirinto, imagens telas de tutorial, fonte textos, ⁠Contribuições: ajustes finais tela tutorial (fundo, botões, textos, tamanhos, margens), ajustes botões telas de game over e de win, ajuste movimentação da Cobel, ⁠Organização dos arquivos de imagem|
 | [Safira Moraes]                                       | Desenvolvimento do código e solução de problemas, Organização e criação da base do codigo, Implementação do mapa aleatório, Implementação dos coletáveis: balão, chave e café, Implementação dos seguranças e algoritmo de busca com dois modos: perseguir e dispersar, Melhoria na movimentação do mark, Melhoria no algoritmo de busca da Cobel |
@@ -80,12 +80,12 @@ A estrutura do repositório está organizada assim:
 
 Abaixo estão algumas imagens do jogo:
 
-### Tela Inicial
+### Tela Inicial:
 <p align="center">
   <img src="imagens_jogo/tela_inicial.png" alt="Tela inicial" width="350"/>
 </p>
 
-### Telas Tutorial
+### Telas Tutorial:
 <p align="center">
   <img src="imagens_jogo/tela_tutorial.png" alt="Tela Tutorial" width="350"/>
   <img src="imagens_jogo/tela_tutorial_2.png" alt="Tela Tutorial 1" width="350"/>
@@ -93,17 +93,17 @@ Abaixo estão algumas imagens do jogo:
   <img src="imagens_jogo/tela_tutorial_4.png" alt="Tela Tutorial 3" width="350"/>
 </p>
 
-### Tela Jogo
+### Tela Jogo:
 <p align="center">
   <img src="imagens_jogo/tela_jogo.png" alt="Tela do Jogo" width="350"/>
 </p>
 
-### Tela Game Over
+### Tela Game Over:
 <p align="center">
   <img src="imagens_jogo/tela_game_over.png" alt="Tela Game Over" width="350"/>
 </p>
 
-### Tela You Win
+### Tela You Win:
 <p align="center">
   <img src="imagens_jogo/tela_venceu.png" alt="Tela Venceu" width="350"/>
 </p>
