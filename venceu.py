@@ -35,7 +35,7 @@ def tela_venceu(tela, fonte, imagem_venceu):
 
         # Texto do botão
         fonte_botao = pygame.font.Font(fonte, 36)
-        texto = fonte_botao.render("Recomeçar", True, constants.BRANCO)
+        texto = fonte_botao.render("RECOMEÇAR", True, constants.BRANCO)
         texto_rect = texto.get_rect(center=(x_botao + constants.LARGURA_BOTAO_GAMEOVERWIN // 2, y_botao + constants.ALTURA_BOTAO // 2))
         tela.blit(texto, texto_rect)
 
